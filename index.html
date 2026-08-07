@@ -3,24 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LifeApps - Gerador de Propostas Comerciais & PDF</title>
+    <title>LifeApps - Gerador de Propostas (v1.0)</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- jsPDF & html2pdf para exportação de PDF -->
+    <!-- jsPDF & html2pdf -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        brandGreen: '#3eb049',
-                        brandBlue: '#3b82f6',
-                        brandDarkBlue: '#1e40af',
-                    }
-                }
-            }
-        }
-    </script>
+    
+    <!-- Firebase SDKs (v9 Compat) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         body { font-family: 'Inter', system-ui, sans-serif; background-color: #f8fafc; }
@@ -37,7 +29,10 @@
                 <div class="text-2xl font-bold text-gray-800 flex items-center">
                     <span class="text-blue-600 font-extrabold">.il</span><span class="text-green-500 font-extrabold">life</span><span class="text-gray-500 text-sm ml-1 font-normal">apps</span>
                 </div>
-                <span class="text-xs bg-blue-100 text-blue-800 px-2.5 py-1 rounded-full font-medium">Gerador de Propostas PDF & PPT</span>
+                <span class="text-xs bg-blue-100 text-blue-800 px-2.5 py-1 rounded-full font-bold">Versão 1.0</span>
+                <span class="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full font-medium flex items-center">
+                    <span class="w-1.5 h-1.5 bg-green-500 rounded-full mr-1.5"></span> Cloud Firebase
+                </span>
             </div>
             
             <nav class="flex space-x-4">
@@ -53,17 +48,17 @@
 
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         
-        <!-- VENDEDOR SCREEN -->
+        <!-- TELA DO VENDEDOR -->
         <section id="screen-vendedor" class="space-y-8">
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
                 
-                <!-- Form Area (Left) -->
+                <!-- Formulário Vendedor -->
                 <div class="lg:col-span-5 bg-white p-6 rounded-2xl shadow-sm border border-gray-200 space-y-6">
                     <h2 class="text-xl font-bold text-gray-900 border-b pb-3 flex items-center justify-between">
-                        <span><i class="fa-solid fa-file-signature text-blue-600 mr-2"></i> Dados da Proposta</span>
+                        <span><i class="fa-solid fa-file-signature text-blue-600 mr-2"></i> Dados da Proposta (v1.0)</span>
                     </h2>
 
-                    <!-- Cliente e CNPJ Info -->
+                    <!-- Cliente e CNPJ -->
                     <div class="grid grid-cols-2 gap-3">
                         <div>
                             <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Empresa / Razão Social</label>
@@ -83,10 +78,10 @@
                         </select>
                     </div>
 
-                    <!-- Campos Dinâmicos por Produto -->
+                    <!-- Campos Dinâmicos -->
                     <div id="dynamic-fields" class="space-y-4"></div>
 
-                    <!-- Adicionais / Horas de Dev -->
+                    <!-- Extras -->
                     <div id="extras-container" class="space-y-3 hidden">
                         <label class="block text-xs font-semibold text-gray-600 uppercase">Produtos / Serviços Extras</label>
                         <div class="grid grid-cols-2 gap-3 text-sm">
@@ -104,7 +99,7 @@
                         </div>
                     </div>
 
-                    <!-- Gestão de Descontos (Individual ou Total) -->
+                    <!-- Descontos -->
                     <div id="discounts-container" class="space-y-3 border-t pt-4 hidden">
                         <label class="block text-xs font-semibold text-gray-600 uppercase">Aplicação de Desconto</label>
                         <div class="grid grid-cols-2 gap-3">
@@ -119,9 +114,9 @@
                         </div>
                     </div>
 
-                    <!-- Condições Comerciais -->
+                    <!-- Parcelamento e Datas Obrigatórias Digitáveis -->
                     <div id="conditions-container" class="space-y-3 border-t pt-4 hidden">
-                        <label class="block text-xs font-semibold text-gray-600 uppercase">Condições & Pagamento</label>
+                        <label class="block text-xs font-semibold text-gray-600 uppercase">Condições Comercial & Datas</label>
                         <div class="grid grid-cols-2 gap-3">
                             <div>
                                 <label class="text-xs text-gray-500">Parc. Setup</label>
@@ -133,19 +128,22 @@
                                 </select>
                             </div>
                             <div>
-                                <label class="text-xs text-gray-500">1ª Parcela Setup</label>
-                                <input type="date" id="vendedor-data-setup" onchange="calculateProposal()" class="w-full p-2 border rounded-lg text-sm">
+                                <label class="text-xs font-bold text-blue-900">Data 1ª Parcela Setup *</label>
+                                <input type="date" id="vendedor-data-setup" onchange="calculateProposal()" class="w-full p-2 border rounded-lg text-sm bg-blue-50">
                             </div>
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-blue-900">Data 1ª Parcela Mensalidade *</label>
+                            <input type="date" id="vendedor-data-mensal" onchange="calculateProposal()" class="w-full p-2 border rounded-lg text-sm bg-blue-50">
                         </div>
                     </div>
 
-                    <!-- Botão de Gerar PDF da Proposta Comercial -->
                     <button onclick="generateProposalPDF()" class="w-full py-3.5 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl shadow-lg transition-all flex items-center justify-center text-base">
                         <i class="fa-solid fa-file-pdf mr-2 text-xl"></i> Gerar PDF Oficial da Proposta
                     </button>
                 </div>
 
-                <!-- Slide Preview / PDF Layout Preview -->
+                <!-- Preview do Slide -->
                 <div class="lg:col-span-7 space-y-4">
                     <div class="flex items-center justify-between">
                         <h3 class="text-base font-bold text-gray-700 uppercase tracking-wide">Pré-visualização da Tabela de Investimento</h3>
@@ -204,19 +202,19 @@
             </div>
         </section>
 
-        <!-- ADMIN SCREEN -->
+        <!-- PAINEL ADM -->
         <section id="screen-admin" class="hidden space-y-6">
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 space-y-6">
                 <div class="flex justify-between items-center border-b pb-4">
                     <div>
-                        <h2 class="text-xl font-bold text-gray-900">Painel Administrativo - Gestão de Produtos</h2>
-                        <p class="text-xs text-gray-500">Conectado ao Firebase Firestore</p>
+                        <h2 class="text-xl font-bold text-gray-900">Painel Administrativo - Conectado ao Firebase Cloud</h2>
+                        <p class="text-xs text-gray-500">Alterações são sincronizadas em tempo real para todos os vendedores.</p>
                     </div>
                     <span class="bg-green-100 text-green-800 text-xs px-3 py-1 rounded-full font-medium">Autenticado (lifeapps123)</span>
                 </div>
 
                 <div class="space-y-4">
-                    <h3 class="text-md font-bold text-gray-800">Criar Novo Produto / Serviço</h3>
+                    <h3 class="text-md font-bold text-gray-800">Criar Novo Produto / Serviço na Nuvem</h3>
                     <div class="grid grid-cols-1 md:grid-cols-5 gap-3 bg-gray-50 p-4 rounded-xl border">
                         <div>
                             <label class="text-xs text-gray-600 font-medium">Nome do Produto</label>
@@ -238,8 +236,15 @@
                             </select>
                         </div>
                         <div class="flex items-end">
-                            <button onclick="addNewProduct()" class="w-full p-2 bg-blue-600 text-white font-bold rounded text-sm">Criar Produto</button>
+                            <button onclick="addNewProductFirebase()" class="w-full p-2 bg-blue-600 text-white font-bold rounded text-sm hover:bg-blue-700">
+                                <i class="fa-solid fa-cloud-arrow-up mr-1"></i> Salvar no Firebase
+                            </button>
                         </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <h4 class="text-xs font-bold text-gray-500 uppercase mb-2">Produtos no Banco de Dados Cloud</h4>
+                        <div id="admin-products-list" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
                     </div>
                 </div>
             </div>
@@ -247,18 +252,18 @@
 
     </main>
 
-    <!-- CONTAINER OCULTO RENDERIZADOR DO DOCUMENTO PDF -->
+    <!-- CONTAINER PDF -->
     <div id="pdf-document" style="display: none;">
-        <!-- Página 1: Capa -->
+        <!-- P1: Capa -->
         <div class="pdf-page flex flex-col justify-between">
             <div class="text-center mt-20">
                 <h1 class="text-4xl font-black text-blue-900">PROPOSTA COMERCIAL</h1>
-                <p class="text-lg text-green-600 font-bold mt-2">Soluções LifeApps</p>
+                <p class="text-lg text-green-600 font-bold mt-2">Soluções LifeApps (v1.0)</p>
             </div>
             <div class="text-center mb-20 text-gray-500">LifeApps Tecnologia © 2026</div>
         </div>
 
-        <!-- Página 2: Identificação do Cliente, Produto & Validade -->
+        <!-- P2: Resumo -->
         <div class="pdf-page flex flex-col justify-between">
             <div>
                 <h2 class="text-2xl font-bold text-blue-900 border-b pb-3 mb-6">02. Resumo da Proposta</h2>
@@ -273,14 +278,13 @@
             <div class="text-xs text-gray-400">Página 2 de 9</div>
         </div>
 
-        <!-- Páginas 3 a 7: Apresentação Institucional e Metodologia -->
-        <div class="pdf-page"><h3 class="text-xl font-bold text-blue-900">03. Sobre a LifeApps</h3><p class="mt-4 text-gray-600">A plataforma ideal para o Atacado Distribuidor impulsionar suas vendas digitais.</p></div>
-        <div class="pdf-page"><h3 class="text-xl font-bold text-blue-900">04. Recursos e Módulos</h3><p class="mt-4 text-gray-600">Conectividade total, inteligência de vendas e automação comercial.</p></div>
-        <div class="pdf-page"><h3 class="text-xl font-bold text-blue-900">05. Segurança e Escala</h3><p class="mt-4 text-gray-600">Infraestrutura em nuvem de alta disponibilidade e performance.</p></div>
-        <div class="pdf-page"><h3 class="text-xl font-bold text-blue-900">06. Cronograma de Implantação</h3><p class="mt-4 text-gray-600">Etapas de integração, testes e treinamento operacional.</p></div>
-        <div class="pdf-page"><h3 class="text-xl font-bold text-blue-900">07. Suporte e Atendimento</h3><p class="mt-4 text-gray-600">Acompanhamento contínuo por time especialista.</p></div>
+        <div class="pdf-page"><h3 class="text-xl font-bold text-blue-900">03. Sobre a LifeApps</h3><p class="mt-4 text-gray-600">Soluções para o Atacado Distribuidor.</p></div>
+        <div class="pdf-page"><h3 class="text-xl font-bold text-blue-900">04. Recursos e Módulos</h3><p class="mt-4 text-gray-600">Conectividade e automação comercial.</p></div>
+        <div class="pdf-page"><h3 class="text-xl font-bold text-blue-900">05. Segurança e Escala</h3><p class="mt-4 text-gray-600">Infraestrutura em nuvem.</p></div>
+        <div class="pdf-page"><h3 class="text-xl font-bold text-blue-900">06. Cronograma de Implantação</h3><p class="mt-4 text-gray-600">Etapas de integração e treinamentos.</p></div>
+        <div class="pdf-page"><h3 class="text-xl font-bold text-blue-900">07. Suporte e Atendimento</h3><p class="mt-4 text-gray-600">Atendimento especializado.</p></div>
 
-        <!-- Página 8: Tabela Oficial de Investimento -->
+        <!-- P8: Tabela Investimento com Datas Digitadas -->
         <div class="pdf-page flex flex-col justify-between">
             <div>
                 <h2 class="text-2xl font-bold text-blue-900 border-b pb-3 mb-6">08. Tabela de Investimento Comercial</h2>
@@ -294,7 +298,7 @@
             <div class="text-xs text-gray-400">Página 8 de 9</div>
         </div>
 
-        <!-- Página 9 (Última Página): Aceite, Empresa e CNPJ -->
+        <!-- P9: Assinatura -->
         <div class="pdf-page flex flex-col justify-between">
             <div>
                 <h2 class="text-2xl font-bold text-blue-900 border-b pb-3 mb-6">09. Aceite e Assinatura</h2>
@@ -318,22 +322,59 @@
         </div>
     </div>
 
-    <!-- Script de Execução -->
+    <!-- Script App Logic & Firebase Integration -->
     <script>
+        // Configuração do Firebase Cloud Firestore
+        const firebaseConfig = {
+            apiKey: "AIzaSyDemoKeyLifeApps2026",
+            authDomain: "lifeapps-propostas.firebaseapp.com",
+            projectId: "lifeapps-propostas",
+            storageBucket: "lifeapps-propostas.appspot.com",
+            messagingSenderId: "1234567890",
+            appId: "1:1234567890:web:lifeapps2026"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
         let isAuthenticated = false;
+        let dbProducts = [];
 
-        let dbProducts = [
-            { id: 'ecommerce', name: 'E-Commerce + App (iOS e Android)', setup: 18742.50, mensal: 2490.00, askUsers: false },
-            { id: 'lifegrowth', name: 'LifeGrowth', setup: 5000.00, mensal: 1200.00, askUsers: true },
-            { id: 'lifechat', name: 'LifeChat', setup: 3500.00, mensal: 890.00, askUsers: true }
-        ];
-
-        let dbExtras = {
+        // Preço fixo extras
+        const dbExtras = {
             lojaAdicional: 500.00,
             usuarioExtra: 100.00,
             horaDev: 200.00,
             extrator: 250.00
         };
+
+        // Carregar produtos em tempo real do Firebase Firestore
+        function listenFirebaseProducts() {
+            db.collection("produtos").onSnapshot((snapshot) => {
+                dbProducts = [];
+                snapshot.forEach((doc) => {
+                    dbProducts.push({ id: doc.id, ...doc.data() });
+                });
+                
+                // Se o banco estiver vazio, inicializa produtos padrão
+                if (dbProducts.length === 0) {
+                    seedDefaultProducts();
+                } else {
+                    populateProductOptions();
+                    renderAdminProducts();
+                }
+            });
+        }
+
+        function seedDefaultProducts() {
+            const defaults = [
+                { name: 'E-Commerce + App (iOS e Android)', setup: 18742.50, mensal: 2490.00, askUsers: false },
+                { name: 'LifeGrowth', setup: 5000.00, mensal: 1200.00, askUsers: true },
+                { name: 'LifeChat', setup: 3500.00, mensal: 890.00, askUsers: true }
+            ];
+
+            defaults.forEach(p => db.collection("produtos").add(p));
+        }
 
         function openAdminWithPassword() {
             if (!isAuthenticated) {
@@ -370,15 +411,10 @@
         function updateVendedorForm() {
             const prodId = document.getElementById('vendedor-produto').value;
             const container = document.getElementById('dynamic-fields');
-            const extrasContainer = document.getElementById('extras-container');
-            const discountsContainer = document.getElementById('discounts-container');
-            const conditionsContainer = document.getElementById('conditions-container');
 
-            if (!prodId) return;
-
-            extrasContainer.classList.remove('hidden');
-            discountsContainer.classList.remove('hidden');
-            conditionsContainer.classList.remove('hidden');
+            document.getElementById('extras-container').classList.remove('hidden');
+            document.getElementById('discounts-container').classList.remove('hidden');
+            document.getElementById('conditions-container').classList.remove('hidden');
 
             const selectedProd = dbProducts.find(p => p.id === prodId);
 
@@ -411,10 +447,9 @@
             return val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         }
 
-        function formatDate(date) {
-            const d = String(date.getDate()).padStart(2, '0');
-            const m = String(date.getMonth() + 1).padStart(2, '0');
-            const y = date.getFullYear();
+        function formatDateStr(dateStr) {
+            if (!dateStr) return 'A definir';
+            const [y, m, d] = dateStr.split('-');
             return `${d}/${m}/${y}`;
         }
 
@@ -432,6 +467,13 @@
             const descMensalPercent = (parseFloat(document.getElementById('desc-mensal').value) || 0) / 100;
 
             const parcSetup = document.getElementById('vendedor-parc-setup').value;
+            
+            // Datas digitadas pelo vendedor
+            const dataSetupInput = document.getElementById('vendedor-data-setup').value;
+            const dataMensalInput = document.getElementById('vendedor-data-mensal').value;
+
+            const dataSetupFormatted = formatDateStr(dataSetupInput);
+            const dataMensalFormatted = formatDateStr(dataMensalInput);
 
             // Setup Items
             let setupItems = [{
@@ -485,8 +527,8 @@
                 });
             }
 
-            renderTable('slide-table-setup', setupItems, descSetupPercent > 0, `${parcSetup}x`, 'green');
-            renderTable('slide-table-mensal', mensalItems, descMensalPercent > 0, '-', 'blue');
+            renderTable('slide-table-setup', setupItems, descSetupPercent > 0, `${parcSetup}x`, dataSetupFormatted, 'green');
+            renderTable('slide-table-mensal', mensalItems, descMensalPercent > 0, '-', dataMensalFormatted, 'blue');
 
             const totalSetup = setupItems.reduce((acc, i) => acc + (i.valor * (1 - i.desc)), 0);
             const totalMensal = mensalItems.reduce((acc, i) => acc + (i.valor * (1 - i.desc)), 0);
@@ -495,7 +537,7 @@
             document.getElementById('slide-total-mensal').innerText = formatBRL(totalMensal);
         }
 
-        function renderTable(tableId, items, showDiscount, parcelamentoText, theme) {
+        function renderTable(tableId, items, showDiscount, parcelamentoText, dataText, theme) {
             const table = document.getElementById(tableId);
             const headerBg = theme === 'green' ? 'bg-green-600 text-white' : 'bg-blue-600 text-white';
             
@@ -507,6 +549,7 @@
                         <th class="p-2 text-right">Valor Individual</th>
                         ${showDiscount ? `<th class="p-2 text-right bg-green-700/30">Desconto</th><th class="p-2 text-right bg-green-700/30">Valor c/ desconto</th>` : ''}
                         <th class="p-2 text-center">Parcelamento</th>
+                        <th class="p-2 text-center">Data 1ª Parcela</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200">
@@ -526,12 +569,53 @@
                             <td class="p-2 text-right font-bold text-gray-900">${formatBRL(valorComDesc)}</td>
                         ` : ''}
                         <td class="p-2 text-center text-gray-600">${parcelamentoText}</td>
+                        <td class="p-2 text-center text-gray-600 font-semibold">${dataText}</td>
                     </tr>
                 `;
             });
 
             html += `</tbody>`;
             table.innerHTML = html;
+        }
+
+        // Criar Novo Produto e Salvar Direto no Firebase
+        function addNewProductFirebase() {
+            const name = document.getElementById('new-prod-name').value;
+            const setup = parseFloat(document.getElementById('new-prod-setup').value || 0);
+            const mensal = parseFloat(document.getElementById('new-prod-mensal').value || 0);
+            const askUsers = document.getElementById('new-prod-ask-users').value === 'sim';
+
+            if (!name) { alert('Digite o nome do produto!'); return; }
+
+            db.collection("produtos").add({ name, setup, mensal, askUsers }).then(() => {
+                alert('Produto adicionado ao Firebase Cloud com sucesso!');
+                document.getElementById('new-prod-name').value = '';
+                document.getElementById('new-prod-setup').value = '';
+                document.getElementById('new-prod-mensal').value = '';
+            });
+        }
+
+        function removeProductFirebase(id) {
+            if (confirm('Deseja remover este produto do banco de dados?')) {
+                db.collection("produtos").doc(id).delete();
+            }
+        }
+
+        function renderAdminProducts() {
+            const list = document.getElementById('admin-products-list');
+            list.innerHTML = '';
+            dbProducts.forEach((prod) => {
+                list.innerHTML += `
+                    <div class="p-4 bg-gray-50 border rounded-xl space-y-2 relative">
+                        <button onclick="removeProductFirebase('${prod.id}')" class="absolute top-3 right-3 text-red-500 hover:text-red-700 text-xs font-bold">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                        <h4 class="font-bold text-sm text-gray-900">${prod.name}</h4>
+                        <div class="text-xs text-gray-600">Setup: <strong>${formatBRL(prod.setup)}</strong></div>
+                        <div class="text-xs text-gray-600">Mensal: <strong>${formatBRL(prod.mensal)}</strong></div>
+                    </div>
+                `;
+            });
         }
 
         function generateProposalPDF() {
@@ -544,34 +628,42 @@
                 return;
             }
 
+            const dataSetupInput = document.getElementById('vendedor-data-setup').value;
+            const dataMensalInput = document.getElementById('vendedor-data-mensal').value;
+
+            if (!dataSetupInput || !dataMensalInput) {
+                alert('Por favor, informe a Data da 1ª Parcela do Setup e da Mensalidade.');
+                return;
+            }
+
             const prodObj = dbProducts.find(p => p.id === prodId);
             const now = new Date();
-            const dataCriacao = formatDate(now);
+            const dataCriacao = `${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
             const validade = `20/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
 
-            // Preenchimento da Página 2
+            // Preenchimento Página 2
             document.getElementById('pdf-empresa-p2').innerText = empresa;
             document.getElementById('pdf-cnpj-p2').innerText = cnpj;
             document.getElementById('pdf-produto-p2').innerText = prodObj.name;
             document.getElementById('pdf-data-criacao-p2').innerText = dataCriacao;
             document.getElementById('pdf-validade-p2').innerText = validade;
 
-            // Preenchimento da Página 8 (Tabelas)
+            // Preenchimento Página 8
             document.getElementById('pdf-table-setup-container').innerHTML = document.getElementById('slide-table-setup').outerHTML;
             document.getElementById('pdf-table-mensal-container').innerHTML = document.getElementById('slide-table-mensal').outerHTML;
 
-            // Preenchimento da Página 9
+            // Preenchimento Página 9
             document.getElementById('pdf-empresa-p9').innerText = empresa;
             document.getElementById('pdf-cnpj-p9').innerText = cnpj;
             document.getElementById('pdf-empresa-sign').innerText = empresa;
 
-            // Emissão do Arquivo PDF
+            // Gerar PDF
             const element = document.getElementById('pdf-document');
             element.style.display = 'block';
 
             const opt = {
                 margin:       0,
-                filename:     `Proposta_LifeApps_${empresa.replace(/\s+/g, '_')}.pdf`,
+                filename:     `Proposta_v1.0_${empresa.replace(/\s+/g, '_')}.pdf`,
                 image:        { type: 'jpeg', quality: 0.98 },
                 html2canvas:  { scale: 2 },
                 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
@@ -582,7 +674,8 @@
             });
         }
 
-        populateProductOptions();
+        // Inicializar com conexão Cloud Firebase
+        listenFirebaseProducts();
     </script>
 </body>
 </html>
