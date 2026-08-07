@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LifeApps - Gerador de Propostas Comerciais</title>
+    <title>LifeApps - Gerador de Propostas Comerciais & PDF</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- jsPDF & html2pdf para exportação de PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -23,6 +25,7 @@
     <style>
         body { font-family: 'Inter', system-ui, sans-serif; background-color: #f8fafc; }
         .slide-preview { background-color: #ffffff; aspect-ratio: 16/9; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1); }
+        .pdf-page { width: 210mm; height: 297mm; background: white; margin: 0 auto 20px auto; padding: 20mm; position: relative; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); page-break-after: always; font-size: 12px; }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800 min-h-screen">
@@ -34,10 +37,9 @@
                 <div class="text-2xl font-bold text-gray-800 flex items-center">
                     <span class="text-blue-600 font-extrabold">.il</span><span class="text-green-500 font-extrabold">life</span><span class="text-gray-500 text-sm ml-1 font-normal">apps</span>
                 </div>
-                <span class="text-xs bg-blue-100 text-blue-800 px-2.5 py-1 rounded-full font-medium">Gerador de Propostas PPT</span>
+                <span class="text-xs bg-blue-100 text-blue-800 px-2.5 py-1 rounded-full font-medium">Gerador de Propostas PDF & PPT</span>
             </div>
             
-            <!-- Navigation Tabs -->
             <nav class="flex space-x-4">
                 <button onclick="switchTab('vendedor')" id="tab-vendedor" class="px-4 py-2 rounded-lg font-medium text-sm transition-all bg-blue-600 text-white shadow-sm">
                     <i class="fa-solid fa-calculator mr-2"></i>Área do Vendedor
@@ -59,29 +61,30 @@
                 <div class="lg:col-span-5 bg-white p-6 rounded-2xl shadow-sm border border-gray-200 space-y-6">
                     <h2 class="text-xl font-bold text-gray-900 border-b pb-3 flex items-center justify-between">
                         <span><i class="fa-solid fa-file-signature text-blue-600 mr-2"></i> Dados da Proposta</span>
-                        <button onclick="resetProposalForm()" class="text-xs text-gray-500 hover:text-red-600 font-normal">
-                            <i class="fa-solid fa-arrow-rotate-left mr-1"></i> Limpar
-                        </button>
                     </h2>
 
-                    <!-- Cliente Info -->
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Nome do Cliente / Empresa</label>
-                        <input type="text" id="vendedor-cliente" placeholder="Digite o nome do cliente..." class="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none text-sm">
+                    <!-- Cliente e CNPJ Info -->
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Empresa / Razão Social</label>
+                            <input type="text" id="vendedor-cliente" placeholder="Nome da empresa..." oninput="calculateProposal()" class="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">CNPJ</label>
+                            <input type="text" id="vendedor-cnpj" placeholder="00.000.000/0001-00" oninput="calculateProposal()" class="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 text-sm">
+                        </div>
                     </div>
 
-                    <!-- Produto principal (Sem produto selecionado inicialmente) -->
+                    <!-- Produto Principal -->
                     <div>
                         <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Escolha o Produto Principal</label>
-                        <select id="vendedor-produto" onchange="updateVendedorForm()" class="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none text-sm bg-gray-50 font-medium">
+                        <select id="vendedor-produto" onchange="updateVendedorForm()" class="w-full p-2.5 border rounded-lg text-sm bg-gray-50 font-medium">
                             <option value="" disabled selected>-- Selecione um produto --</option>
                         </select>
                     </div>
 
                     <!-- Campos Dinâmicos por Produto -->
-                    <div id="dynamic-fields" class="space-y-4">
-                        <!-- Injetado via JS -->
-                    </div>
+                    <div id="dynamic-fields" class="space-y-4"></div>
 
                     <!-- Adicionais / Horas de Dev -->
                     <div id="extras-container" class="space-y-3 hidden">
@@ -101,29 +104,25 @@
                         </div>
                     </div>
 
-                    <!-- Condições Comerciais & Plano Fidelidade -->
-                    <div id="conditions-container" class="space-y-3 border-t pt-4 hidden">
-                        <label class="block text-xs font-semibold text-gray-600 uppercase">Condições Comerciais & Contrato</label>
-                        
+                    <!-- Gestão de Descontos (Individual ou Total) -->
+                    <div id="discounts-container" class="space-y-3 border-t pt-4 hidden">
+                        <label class="block text-xs font-semibold text-gray-600 uppercase">Aplicação de Desconto</label>
                         <div class="grid grid-cols-2 gap-3">
                             <div>
-                                <label class="text-xs text-gray-500">Plano de Fidelidade</label>
-                                <select id="vendedor-fidelidade" onchange="calculateProposal()" class="w-full p-2 border rounded-lg text-sm">
-                                    <option value="12">12 Meses</option>
-                                    <option value="18">18 Meses (-5% Desc. Mensal)</option>
-                                    <option value="24">24 Meses (-10% Desc. Mensal)</option>
-                                </select>
+                                <label class="text-xs text-gray-500">Desconto Setup (%)</label>
+                                <input type="number" id="desc-setup" value="0" min="0" max="100" onchange="calculateProposal()" placeholder="0%" class="w-full p-2 border rounded-lg text-sm">
                             </div>
                             <div>
-                                <label class="text-xs text-gray-500">Campanha Promocional</label>
-                                <select id="vendedor-campanha" onchange="calculateProposal()" class="w-full p-2 border rounded-lg text-sm bg-green-50 border-green-300 font-medium text-green-900">
-                                    <option value="none">Nenhuma Campanha</option>
-                                </select>
+                                <label class="text-xs text-gray-500">Desconto Mensalidade (%)</label>
+                                <input type="number" id="desc-mensal" value="0" min="0" max="100" onchange="calculateProposal()" placeholder="0%" class="w-full p-2 border rounded-lg text-sm">
                             </div>
                         </div>
+                    </div>
 
-                        <!-- Parcelamento e Datas -->
-                        <div class="grid grid-cols-2 gap-3 pt-2">
+                    <!-- Condições Comerciais -->
+                    <div id="conditions-container" class="space-y-3 border-t pt-4 hidden">
+                        <label class="block text-xs font-semibold text-gray-600 uppercase">Condições & Pagamento</label>
+                        <div class="grid grid-cols-2 gap-3">
                             <div>
                                 <label class="text-xs text-gray-500">Parc. Setup</label>
                                 <select id="vendedor-parc-setup" onchange="calculateProposal()" class="w-full p-2 border rounded-lg text-sm">
@@ -138,32 +137,22 @@
                                 <input type="date" id="vendedor-data-setup" onchange="calculateProposal()" class="w-full p-2 border rounded-lg text-sm">
                             </div>
                         </div>
-
-                        <div class="grid grid-cols-2 gap-3">
-                            <div>
-                                <label class="text-xs text-gray-500">Venc. Mensalidade</label>
-                                <input type="date" id="vendedor-data-mensal" onchange="calculateProposal()" class="w-full p-2 border rounded-lg text-sm">
-                            </div>
-                        </div>
                     </div>
 
-                    <!-- Gerar PPT Button -->
-                    <button onclick="exportToGoogleSlidesPPT()" class="w-full py-3.5 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl shadow-lg transition-all flex items-center justify-center text-base">
-                        <i class="fa-solid fa-file-powerpoint mr-2 text-xl"></i> Gerar e Emitir Proposta (PPT / Slides)
+                    <!-- Botão de Gerar PDF da Proposta Comercial -->
+                    <button onclick="generateProposalPDF()" class="w-full py-3.5 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl shadow-lg transition-all flex items-center justify-center text-base">
+                        <i class="fa-solid fa-file-pdf mr-2 text-xl"></i> Gerar PDF Oficial da Proposta
                     </button>
                 </div>
 
-                <!-- Slide Preview (Right) -->
+                <!-- Slide Preview / PDF Layout Preview -->
                 <div class="lg:col-span-7 space-y-4">
                     <div class="flex items-center justify-between">
-                        <h3 class="text-base font-bold text-gray-700 uppercase tracking-wide">Pré-visualização do Slide Comercial</h3>
-                        <span class="text-xs bg-green-100 text-green-800 font-medium px-2.5 py-1 rounded-full">Layout Oficial LifeApps</span>
+                        <h3 class="text-base font-bold text-gray-700 uppercase tracking-wide">Pré-visualização da Tabela de Investimento</h3>
+                        <span class="text-xs bg-green-100 text-green-800 font-medium px-2.5 py-1 rounded-full">Página 8 do PDF</span>
                     </div>
 
-                    <!-- Slide Canvas Box -->
                     <div class="slide-preview rounded-xl p-6 border border-gray-200 flex flex-col justify-between text-gray-800">
-                        
-                        <!-- Header do Slide -->
                         <div>
                             <div class="flex justify-between items-start mb-4">
                                 <div>
@@ -179,13 +168,11 @@
                                 </div>
                             </div>
 
-                            <!-- Tabela 1: Setup -->
+                            <!-- Tabela Setup -->
                             <div class="mb-5">
                                 <h4 class="text-xs font-bold text-blue-800 mb-1">Setup (Investimento Inicial)</h4>
                                 <div class="overflow-hidden rounded border border-gray-300 shadow-sm">
-                                    <table class="w-full text-left border-collapse text-[11px]" id="slide-table-setup">
-                                        <!-- Gerado via JS -->
-                                    </table>
+                                    <table class="w-full text-left border-collapse text-[11px]" id="slide-table-setup"></table>
                                 </div>
                                 <div class="mt-1.5 flex justify-end">
                                     <div class="bg-gray-200 text-gray-800 text-xs font-bold px-4 py-1.5 rounded flex items-center space-x-6">
@@ -195,13 +182,11 @@
                                 </div>
                             </div>
 
-                            <!-- Tabela 2: Mensalidade -->
+                            <!-- Tabela Mensalidade -->
                             <div>
                                 <h4 class="text-xs font-bold text-blue-800 mb-1">Mensalidade</h4>
                                 <div class="overflow-hidden rounded border border-gray-300 shadow-sm">
-                                    <table class="w-full text-left border-collapse text-[11px]" id="slide-table-mensal">
-                                        <!-- Gerado via JS -->
-                                    </table>
+                                    <table class="w-full text-left border-collapse text-[11px]" id="slide-table-mensal"></table>
                                 </div>
                                 <div class="mt-1.5 flex justify-end">
                                     <div class="bg-gray-200 text-gray-800 text-xs font-bold px-4 py-1.5 rounded flex items-center space-x-6">
@@ -212,40 +197,26 @@
                             </div>
                         </div>
 
-                        <!-- Rodapé Verde do Slide -->
                         <div class="h-3 bg-green-500 -mx-6 -mb-6 rounded-b-xl"></div>
-                    </div>
-
-                    <div class="p-4 bg-blue-50 border border-blue-200 rounded-xl text-xs text-blue-800 flex items-start space-x-3">
-                        <i class="fa-solid fa-circle-info text-blue-600 text-base mt-0.5"></i>
-                        <div>
-                            <strong>Regra de Desconto:</strong> Quando não há nenhuma campanha selecionada, as colunas <i>"Desconto"</i> e <i>"Valor c/ desconto"</i> permanecem ocultas no PPT/Google Slides.
-                        </div>
                     </div>
                 </div>
 
             </div>
         </section>
 
-        <!-- ADMIN SCREEN (Protegido por Senha: lifeapps123) -->
+        <!-- ADMIN SCREEN -->
         <section id="screen-admin" class="hidden space-y-6">
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 space-y-6">
                 <div class="flex justify-between items-center border-b pb-4">
                     <div>
-                        <h2 class="text-xl font-bold text-gray-900">Painel Administrativo - Gestão de Produtos e Campanhas</h2>
-                        <p class="text-xs text-gray-500">Conectado ao Firebase Firestore (Sincronização Ativa)</p>
+                        <h2 class="text-xl font-bold text-gray-900">Painel Administrativo - Gestão de Produtos</h2>
+                        <p class="text-xs text-gray-500">Conectado ao Firebase Firestore</p>
                     </div>
-                    <span class="bg-green-100 text-green-800 text-xs px-3 py-1 rounded-full font-medium flex items-center">
-                        <span class="w-2 h-2 bg-green-500 rounded-full mr-2"></span> Autenticado (lifeapps123)
-                    </span>
+                    <span class="bg-green-100 text-green-800 text-xs px-3 py-1 rounded-full font-medium">Autenticado (lifeapps123)</span>
                 </div>
 
-                <!-- GERENCIAR E CRIAR PRODUTOS -->
                 <div class="space-y-4">
-                    <h3 class="text-md font-bold text-gray-800 flex items-center border-b pb-2">
-                        <i class="fa-solid fa-box text-blue-600 mr-2"></i> Criar Novo Produto / Serviço
-                    </h3>
-                    
+                    <h3 class="text-md font-bold text-gray-800">Criar Novo Produto / Serviço</h3>
                     <div class="grid grid-cols-1 md:grid-cols-5 gap-3 bg-gray-50 p-4 rounded-xl border">
                         <div>
                             <label class="text-xs text-gray-600 font-medium">Nome do Produto</label>
@@ -260,91 +231,101 @@
                             <input type="number" id="new-prod-mensal" placeholder="0.00" class="w-full p-2 border rounded text-sm mt-1">
                         </div>
                         <div>
-                            <label class="text-xs text-gray-600 font-medium">Pede Usuários Adicionais?</label>
+                            <label class="text-xs text-gray-600 font-medium">Pede Usuários Extras?</label>
                             <select id="new-prod-ask-users" class="w-full p-2 border rounded text-sm mt-1">
                                 <option value="nao">Não</option>
                                 <option value="sim">Sim</option>
                             </select>
                         </div>
                         <div class="flex items-end">
-                            <button onclick="addNewProduct()" class="w-full p-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded text-sm transition">
-                                <i class="fa-solid fa-plus mr-1"></i> Criar Produto
-                            </button>
+                            <button onclick="addNewProduct()" class="w-full p-2 bg-blue-600 text-white font-bold rounded text-sm">Criar Produto</button>
                         </div>
                     </div>
-
-                    <!-- Lista de Produtos Existentes -->
-                    <div class="mt-4">
-                        <h4 class="text-xs font-bold text-gray-500 uppercase mb-2">Produtos Cadastrados</h4>
-                        <div id="admin-products-list" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <!-- Injetado via JS -->
-                        </div>
-                    </div>
-                </div>
-
-                <!-- GERENCIAR E CRIAR CAMPANHAS PROMOCIONAIS -->
-                <div class="space-y-4 border-t pt-6">
-                    <h3 class="text-md font-bold text-gray-800 flex items-center border-b pb-2">
-                        <i class="fa-solid fa-bullhorn text-green-600 mr-2"></i> Criar Nova Campanha (Validade & Desconto)
-                    </h3>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-5 gap-3 bg-gray-50 p-4 rounded-xl border">
-                        <div>
-                            <label class="text-xs text-gray-600 font-medium">Nome da Campanha</label>
-                            <input type="text" id="new-camp-name" placeholder="Ex: Black Friday 2026" class="w-full p-2 border rounded text-sm mt-1">
-                        </div>
-                        <div>
-                            <label class="text-xs text-gray-600 font-medium">Desconto (%)</label>
-                            <input type="number" id="new-camp-discount" placeholder="15" class="w-full p-2 border rounded text-sm mt-1">
-                        </div>
-                        <div>
-                            <label class="text-xs text-gray-600 font-medium">Data de Início</label>
-                            <input type="date" id="new-camp-start" class="w-full p-2 border rounded text-sm mt-1">
-                        </div>
-                        <div>
-                            <label class="text-xs text-gray-600 font-medium">Data de Fim</label>
-                            <input type="date" id="new-camp-end" class="w-full p-2 border rounded text-sm mt-1">
-                        </div>
-                        <div class="flex items-end">
-                            <button onclick="addNewCampaign()" class="w-full p-2 bg-green-600 hover:bg-green-700 text-white font-bold rounded text-sm transition">
-                                <i class="fa-solid fa-plus mr-1"></i> Criar Campanha
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Lista de Campanhas Existentes -->
-                    <div class="mt-4">
-                        <h4 class="text-xs font-bold text-gray-500 uppercase mb-2">Campanhas Ativas / Cadastradas</h4>
-                        <div id="admin-campaigns-list" class="space-y-2">
-                            <!-- Injetado via JS -->
-                        </div>
-                    </div>
-                </div>
-
-                <div class="text-right border-t pt-4">
-                    <button onclick="saveAdminConfig()" class="px-6 py-2.5 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition">
-                        <i class="fa-solid fa-floppy-disk mr-2"></i> Salvar Alterações no Firebase
-                    </button>
                 </div>
             </div>
         </section>
 
     </main>
 
-    <!-- App Logic JavaScript -->
+    <!-- CONTAINER OCULTO RENDERIZADOR DO DOCUMENTO PDF -->
+    <div id="pdf-document" style="display: none;">
+        <!-- Página 1: Capa -->
+        <div class="pdf-page flex flex-col justify-between">
+            <div class="text-center mt-20">
+                <h1 class="text-4xl font-black text-blue-900">PROPOSTA COMERCIAL</h1>
+                <p class="text-lg text-green-600 font-bold mt-2">Soluções LifeApps</p>
+            </div>
+            <div class="text-center mb-20 text-gray-500">LifeApps Tecnologia © 2026</div>
+        </div>
+
+        <!-- Página 2: Identificação do Cliente, Produto & Validade -->
+        <div class="pdf-page flex flex-col justify-between">
+            <div>
+                <h2 class="text-2xl font-bold text-blue-900 border-b pb-3 mb-6">02. Resumo da Proposta</h2>
+                <div class="space-y-4 bg-gray-50 p-6 rounded-xl border">
+                    <div><strong>Empresa / Razão Social:</strong> <span id="pdf-empresa-p2"></span></div>
+                    <div><strong>CNPJ:</strong> <span id="pdf-cnpj-p2"></span></div>
+                    <div><strong>Produto Selecionado:</strong> <span id="pdf-produto-p2"></span></div>
+                    <div><strong>Data de Criação:</strong> <span id="pdf-data-criacao-p2"></span></div>
+                    <div><strong>Validade da Proposta:</strong> <span id="pdf-validade-p2"></span></div>
+                </div>
+            </div>
+            <div class="text-xs text-gray-400">Página 2 de 9</div>
+        </div>
+
+        <!-- Páginas 3 a 7: Apresentação Institucional e Metodologia -->
+        <div class="pdf-page"><h3 class="text-xl font-bold text-blue-900">03. Sobre a LifeApps</h3><p class="mt-4 text-gray-600">A plataforma ideal para o Atacado Distribuidor impulsionar suas vendas digitais.</p></div>
+        <div class="pdf-page"><h3 class="text-xl font-bold text-blue-900">04. Recursos e Módulos</h3><p class="mt-4 text-gray-600">Conectividade total, inteligência de vendas e automação comercial.</p></div>
+        <div class="pdf-page"><h3 class="text-xl font-bold text-blue-900">05. Segurança e Escala</h3><p class="mt-4 text-gray-600">Infraestrutura em nuvem de alta disponibilidade e performance.</p></div>
+        <div class="pdf-page"><h3 class="text-xl font-bold text-blue-900">06. Cronograma de Implantação</h3><p class="mt-4 text-gray-600">Etapas de integração, testes e treinamento operacional.</p></div>
+        <div class="pdf-page"><h3 class="text-xl font-bold text-blue-900">07. Suporte e Atendimento</h3><p class="mt-4 text-gray-600">Acompanhamento contínuo por time especialista.</p></div>
+
+        <!-- Página 8: Tabela Oficial de Investimento -->
+        <div class="pdf-page flex flex-col justify-between">
+            <div>
+                <h2 class="text-2xl font-bold text-blue-900 border-b pb-3 mb-6">08. Tabela de Investimento Comercial</h2>
+                
+                <h4 class="font-bold text-blue-800 mb-2">Setup (Investimento Inicial)</h4>
+                <div id="pdf-table-setup-container" class="mb-6"></div>
+
+                <h4 class="font-bold text-blue-800 mb-2">Mensalidade</h4>
+                <div id="pdf-table-mensal-container"></div>
+            </div>
+            <div class="text-xs text-gray-400">Página 8 de 9</div>
+        </div>
+
+        <!-- Página 9 (Última Página): Aceite, Empresa e CNPJ -->
+        <div class="pdf-page flex flex-col justify-between">
+            <div>
+                <h2 class="text-2xl font-bold text-blue-900 border-b pb-3 mb-6">09. Aceite e Assinatura</h2>
+                <div class="space-y-4 bg-gray-50 p-6 rounded-xl border mb-12">
+                    <div><strong>Empresa:</strong> <span id="pdf-empresa-p9"></span></div>
+                    <div><strong>CNPJ:</strong> <span id="pdf-cnpj-p9"></span></div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-12 mt-20">
+                    <div class="border-t border-gray-800 pt-2 text-center">
+                        <strong>LifeApps Tecnologia</strong><br>
+                        <span class="text-xs text-gray-500">Contratada</span>
+                    </div>
+                    <div class="border-t border-gray-800 pt-2 text-center">
+                        <strong id="pdf-empresa-sign"></strong><br>
+                        <span class="text-xs text-gray-500">Contratante</span>
+                    </div>
+                </div>
+            </div>
+            <div class="text-xs text-gray-400">Página 9 de 9</div>
+        </div>
+    </div>
+
+    <!-- Script de Execução -->
     <script>
         let isAuthenticated = false;
 
-        // Data Store (State de Produtos e Campanhas)
         let dbProducts = [
             { id: 'ecommerce', name: 'E-Commerce + App (iOS e Android)', setup: 18742.50, mensal: 2490.00, askUsers: false },
             { id: 'lifegrowth', name: 'LifeGrowth', setup: 5000.00, mensal: 1200.00, askUsers: true },
             { id: 'lifechat', name: 'LifeChat', setup: 3500.00, mensal: 890.00, askUsers: true }
-        ];
-
-        let dbCampaigns = [
-            { id: 'BF2026', name: 'Black Friday Special', discount: 15, startDate: '2026-11-01', endDate: '2026-11-30' },
-            { id: 'INC2026', name: 'Incentivo Comercial 2026', discount: 10, startDate: '2026-01-01', endDate: '2026-12-31' }
         ];
 
         let dbExtras = {
@@ -354,15 +335,14 @@
             extrator: 250.00
         };
 
-        // Solicita a senha para entrar no Admin
         function openAdminWithPassword() {
             if (!isAuthenticated) {
-                const pass = prompt('Digite a senha de acesso ao Painel Administrativo:');
+                const pass = prompt('Digite a senha do Painel Administrativo:');
                 if (pass === 'lifeapps123') {
                     isAuthenticated = true;
                     switchTab('admin');
                 } else {
-                    alert('Senha incorreta! Acesso negado.');
+                    alert('Senha incorreta!');
                 }
             } else {
                 switchTab('admin');
@@ -372,17 +352,10 @@
         function switchTab(tab) {
             document.getElementById('screen-vendedor').classList.add('hidden');
             document.getElementById('screen-admin').classList.add('hidden');
-            document.getElementById('tab-vendedor').className = 'px-4 py-2 rounded-lg font-medium text-sm transition-all text-gray-600 hover:bg-gray-100';
-            document.getElementById('tab-admin').className = 'px-4 py-2 rounded-lg font-medium text-sm transition-all text-gray-600 hover:bg-gray-100';
-
             if(tab === 'vendedor') {
                 document.getElementById('screen-vendedor').classList.remove('hidden');
-                document.getElementById('tab-vendedor').className = 'px-4 py-2 rounded-lg font-medium text-sm transition-all bg-blue-600 text-white shadow-sm';
-            } else if (tab === 'admin') {
+            } else {
                 document.getElementById('screen-admin').classList.remove('hidden');
-                document.getElementById('tab-admin').className = 'px-4 py-2 rounded-lg font-medium text-sm transition-all bg-blue-600 text-white shadow-sm';
-                renderAdminProducts();
-                renderAdminCampaigns();
             }
         }
 
@@ -394,36 +367,17 @@
             });
         }
 
-        function populateCampaignOptions() {
-            const select = document.getElementById('vendedor-campanha');
-            select.innerHTML = `<option value="none">Nenhuma Campanha</option>`;
-            dbCampaigns.forEach(camp => {
-                select.innerHTML += `<option value="${camp.id}">${camp.name} (${camp.discount}% desc)</option>`;
-            });
-        }
-
-        function resetProposalForm() {
-            document.getElementById('vendedor-cliente').value = '';
-            document.getElementById('vendedor-produto').value = '';
-            document.getElementById('dynamic-fields').innerHTML = '';
-            document.getElementById('extras-container').classList.add('hidden');
-            document.getElementById('conditions-container').classList.add('hidden');
-            
-            renderTable('slide-table-setup', [], false, '-', '-', 'green');
-            renderTable('slide-table-mensal', [], false, '-', '-', 'blue');
-            document.getElementById('slide-total-setup').innerText = 'R$ 0,00';
-            document.getElementById('slide-total-mensal').innerText = 'R$ 0,00';
-        }
-
         function updateVendedorForm() {
             const prodId = document.getElementById('vendedor-produto').value;
             const container = document.getElementById('dynamic-fields');
             const extrasContainer = document.getElementById('extras-container');
+            const discountsContainer = document.getElementById('discounts-container');
             const conditionsContainer = document.getElementById('conditions-container');
 
             if (!prodId) return;
 
             extrasContainer.classList.remove('hidden');
+            discountsContainer.classList.remove('hidden');
             conditionsContainer.classList.remove('hidden');
 
             const selectedProd = dbProducts.find(p => p.id === prodId);
@@ -457,38 +411,34 @@
             return val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         }
 
-        function formatDate(dateStr) {
-            if (!dateStr) return '';
-            const [y, m, d] = dateStr.split('-');
+        function formatDate(date) {
+            const d = String(date.getDate()).padStart(2, '0');
+            const m = String(date.getMonth() + 1).padStart(2, '0');
+            const y = date.getFullYear();
             return `${d}/${m}/${y}`;
         }
 
         function calculateProposal() {
             const prodId = document.getElementById('vendedor-produto').value;
-            if (!prodId) {
-                resetProposalForm();
-                return;
-            }
+            if (!prodId) return;
 
             const selectedProd = dbProducts.find(p => p.id === prodId);
             const cnpjs = parseInt(document.getElementById('vendedor-cnpjs')?.value || 1);
             const usuarios = parseInt(document.getElementById('vendedor-usuarios')?.value || 0);
             const horasDev = parseInt(document.getElementById('vendedor-horas-dev').value || 0);
             const incluiExtrator = document.getElementById('vendedor-extrator').value === 'sim';
-            const campId = document.getElementById('vendedor-campanha').value;
+            
+            const descSetupPercent = (parseFloat(document.getElementById('desc-setup').value) || 0) / 100;
+            const descMensalPercent = (parseFloat(document.getElementById('desc-mensal').value) || 0) / 100;
+
             const parcSetup = document.getElementById('vendedor-parc-setup').value;
-            const dataSetup = formatDate(document.getElementById('vendedor-data-setup').value);
-            const dataMensal = formatDate(document.getElementById('vendedor-data-mensal').value);
 
-            const selectedCamp = dbCampaigns.find(c => c.id === campId);
-            const hasCampanha = !!selectedCamp;
-            let descPercent = hasCampanha ? (selectedCamp.discount / 100) : 0;
-
+            // Setup Items
             let setupItems = [{
                 nome: `Setup / Implantação: ${selectedProd.name}`,
                 qtd: 1,
                 valor: selectedProd.setup,
-                desc: descPercent
+                desc: descSetupPercent
             }];
 
             if (horasDev > 0) {
@@ -496,15 +446,16 @@
                     nome: "Horas de Desenvolvimento Extra",
                     qtd: horasDev,
                     valor: dbExtras.horaDev * horasDev,
-                    desc: descPercent
+                    desc: descSetupPercent
                 });
             }
 
+            // Mensalidade Items
             let mensalItems = [{
                 nome: `Mensalidade: ${selectedProd.name}`,
                 qtd: 1,
                 valor: selectedProd.mensal,
-                desc: descPercent
+                desc: descMensalPercent
             }];
 
             if (incluiExtrator) {
@@ -512,7 +463,7 @@
                     nome: "Instalação de Extrator LifeApps",
                     qtd: 1,
                     valor: dbExtras.extrator,
-                    desc: descPercent
+                    desc: descMensalPercent
                 });
             }
 
@@ -521,7 +472,7 @@
                     nome: "CNPJ / Loja Adicional",
                     qtd: cnpjs - 1,
                     valor: dbExtras.lojaAdicional * (cnpjs - 1),
-                    desc: descPercent
+                    desc: descMensalPercent
                 });
             }
 
@@ -530,21 +481,21 @@
                     nome: "Usuário Adicional",
                     qtd: usuarios,
                     valor: dbExtras.usuarioExtra * usuarios,
-                    desc: descPercent
+                    desc: descMensalPercent
                 });
             }
 
-            renderTable('slide-table-setup', setupItems, hasCampanha, `${parcSetup}x`, dataSetup, 'green');
-            renderTable('slide-table-mensal', mensalItems, hasCampanha, '-', dataMensal, 'blue');
+            renderTable('slide-table-setup', setupItems, descSetupPercent > 0, `${parcSetup}x`, 'green');
+            renderTable('slide-table-mensal', mensalItems, descMensalPercent > 0, '-', 'blue');
 
-            const totalSetup = setupItems.reduce((acc, i) => acc + (hasCampanha ? i.valor * (1 - i.desc) : i.valor), 0);
-            const totalMensal = mensalItems.reduce((acc, i) => acc + (hasCampanha ? i.valor * (1 - i.desc) : i.valor), 0);
+            const totalSetup = setupItems.reduce((acc, i) => acc + (i.valor * (1 - i.desc)), 0);
+            const totalMensal = mensalItems.reduce((acc, i) => acc + (i.valor * (1 - i.desc)), 0);
 
             document.getElementById('slide-total-setup').innerText = formatBRL(totalSetup);
             document.getElementById('slide-total-mensal').innerText = formatBRL(totalMensal);
         }
 
-        function renderTable(tableId, items, showDiscount, parcelamentoText, dataText, theme) {
+        function renderTable(tableId, items, showDiscount, parcelamentoText, theme) {
             const table = document.getElementById(tableId);
             const headerBg = theme === 'green' ? 'bg-green-600 text-white' : 'bg-blue-600 text-white';
             
@@ -556,153 +507,82 @@
                         <th class="p-2 text-right">Valor Individual</th>
                         ${showDiscount ? `<th class="p-2 text-right bg-green-700/30">Desconto</th><th class="p-2 text-right bg-green-700/30">Valor c/ desconto</th>` : ''}
                         <th class="p-2 text-center">Parcelamento</th>
-                        <th class="p-2 text-center">Data 1ª Parcela</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200">
             `;
 
-            if (items.length === 0) {
-                html += `<tr><td colspan="${showDiscount ? 6 : 5}" class="p-4 text-center text-gray-400 italic">Nenhum produto selecionado</td></tr>`;
-            } else {
-                items.forEach(item => {
-                    const valorComDesc = item.valor * (1 - item.desc);
-                    const descFormatted = (item.desc * 100) + '%';
+            items.forEach(item => {
+                const valorComDesc = item.valor * (1 - item.desc);
+                const descFormatted = (item.desc * 100) + '%';
 
-                    html += `
-                        <tr class="hover:bg-gray-50">
-                            <td class="p-2 font-medium text-gray-800">${item.nome}</td>
-                            <td class="p-2 text-center">${String(item.qtd).padStart(2, '0')}</td>
-                            <td class="p-2 text-right font-medium">${formatBRL(item.valor)}</td>
-                            ${showDiscount ? `
-                                <td class="p-2 text-right text-green-700 font-semibold">${descFormatted}</td>
-                                <td class="p-2 text-right font-bold text-gray-900">${formatBRL(valorComDesc)}</td>
-                            ` : ''}
-                            <td class="p-2 text-center text-gray-600">${parcelamentoText}</td>
-                            <td class="p-2 text-center text-gray-600">${dataText}</td>
-                        </tr>
-                    `;
-                });
-            }
+                html += `
+                    <tr class="hover:bg-gray-50">
+                        <td class="p-2 font-medium text-gray-800">${item.nome}</td>
+                        <td class="p-2 text-center">${String(item.qtd).padStart(2, '0')}</td>
+                        <td class="p-2 text-right font-medium">${formatBRL(item.valor)}</td>
+                        ${showDiscount ? `
+                            <td class="p-2 text-right text-green-700 font-semibold">${descFormatted}</td>
+                            <td class="p-2 text-right font-bold text-gray-900">${formatBRL(valorComDesc)}</td>
+                        ` : ''}
+                        <td class="p-2 text-center text-gray-600">${parcelamentoText}</td>
+                    </tr>
+                `;
+            });
 
             html += `</tbody>`;
             table.innerHTML = html;
         }
 
-        // Gestão de Produtos no Admin
-        function renderAdminProducts() {
-            const list = document.getElementById('admin-products-list');
-            list.innerHTML = '';
-            dbProducts.forEach((prod, index) => {
-                list.innerHTML += `
-                    <div class="p-4 bg-gray-50 border rounded-xl space-y-2 relative">
-                        <button onclick="removeProduct(${index})" class="absolute top-3 right-3 text-red-500 hover:text-red-700 text-xs font-bold">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>
-                        <h4 class="font-bold text-sm text-gray-900">${prod.name}</h4>
-                        <div class="text-xs text-gray-600">Setup: <strong>${formatBRL(prod.setup)}</strong></div>
-                        <div class="text-xs text-gray-600">Mensal: <strong>${formatBRL(prod.mensal)}</strong></div>
-                        <span class="text-[10px] px-2 py-0.5 rounded ${prod.askUsers ? 'bg-blue-100 text-blue-800' : 'bg-gray-200 text-gray-700'}">
-                            ${prod.askUsers ? 'Pede Usuários Extras' : 'Usuários Padrão'}
-                        </span>
-                    </div>
-                `;
-            });
-        }
+        function generateProposalPDF() {
+            const empresa = document.getElementById('vendedor-cliente').value || "Empresa Exemplo";
+            const cnpj = document.getElementById('vendedor-cnpj').value || "00.000.000/0001-00";
+            const prodId = document.getElementById('vendedor-produto').value;
 
-        function addNewProduct() {
-            const name = document.getElementById('new-prod-name').value;
-            const setup = parseFloat(document.getElementById('new-prod-setup').value || 0);
-            const mensal = parseFloat(document.getElementById('new-prod-mensal').value || 0);
-            const askUsers = document.getElementById('new-prod-ask-users').value === 'sim';
-
-            if (!name) { alert('Digite o nome do produto!'); return; }
-
-            const id = name.toLowerCase().replace(/[^a-z0-9]/g, '');
-            dbProducts.push({ id, name, setup, mensal, askUsers });
-
-            document.getElementById('new-prod-name').value = '';
-            document.getElementById('new-prod-setup').value = '';
-            document.getElementById('new-prod-mensal').value = '';
-
-            renderAdminProducts();
-            populateProductOptions();
-            alert('Produto criado com sucesso!');
-        }
-
-        function removeProduct(index) {
-            if (confirm('Tem certeza que deseja remover este produto?')) {
-                dbProducts.splice(index, 1);
-                renderAdminProducts();
-                populateProductOptions();
-            }
-        }
-
-        // Gestão de Campanhas no Admin
-        function renderAdminCampaigns() {
-            const list = document.getElementById('admin-campaigns-list');
-            list.innerHTML = '';
-            dbCampaigns.forEach((camp, index) => {
-                list.innerHTML += `
-                    <div class="p-3 bg-white border rounded-lg flex items-center justify-between text-xs">
-                        <div>
-                            <strong class="text-gray-900">${camp.name}</strong>
-                            <span class="ml-2 px-2 py-0.5 bg-green-100 text-green-800 rounded font-bold">${camp.discount}% OFF</span>
-                            <div class="text-gray-500 text-[11px] mt-0.5">Válido de: ${formatDate(camp.startDate)} até ${formatDate(camp.endDate)}</div>
-                        </div>
-                        <button onclick="removeCampaign(${index})" class="text-red-500 hover:text-red-700 font-bold p-1">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>
-                    </div>
-                `;
-            });
-        }
-
-        function addNewCampaign() {
-            const name = document.getElementById('new-camp-name').value;
-            const discount = parseFloat(document.getElementById('new-camp-discount').value || 0);
-            const startDate = document.getElementById('new-camp-start').value;
-            const endDate = document.getElementById('new-camp-end').value;
-
-            if (!name || !discount || !startDate || !endDate) {
-                alert('Preencha todos os campos da campanha!');
+            if (!prodId) {
+                alert('Por favor, selecione um produto antes de gerar o PDF.');
                 return;
             }
 
-            const id = 'CAMP_' + Date.now();
-            dbCampaigns.push({ id, name, discount, startDate, endDate });
+            const prodObj = dbProducts.find(p => p.id === prodId);
+            const now = new Date();
+            const dataCriacao = formatDate(now);
+            const validade = `20/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
 
-            document.getElementById('new-camp-name').value = '';
-            document.getElementById('new-camp-discount').value = '';
-            document.getElementById('new-camp-start').value = '';
-            document.getElementById('new-camp-end').value = '';
+            // Preenchimento da Página 2
+            document.getElementById('pdf-empresa-p2').innerText = empresa;
+            document.getElementById('pdf-cnpj-p2').innerText = cnpj;
+            document.getElementById('pdf-produto-p2').innerText = prodObj.name;
+            document.getElementById('pdf-data-criacao-p2').innerText = dataCriacao;
+            document.getElementById('pdf-validade-p2').innerText = validade;
 
-            renderAdminCampaigns();
-            populateCampaignOptions();
-            alert('Campanha criada com sucesso!');
+            // Preenchimento da Página 8 (Tabelas)
+            document.getElementById('pdf-table-setup-container').innerHTML = document.getElementById('slide-table-setup').outerHTML;
+            document.getElementById('pdf-table-mensal-container').innerHTML = document.getElementById('slide-table-mensal').outerHTML;
+
+            // Preenchimento da Página 9
+            document.getElementById('pdf-empresa-p9').innerText = empresa;
+            document.getElementById('pdf-cnpj-p9').innerText = cnpj;
+            document.getElementById('pdf-empresa-sign').innerText = empresa;
+
+            // Emissão do Arquivo PDF
+            const element = document.getElementById('pdf-document');
+            element.style.display = 'block';
+
+            const opt = {
+                margin:       0,
+                filename:     `Proposta_LifeApps_${empresa.replace(/\s+/g, '_')}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2 },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            html2pdf().set(opt).from(element).save().then(() => {
+                element.style.display = 'none';
+            });
         }
 
-        function removeCampaign(index) {
-            if (confirm('Deseja remover esta campanha?')) {
-                dbCampaigns.splice(index, 1);
-                renderAdminCampaigns();
-                populateCampaignOptions();
-            }
-        }
-
-        function saveAdminConfig() {
-            alert('Configurações salvas no Firebase com sucesso!');
-            switchTab('vendedor');
-        }
-
-        function exportToGoogleSlidesPPT() {
-            alert('Proposta comercial enviada para a API do Google Slides!');
-        }
-
-        // Inicialização
         populateProductOptions();
-        populateCampaignOptions();
-        resetProposalForm();
     </script>
 </body>
 </html>
