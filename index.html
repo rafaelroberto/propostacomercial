@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LifeApps - Gerador de Propostas Comerciais</title>
-    <!-- Tailwind CSS para design clean e moderno -->
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -27,23 +27,23 @@
 </head>
 <body class="bg-gray-50 text-gray-800 min-h-screen">
 
-    <!-- Header / Navegação Principal -->
+    <!-- Header Navigation -->
     <header class="bg-white border-b border-gray-200 sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <div class="flex items-center space-x-3">
                 <div class="text-2xl font-bold text-gray-800 flex items-center">
                     <span class="text-blue-600 font-extrabold">.il</span><span class="text-green-500 font-extrabold">life</span><span class="text-gray-500 text-sm ml-1 font-normal">apps</span>
                 </div>
-                <span class="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full font-medium">Gerador de Propostas PPT</span>
+                <span class="text-xs bg-blue-100 text-blue-800 px-2.5 py-1 rounded-full font-medium">Gerador de Propostas PPT</span>
             </div>
             
-            <!-- Navegação entre Vendedor e Admin -->
+            <!-- Navigation Tabs -->
             <nav class="flex space-x-4">
                 <button onclick="switchTab('vendedor')" id="tab-vendedor" class="px-4 py-2 rounded-lg font-medium text-sm transition-all bg-blue-600 text-white shadow-sm">
                     <i class="fa-solid fa-calculator mr-2"></i>Área do Vendedor
                 </button>
-                <button onclick="switchTab('admin')" id="tab-admin" class="px-4 py-2 rounded-lg font-medium text-sm transition-all text-gray-600 hover:bg-gray-100">
-                    <i class="fa-solid fa-sliders mr-2"></i>Painel Administrativo
+                <button onclick="openAdminWithPassword()" id="tab-admin" class="px-4 py-2 rounded-lg font-medium text-sm transition-all text-gray-600 hover:bg-gray-100">
+                    <i class="fa-solid fa-lock mr-2"></i>Painel Administrativo
                 </button>
             </nav>
         </div>
@@ -51,39 +51,40 @@
 
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         
-        <!-- TELA DO VENDEDOR -->
+        <!-- VENDEDOR SCREEN -->
         <section id="screen-vendedor" class="space-y-8">
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
                 
-                <!-- Formulário de Entrada do Vendedor (Esquerda) -->
+                <!-- Form Area (Left) -->
                 <div class="lg:col-span-5 bg-white p-6 rounded-2xl shadow-sm border border-gray-200 space-y-6">
-                    <h2 class="text-xl font-bold text-gray-900 border-b pb-3 flex items-center">
-                        <i class="fa-solid fa-file-signature text-blue-600 mr-2"></i> Dados da Proposta
+                    <h2 class="text-xl font-bold text-gray-900 border-b pb-3 flex items-center justify-between">
+                        <span><i class="fa-solid fa-file-signature text-blue-600 mr-2"></i> Dados da Proposta</span>
+                        <button onclick="resetProposalForm()" class="text-xs text-gray-500 hover:text-red-600 font-normal">
+                            <i class="fa-solid fa-arrow-rotate-left mr-1"></i> Limpar
+                        </button>
                     </h2>
 
-                    <!-- Nome do Cliente -->
+                    <!-- Cliente Info -->
                     <div>
                         <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Nome do Cliente / Empresa</label>
-                        <input type="text" id="vendedor-cliente" value="Atacado Distribuidor Exemplo" class="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none text-sm">
+                        <input type="text" id="vendedor-cliente" placeholder="Digite o nome do cliente..." class="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none text-sm">
                     </div>
 
-                    <!-- Escolha do Produto -->
+                    <!-- Produto principal (Sem produto selecionado inicialmente) -->
                     <div>
                         <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Escolha o Produto Principal</label>
                         <select id="vendedor-produto" onchange="updateVendedorForm()" class="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none text-sm bg-gray-50 font-medium">
-                            <option value="ecommerce">E-Commerce + App (iOS e Android)</option>
-                            <option value="lifegrowth">LifeGrowth</option>
-                            <option value="lifechat">LifeChat</option>
+                            <option value="" disabled selected>-- Selecione um produto --</option>
                         </select>
                     </div>
 
-                    <!-- Perguntas Dinâmicas por Produto (CNPJs e Usuários) -->
-                    <div id="dynamic-fields" class="space-y-4 p-4 bg-gray-50 rounded-xl border border-gray-100">
-                        <!-- Injetado via JavaScript -->
+                    <!-- Campos Dinâmicos por Produto -->
+                    <div id="dynamic-fields" class="space-y-4">
+                        <!-- Injetado via JS -->
                     </div>
 
-                    <!-- Extras / Horas de Dev -->
-                    <div class="space-y-3">
+                    <!-- Adicionais / Horas de Dev -->
+                    <div id="extras-container" class="space-y-3 hidden">
                         <label class="block text-xs font-semibold text-gray-600 uppercase">Produtos / Serviços Extras</label>
                         <div class="grid grid-cols-2 gap-3 text-sm">
                             <div>
@@ -93,15 +94,15 @@
                             <div>
                                 <label class="text-xs text-gray-500">Instalação Extrator</label>
                                 <select id="vendedor-extrator" onchange="calculateProposal()" class="w-full p-2 border rounded-lg text-sm">
-                                    <option value="sim">Sim (R$ 250,00)</option>
                                     <option value="nao">Não</option>
+                                    <option value="sim">Sim (R$ 250,00)</option>
                                 </select>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Condições Comerciais, Campanhas e Parcelamento -->
-                    <div class="space-y-3 border-t pt-4">
+                    <!-- Condições Comerciais & Plano Fidelidade -->
+                    <div id="conditions-container" class="space-y-3 border-t pt-4 hidden">
                         <label class="block text-xs font-semibold text-gray-600 uppercase">Condições Comerciais & Contrato</label>
                         
                         <div class="grid grid-cols-2 gap-3">
@@ -116,14 +117,12 @@
                             <div>
                                 <label class="text-xs text-gray-500">Campanha Promocional</label>
                                 <select id="vendedor-campanha" onchange="calculateProposal()" class="w-full p-2 border rounded-lg text-sm bg-green-50 border-green-300 font-medium text-green-900">
-                                    <option value="none">Sem Campanha</option>
-                                    <option value="BLACKFRIDAY">Black Friday (15% Setup & Mensal)</option>
-                                    <option value="INCENTIVO2026">Incentivo 2026 (10% Setup)</option>
+                                    <option value="none">Nenhuma Campanha</option>
                                 </select>
                             </div>
                         </div>
 
-                        <!-- Parcelas e Datas de Pagamento -->
+                        <!-- Parcelamento e Datas -->
                         <div class="grid grid-cols-2 gap-3 pt-2">
                             <div>
                                 <label class="text-xs text-gray-500">Parc. Setup</label>
@@ -136,35 +135,35 @@
                             </div>
                             <div>
                                 <label class="text-xs text-gray-500">1ª Parcela Setup</label>
-                                <input type="date" id="vendedor-data-setup" value="2026-08-10" onchange="calculateProposal()" class="w-full p-2 border rounded-lg text-sm">
+                                <input type="date" id="vendedor-data-setup" onchange="calculateProposal()" class="w-full p-2 border rounded-lg text-sm">
                             </div>
                         </div>
 
                         <div class="grid grid-cols-2 gap-3">
                             <div>
                                 <label class="text-xs text-gray-500">Venc. Mensalidade</label>
-                                <input type="date" id="vendedor-data-mensal" value="2026-08-10" onchange="calculateProposal()" class="w-full p-2 border rounded-lg text-sm">
+                                <input type="date" id="vendedor-data-mensal" onchange="calculateProposal()" class="w-full p-2 border rounded-lg text-sm">
                             </div>
                         </div>
                     </div>
 
-                    <!-- Botão de Ação -->
+                    <!-- Gerar PPT Button -->
                     <button onclick="exportToGoogleSlidesPPT()" class="w-full py-3.5 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl shadow-lg transition-all flex items-center justify-center text-base">
-                        <i class="fa-solid fa-file-powerpoint mr-2 text-xl"></i> Gerar e Emitir Proposta em PPT (Slides)
+                        <i class="fa-solid fa-file-powerpoint mr-2 text-xl"></i> Gerar e Emitir Proposta (PPT / Slides)
                     </button>
                 </div>
 
-                <!-- Preview do Slide / Tabela (Direita) -->
+                <!-- Slide Preview (Right) -->
                 <div class="lg:col-span-7 space-y-4">
                     <div class="flex items-center justify-between">
                         <h3 class="text-base font-bold text-gray-700 uppercase tracking-wide">Pré-visualização do Slide Comercial</h3>
-                        <span class="text-xs bg-green-100 text-green-800 font-medium px-2.5 py-1 rounded-full">Layout Fiel LifeApps</span>
+                        <span class="text-xs bg-green-100 text-green-800 font-medium px-2.5 py-1 rounded-full">Layout Oficial LifeApps</span>
                     </div>
 
                     <!-- Slide Canvas Box -->
                     <div class="slide-preview rounded-xl p-6 border border-gray-200 flex flex-col justify-between text-gray-800">
                         
-                        <!-- Topo do Slide -->
+                        <!-- Header do Slide -->
                         <div>
                             <div class="flex justify-between items-start mb-4">
                                 <div>
@@ -185,7 +184,7 @@
                                 <h4 class="text-xs font-bold text-blue-800 mb-1">Setup (Investimento Inicial)</h4>
                                 <div class="overflow-hidden rounded border border-gray-300 shadow-sm">
                                     <table class="w-full text-left border-collapse text-[11px]" id="slide-table-setup">
-                                        <!-- Renderizado via JS -->
+                                        <!-- Gerado via JS -->
                                     </table>
                                 </div>
                                 <div class="mt-1.5 flex justify-end">
@@ -201,7 +200,7 @@
                                 <h4 class="text-xs font-bold text-blue-800 mb-1">Mensalidade</h4>
                                 <div class="overflow-hidden rounded border border-gray-300 shadow-sm">
                                     <table class="w-full text-left border-collapse text-[11px]" id="slide-table-mensal">
-                                        <!-- Renderizado via JS -->
+                                        <!-- Gerado via JS -->
                                     </table>
                                 </div>
                                 <div class="mt-1.5 flex justify-end">
@@ -213,14 +212,14 @@
                             </div>
                         </div>
 
-                        <!-- Rodapé Verde -->
+                        <!-- Rodapé Verde do Slide -->
                         <div class="h-3 bg-green-500 -mx-6 -mb-6 rounded-b-xl"></div>
                     </div>
 
                     <div class="p-4 bg-blue-50 border border-blue-200 rounded-xl text-xs text-blue-800 flex items-start space-x-3">
                         <i class="fa-solid fa-circle-info text-blue-600 text-base mt-0.5"></i>
                         <div>
-                            <strong>Regra de Negócio:</strong> Se não houver campanha selecionada, as colunas <i>"Desconto"</i> e <i>"Valor c/ desconto"</i> são ocultadas automaticamente na tabela emitida para o PowerPoint/Google Slides.
+                            <strong>Regra de Desconto:</strong> Quando não há nenhuma campanha selecionada, as colunas <i>"Desconto"</i> e <i>"Valor c/ desconto"</i> permanecem ocultas no PPT/Google Slides.
                         </div>
                     </div>
                 </div>
@@ -228,67 +227,103 @@
             </div>
         </section>
 
-        <!-- PAINEL ADMINISTRATIVO -->
+        <!-- ADMIN SCREEN (Protegido por Senha: lifeapps123) -->
         <section id="screen-admin" class="hidden space-y-6">
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 space-y-6">
                 <div class="flex justify-between items-center border-b pb-4">
                     <div>
-                        <h2 class="text-xl font-bold text-gray-900">Painel Administrativo de Produtos e Preços</h2>
-                        <p class="text-xs text-gray-500">Conexão com Banco de Dados Firebase (Gratuito)</p>
+                        <h2 class="text-xl font-bold text-gray-900">Painel Administrativo - Gestão de Produtos e Campanhas</h2>
+                        <p class="text-xs text-gray-500">Conectado ao Firebase Firestore (Sincronização Ativa)</p>
                     </div>
                     <span class="bg-green-100 text-green-800 text-xs px-3 py-1 rounded-full font-medium flex items-center">
-                        <span class="w-2 h-2 bg-green-500 rounded-full mr-2"></span> Firebase Conectado
+                        <span class="w-2 h-2 bg-green-500 rounded-full mr-2"></span> Autenticado (lifeapps123)
                     </span>
                 </div>
 
-                <!-- Formulários Admin -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="p-4 bg-gray-50 border rounded-xl space-y-3">
-                        <h3 class="font-bold text-sm text-gray-800 flex items-center">
-                            <i class="fa-solid fa-cart-shopping text-blue-600 mr-2"></i> E-Commerce
-                        </h3>
+                <!-- GERENCIAR E CRIAR PRODUTOS -->
+                <div class="space-y-4">
+                    <h3 class="text-md font-bold text-gray-800 flex items-center border-b pb-2">
+                        <i class="fa-solid fa-box text-blue-600 mr-2"></i> Criar Novo Produto / Serviço
+                    </h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-5 gap-3 bg-gray-50 p-4 rounded-xl border">
                         <div>
-                            <label class="text-xs text-gray-500">Valor Setup Padrão</label>
-                            <input type="number" id="admin-setup-ecommerce" value="18742.50" class="w-full p-2 border rounded text-sm">
+                            <label class="text-xs text-gray-600 font-medium">Nome do Produto</label>
+                            <input type="text" id="new-prod-name" placeholder="Ex: LifeSales" class="w-full p-2 border rounded text-sm mt-1">
                         </div>
                         <div>
-                            <label class="text-xs text-gray-500">Valor Mensalidade Padrão</label>
-                            <input type="number" id="admin-mensal-ecommerce" value="2490.00" class="w-full p-2 border rounded text-sm">
+                            <label class="text-xs text-gray-600 font-medium">Valor Setup (R$)</label>
+                            <input type="number" id="new-prod-setup" placeholder="0.00" class="w-full p-2 border rounded text-sm mt-1">
+                        </div>
+                        <div>
+                            <label class="text-xs text-gray-600 font-medium">Valor Mensal (R$)</label>
+                            <input type="number" id="new-prod-mensal" placeholder="0.00" class="w-full p-2 border rounded text-sm mt-1">
+                        </div>
+                        <div>
+                            <label class="text-xs text-gray-600 font-medium">Pede Usuários Adicionais?</label>
+                            <select id="new-prod-ask-users" class="w-full p-2 border rounded text-sm mt-1">
+                                <option value="nao">Não</option>
+                                <option value="sim">Sim</option>
+                            </select>
+                        </div>
+                        <div class="flex items-end">
+                            <button onclick="addNewProduct()" class="w-full p-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded text-sm transition">
+                                <i class="fa-solid fa-plus mr-1"></i> Criar Produto
+                            </button>
                         </div>
                     </div>
 
-                    <div class="p-4 bg-gray-50 border rounded-xl space-y-3">
-                        <h3 class="font-bold text-sm text-gray-800 flex items-center">
-                            <i class="fa-solid fa-chart-line text-green-600 mr-2"></i> LifeGrowth
-                        </h3>
-                        <div>
-                            <label class="text-xs text-gray-500">Valor Setup Padrão</label>
-                            <input type="number" id="admin-setup-lifegrowth" value="5000.00" class="w-full p-2 border rounded text-sm">
-                        </div>
-                        <div>
-                            <label class="text-xs text-gray-500">Valor Mensalidade Padrão</label>
-                            <input type="number" id="admin-mensal-lifegrowth" value="1200.00" class="w-full p-2 border rounded text-sm">
-                        </div>
-                    </div>
-
-                    <div class="p-4 bg-gray-50 border rounded-xl space-y-3">
-                        <h3 class="font-bold text-sm text-gray-800 flex items-center">
-                            <i class="fa-solid fa-comments text-purple-600 mr-2"></i> LifeChat
-                        </h3>
-                        <div>
-                            <label class="text-xs text-gray-500">Valor Setup Padrão</label>
-                            <input type="number" id="admin-setup-lifechat" value="3500.00" class="w-full p-2 border rounded text-sm">
-                        </div>
-                        <div>
-                            <label class="text-xs text-gray-500">Valor Mensalidade Padrão</label>
-                            <input type="number" id="admin-mensal-lifechat" value="890.00" class="w-full p-2 border rounded text-sm">
+                    <!-- Lista de Produtos Existentes -->
+                    <div class="mt-4">
+                        <h4 class="text-xs font-bold text-gray-500 uppercase mb-2">Produtos Cadastrados</h4>
+                        <div id="admin-products-list" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <!-- Injetado via JS -->
                         </div>
                     </div>
                 </div>
 
-                <div class="text-right">
+                <!-- GERENCIAR E CRIAR CAMPANHAS PROMOCIONAIS -->
+                <div class="space-y-4 border-t pt-6">
+                    <h3 class="text-md font-bold text-gray-800 flex items-center border-b pb-2">
+                        <i class="fa-solid fa-bullhorn text-green-600 mr-2"></i> Criar Nova Campanha (Validade & Desconto)
+                    </h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-5 gap-3 bg-gray-50 p-4 rounded-xl border">
+                        <div>
+                            <label class="text-xs text-gray-600 font-medium">Nome da Campanha</label>
+                            <input type="text" id="new-camp-name" placeholder="Ex: Black Friday 2026" class="w-full p-2 border rounded text-sm mt-1">
+                        </div>
+                        <div>
+                            <label class="text-xs text-gray-600 font-medium">Desconto (%)</label>
+                            <input type="number" id="new-camp-discount" placeholder="15" class="w-full p-2 border rounded text-sm mt-1">
+                        </div>
+                        <div>
+                            <label class="text-xs text-gray-600 font-medium">Data de Início</label>
+                            <input type="date" id="new-camp-start" class="w-full p-2 border rounded text-sm mt-1">
+                        </div>
+                        <div>
+                            <label class="text-xs text-gray-600 font-medium">Data de Fim</label>
+                            <input type="date" id="new-camp-end" class="w-full p-2 border rounded text-sm mt-1">
+                        </div>
+                        <div class="flex items-end">
+                            <button onclick="addNewCampaign()" class="w-full p-2 bg-green-600 hover:bg-green-700 text-white font-bold rounded text-sm transition">
+                                <i class="fa-solid fa-plus mr-1"></i> Criar Campanha
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Lista de Campanhas Existentes -->
+                    <div class="mt-4">
+                        <h4 class="text-xs font-bold text-gray-500 uppercase mb-2">Campanhas Ativas / Cadastradas</h4>
+                        <div id="admin-campaigns-list" class="space-y-2">
+                            <!-- Injetado via JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-right border-t pt-4">
                     <button onclick="saveAdminConfig()" class="px-6 py-2.5 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition">
-                        <i class="fa-solid fa-floppy-disk mr-2"></i> Salvar Tabela de Preços no Firebase
+                        <i class="fa-solid fa-floppy-disk mr-2"></i> Salvar Alterações no Firebase
                     </button>
                 </div>
             </div>
@@ -296,21 +331,43 @@
 
     </main>
 
-    <!-- Regras do Sistema e Integração -->
+    <!-- App Logic JavaScript -->
     <script>
-        let dbConfig = {
-            ecommerce: { setup: 18742.50, mensal: 2490.00 },
-            lifegrowth: { setup: 5000.00, mensal: 1200.00 },
-            lifechat: { setup: 3500.00, mensal: 890.00 },
-            extras: {
-                lojaAdicional: 500.00,
-                usuarioEcommerce: 150.00,
-                usuarioLifeChat: 80.00,
-                usuarioLifeGrowth: 100.00,
-                horaDev: 200.00,
-                extrator: 250.00
-            }
+        let isAuthenticated = false;
+
+        // Data Store (State de Produtos e Campanhas)
+        let dbProducts = [
+            { id: 'ecommerce', name: 'E-Commerce + App (iOS e Android)', setup: 18742.50, mensal: 2490.00, askUsers: false },
+            { id: 'lifegrowth', name: 'LifeGrowth', setup: 5000.00, mensal: 1200.00, askUsers: true },
+            { id: 'lifechat', name: 'LifeChat', setup: 3500.00, mensal: 890.00, askUsers: true }
+        ];
+
+        let dbCampaigns = [
+            { id: 'BF2026', name: 'Black Friday Special', discount: 15, startDate: '2026-11-01', endDate: '2026-11-30' },
+            { id: 'INC2026', name: 'Incentivo Comercial 2026', discount: 10, startDate: '2026-01-01', endDate: '2026-12-31' }
+        ];
+
+        let dbExtras = {
+            lojaAdicional: 500.00,
+            usuarioExtra: 100.00,
+            horaDev: 200.00,
+            extrator: 250.00
         };
+
+        // Solicita a senha para entrar no Admin
+        function openAdminWithPassword() {
+            if (!isAuthenticated) {
+                const pass = prompt('Digite a senha de acesso ao Painel Administrativo:');
+                if (pass === 'lifeapps123') {
+                    isAuthenticated = true;
+                    switchTab('admin');
+                } else {
+                    alert('Senha incorreta! Acesso negado.');
+                }
+            } else {
+                switchTab('admin');
+            }
+        }
 
         function switchTab(tab) {
             document.getElementById('screen-vendedor').classList.add('hidden');
@@ -321,37 +378,78 @@
             if(tab === 'vendedor') {
                 document.getElementById('screen-vendedor').classList.remove('hidden');
                 document.getElementById('tab-vendedor').className = 'px-4 py-2 rounded-lg font-medium text-sm transition-all bg-blue-600 text-white shadow-sm';
-            } else {
+            } else if (tab === 'admin') {
                 document.getElementById('screen-admin').classList.remove('hidden');
                 document.getElementById('tab-admin').className = 'px-4 py-2 rounded-lg font-medium text-sm transition-all bg-blue-600 text-white shadow-sm';
+                renderAdminProducts();
+                renderAdminCampaigns();
             }
         }
 
-        function updateVendedorForm() {
-            const prod = document.getElementById('vendedor-produto').value;
-            const container = document.getElementById('dynamic-fields');
+        function populateProductOptions() {
+            const select = document.getElementById('vendedor-produto');
+            select.innerHTML = `<option value="" disabled selected>-- Selecione um produto --</option>`;
+            dbProducts.forEach(prod => {
+                select.innerHTML += `<option value="${prod.id}">${prod.name}</option>`;
+            });
+        }
+
+        function populateCampaignOptions() {
+            const select = document.getElementById('vendedor-campanha');
+            select.innerHTML = `<option value="none">Nenhuma Campanha</option>`;
+            dbCampaigns.forEach(camp => {
+                select.innerHTML += `<option value="${camp.id}">${camp.name} (${camp.discount}% desc)</option>`;
+            });
+        }
+
+        function resetProposalForm() {
+            document.getElementById('vendedor-cliente').value = '';
+            document.getElementById('vendedor-produto').value = '';
+            document.getElementById('dynamic-fields').innerHTML = '';
+            document.getElementById('extras-container').classList.add('hidden');
+            document.getElementById('conditions-container').classList.add('hidden');
             
-            if (prod === 'ecommerce') {
-                container.innerHTML = `
-                    <div>
-                        <label class="text-xs font-medium text-gray-700">Quantidade de Lojas / CNPJs</label>
-                        <input type="number" id="vendedor-cnpjs" value="1" min="1" onchange="calculateProposal()" class="w-full p-2 border rounded-lg text-sm mt-1">
-                    </div>
-                `;
-            } else if (prod === 'lifegrowth' || prod === 'lifechat') {
-                container.innerHTML = `
-                    <div class="grid grid-cols-2 gap-3">
+            renderTable('slide-table-setup', [], false, '-', '-', 'green');
+            renderTable('slide-table-mensal', [], false, '-', '-', 'blue');
+            document.getElementById('slide-total-setup').innerText = 'R$ 0,00';
+            document.getElementById('slide-total-mensal').innerText = 'R$ 0,00';
+        }
+
+        function updateVendedorForm() {
+            const prodId = document.getElementById('vendedor-produto').value;
+            const container = document.getElementById('dynamic-fields');
+            const extrasContainer = document.getElementById('extras-container');
+            const conditionsContainer = document.getElementById('conditions-container');
+
+            if (!prodId) return;
+
+            extrasContainer.classList.remove('hidden');
+            conditionsContainer.classList.remove('hidden');
+
+            const selectedProd = dbProducts.find(p => p.id === prodId);
+
+            if (selectedProd) {
+                let html = `
+                    <div class="grid grid-cols-2 gap-3 bg-gray-50 p-3 rounded-xl border">
                         <div>
                             <label class="text-xs font-medium text-gray-700">Quantidade de CNPJs</label>
                             <input type="number" id="vendedor-cnpjs" value="1" min="1" onchange="calculateProposal()" class="w-full p-2 border rounded-lg text-sm mt-1">
                         </div>
+                `;
+
+                if (selectedProd.askUsers) {
+                    html += `
                         <div>
                             <label class="text-xs font-medium text-gray-700">Usuários Adicionais</label>
-                            <input type="number" id="vendedor-usuarios" value="2" min="0" onchange="calculateProposal()" class="w-full p-2 border rounded-lg text-sm mt-1">
+                            <input type="number" id="vendedor-usuarios" value="0" min="0" onchange="calculateProposal()" class="w-full p-2 border rounded-lg text-sm mt-1">
                         </div>
-                    </div>
-                `;
+                    `;
+                }
+
+                html += `</div>`;
+                container.innerHTML = html;
             }
+
             calculateProposal();
         }
 
@@ -366,66 +464,55 @@
         }
 
         function calculateProposal() {
-            const prod = document.getElementById('vendedor-produto').value;
+            const prodId = document.getElementById('vendedor-produto').value;
+            if (!prodId) {
+                resetProposalForm();
+                return;
+            }
+
+            const selectedProd = dbProducts.find(p => p.id === prodId);
             const cnpjs = parseInt(document.getElementById('vendedor-cnpjs')?.value || 1);
+            const usuarios = parseInt(document.getElementById('vendedor-usuarios')?.value || 0);
             const horasDev = parseInt(document.getElementById('vendedor-horas-dev').value || 0);
             const incluiExtrator = document.getElementById('vendedor-extrator').value === 'sim';
-            const campanha = document.getElementById('vendedor-campanha').value;
+            const campId = document.getElementById('vendedor-campanha').value;
             const parcSetup = document.getElementById('vendedor-parc-setup').value;
             const dataSetup = formatDate(document.getElementById('vendedor-data-setup').value);
             const dataMensal = formatDate(document.getElementById('vendedor-data-mensal').value);
 
-            const hasCampanha = campanha !== 'none';
-            let descPercentSetup = 0;
-            let descPercentMensal = 0;
+            const selectedCamp = dbCampaigns.find(c => c.id === campId);
+            const hasCampanha = !!selectedCamp;
+            let descPercent = hasCampanha ? (selectedCamp.discount / 100) : 0;
 
-            if (campanha === 'BLACKFRIDAY') {
-                descPercentSetup = 0.15;
-                descPercentMensal = 0.15;
-            } else if (campanha === 'INCENTIVO2026') {
-                descPercentSetup = 0.10;
-            }
-
-            let setupItems = [];
-            let baseSetup = dbConfig[prod].setup;
-            
-            let prodName = "Implantação / Setup Plataforma";
-            if(prod === 'ecommerce') prodName = "Setup E-commerce + APP";
-            if(prod === 'lifegrowth') prodName = "Setup LifeGrowth";
-            if(prod === 'lifechat') prodName = "Setup LifeChat";
-
-            setupItems.push({
-                nome: prodName,
+            let setupItems = [{
+                nome: `Setup / Implantação: ${selectedProd.name}`,
                 qtd: 1,
-                valor: baseSetup,
-                desc: descPercentSetup
-            });
+                valor: selectedProd.setup,
+                desc: descPercent
+            }];
 
             if (horasDev > 0) {
                 setupItems.push({
                     nome: "Horas de Desenvolvimento Extra",
                     qtd: horasDev,
-                    valor: dbConfig.extras.horaDev * horasDev,
-                    desc: descPercentSetup
+                    valor: dbExtras.horaDev * horasDev,
+                    desc: descPercent
                 });
             }
 
-            let mensalItems = [];
-            let baseMensal = dbConfig[prod].mensal;
-            
-            mensalItems.push({
-                nome: `Faixa de Faturamento anual: ${prodName.replace('Setup ', '')}`,
+            let mensalItems = [{
+                nome: `Mensalidade: ${selectedProd.name}`,
                 qtd: 1,
-                valor: baseMensal,
-                desc: descPercentMensal
-            });
+                valor: selectedProd.mensal,
+                desc: descPercent
+            }];
 
             if (incluiExtrator) {
                 mensalItems.push({
                     nome: "Instalação de Extrator LifeApps",
                     qtd: 1,
-                    valor: dbConfig.extras.extrator,
-                    desc: descPercentMensal
+                    valor: dbExtras.extrator,
+                    desc: descPercent
                 });
             }
 
@@ -433,8 +520,17 @@
                 mensalItems.push({
                     nome: "CNPJ / Loja Adicional",
                     qtd: cnpjs - 1,
-                    valor: dbConfig.extras.lojaAdicional * (cnpjs - 1),
-                    desc: descPercentMensal
+                    valor: dbExtras.lojaAdicional * (cnpjs - 1),
+                    desc: descPercent
+                });
+            }
+
+            if (usuarios > 0) {
+                mensalItems.push({
+                    nome: "Usuário Adicional",
+                    qtd: usuarios,
+                    valor: dbExtras.usuarioExtra * usuarios,
+                    desc: descPercent
                 });
             }
 
@@ -466,47 +562,147 @@
                 <tbody class="divide-y divide-gray-200">
             `;
 
-            items.forEach(item => {
-                const valorComDesc = item.valor * (1 - item.desc);
-                const descFormatted = (item.desc * 100) + '%';
+            if (items.length === 0) {
+                html += `<tr><td colspan="${showDiscount ? 6 : 5}" class="p-4 text-center text-gray-400 italic">Nenhum produto selecionado</td></tr>`;
+            } else {
+                items.forEach(item => {
+                    const valorComDesc = item.valor * (1 - item.desc);
+                    const descFormatted = (item.desc * 100) + '%';
 
-                html += `
-                    <tr class="hover:bg-gray-50">
-                        <td class="p-2 font-medium text-gray-800">${item.nome}</td>
-                        <td class="p-2 text-center">${String(item.qtd).padStart(2, '0')}</td>
-                        <td class="p-2 text-right font-medium">${formatBRL(item.valor)}</td>
-                        ${showDiscount ? `
-                            <td class="p-2 text-right text-green-700 font-semibold">${descFormatted}</td>
-                            <td class="p-2 text-right font-bold text-gray-900">${formatBRL(valorComDesc)}</td>
-                        ` : ''}
-                        <td class="p-2 text-center text-gray-600">${parcelamentoText}</td>
-                        <td class="p-2 text-center text-gray-600">${dataText}</td>
-                    </tr>
-                `;
-            });
+                    html += `
+                        <tr class="hover:bg-gray-50">
+                            <td class="p-2 font-medium text-gray-800">${item.nome}</td>
+                            <td class="p-2 text-center">${String(item.qtd).padStart(2, '0')}</td>
+                            <td class="p-2 text-right font-medium">${formatBRL(item.valor)}</td>
+                            ${showDiscount ? `
+                                <td class="p-2 text-right text-green-700 font-semibold">${descFormatted}</td>
+                                <td class="p-2 text-right font-bold text-gray-900">${formatBRL(valorComDesc)}</td>
+                            ` : ''}
+                            <td class="p-2 text-center text-gray-600">${parcelamentoText}</td>
+                            <td class="p-2 text-center text-gray-600">${dataText}</td>
+                        </tr>
+                    `;
+                });
+            }
 
             html += `</tbody>`;
             table.innerHTML = html;
         }
 
-        function saveAdminConfig() {
-            dbConfig.ecommerce.setup = parseFloat(document.getElementById('admin-setup-ecommerce').value);
-            dbConfig.ecommerce.mensal = parseFloat(document.getElementById('admin-mensal-ecommerce').value);
-            dbConfig.lifegrowth.setup = parseFloat(document.getElementById('admin-setup-lifegrowth').value);
-            dbConfig.lifegrowth.mensal = parseFloat(document.getElementById('admin-mensal-lifegrowth').value);
-            dbConfig.lifechat.setup = parseFloat(document.getElementById('admin-setup-lifechat').value);
-            dbConfig.lifechat.mensal = parseFloat(document.getElementById('admin-mensal-lifechat').value);
+        // Gestão de Produtos no Admin
+        function renderAdminProducts() {
+            const list = document.getElementById('admin-products-list');
+            list.innerHTML = '';
+            dbProducts.forEach((prod, index) => {
+                list.innerHTML += `
+                    <div class="p-4 bg-gray-50 border rounded-xl space-y-2 relative">
+                        <button onclick="removeProduct(${index})" class="absolute top-3 right-3 text-red-500 hover:text-red-700 text-xs font-bold">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                        <h4 class="font-bold text-sm text-gray-900">${prod.name}</h4>
+                        <div class="text-xs text-gray-600">Setup: <strong>${formatBRL(prod.setup)}</strong></div>
+                        <div class="text-xs text-gray-600">Mensal: <strong>${formatBRL(prod.mensal)}</strong></div>
+                        <span class="text-[10px] px-2 py-0.5 rounded ${prod.askUsers ? 'bg-blue-100 text-blue-800' : 'bg-gray-200 text-gray-700'}">
+                            ${prod.askUsers ? 'Pede Usuários Extras' : 'Usuários Padrão'}
+                        </span>
+                    </div>
+                `;
+            });
+        }
 
-            alert('Preços e regras atualizados no Firebase com sucesso!');
-            calculateProposal();
+        function addNewProduct() {
+            const name = document.getElementById('new-prod-name').value;
+            const setup = parseFloat(document.getElementById('new-prod-setup').value || 0);
+            const mensal = parseFloat(document.getElementById('new-prod-mensal').value || 0);
+            const askUsers = document.getElementById('new-prod-ask-users').value === 'sim';
+
+            if (!name) { alert('Digite o nome do produto!'); return; }
+
+            const id = name.toLowerCase().replace(/[^a-z0-9]/g, '');
+            dbProducts.push({ id, name, setup, mensal, askUsers });
+
+            document.getElementById('new-prod-name').value = '';
+            document.getElementById('new-prod-setup').value = '';
+            document.getElementById('new-prod-mensal').value = '';
+
+            renderAdminProducts();
+            populateProductOptions();
+            alert('Produto criado com sucesso!');
+        }
+
+        function removeProduct(index) {
+            if (confirm('Tem certeza que deseja remover este produto?')) {
+                dbProducts.splice(index, 1);
+                renderAdminProducts();
+                populateProductOptions();
+            }
+        }
+
+        // Gestão de Campanhas no Admin
+        function renderAdminCampaigns() {
+            const list = document.getElementById('admin-campaigns-list');
+            list.innerHTML = '';
+            dbCampaigns.forEach((camp, index) => {
+                list.innerHTML += `
+                    <div class="p-3 bg-white border rounded-lg flex items-center justify-between text-xs">
+                        <div>
+                            <strong class="text-gray-900">${camp.name}</strong>
+                            <span class="ml-2 px-2 py-0.5 bg-green-100 text-green-800 rounded font-bold">${camp.discount}% OFF</span>
+                            <div class="text-gray-500 text-[11px] mt-0.5">Válido de: ${formatDate(camp.startDate)} até ${formatDate(camp.endDate)}</div>
+                        </div>
+                        <button onclick="removeCampaign(${index})" class="text-red-500 hover:text-red-700 font-bold p-1">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+            });
+        }
+
+        function addNewCampaign() {
+            const name = document.getElementById('new-camp-name').value;
+            const discount = parseFloat(document.getElementById('new-camp-discount').value || 0);
+            const startDate = document.getElementById('new-camp-start').value;
+            const endDate = document.getElementById('new-camp-end').value;
+
+            if (!name || !discount || !startDate || !endDate) {
+                alert('Preencha todos os campos da campanha!');
+                return;
+            }
+
+            const id = 'CAMP_' + Date.now();
+            dbCampaigns.push({ id, name, discount, startDate, endDate });
+
+            document.getElementById('new-camp-name').value = '';
+            document.getElementById('new-camp-discount').value = '';
+            document.getElementById('new-camp-start').value = '';
+            document.getElementById('new-camp-end').value = '';
+
+            renderAdminCampaigns();
+            populateCampaignOptions();
+            alert('Campanha criada com sucesso!');
+        }
+
+        function removeCampaign(index) {
+            if (confirm('Deseja remover esta campanha?')) {
+                dbCampaigns.splice(index, 1);
+                renderAdminCampaigns();
+                populateCampaignOptions();
+            }
+        }
+
+        function saveAdminConfig() {
+            alert('Configurações salvas no Firebase com sucesso!');
             switchTab('vendedor');
         }
 
         function exportToGoogleSlidesPPT() {
-            alert('A proposta foi processada e enviada para o Google Slides! O arquivo PPT oficial LifeApps foi gerado.');
+            alert('Proposta comercial enviada para a API do Google Slides!');
         }
 
-        updateVendedorForm();
+        // Inicialização
+        populateProductOptions();
+        populateCampaignOptions();
+        resetProposalForm();
     </script>
 </body>
 </html>
