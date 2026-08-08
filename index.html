@@ -3,12 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SGP - Sistema de Geração de Propostas v2.6</title>
+    <title>SGP - Sistema de Geração de Propostas</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- jsPDF e html2pdf para geração do PDF de 22 páginas -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
@@ -22,21 +19,6 @@
         .draggable-card:active { cursor: grabbing; }
         .draggable-card.dragging { opacity: 0.4; border: 2px dashed #3b82f6; }
         .auth-bg { background: linear-gradient(135deg, #0f172a 0%, #005691 50%, #3eb049 100%); }
-        
-        /* Slides do PDF em Formato 16:9 Landscape */
-        .pdf-slide {
-            width: 297mm;
-            height: 210mm;
-            background: white;
-            position: relative;
-            box-sizing: border-box;
-            padding: 15mm;
-            page-break-after: always;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800 min-h-screen flex flex-col justify-between">
@@ -58,7 +40,6 @@
                         <text x="188" y="68" font-family="'Segoe UI', Roboto, Arial, sans-serif" font-size="34" font-weight="500" fill="#3eb049">apps</text>
                     </svg>
                     <h2 class="text-xs font-bold text-gray-500 tracking-wider uppercase">Sistema de Geração de Proposta (SGP)</h2>
-                    <span class="text-[10px] bg-green-100 text-green-800 px-2.5 py-0.5 rounded-full font-bold mt-1">Gerador Oficial PDF Template</span>
                 </div>
 
                 <div class="flex rounded-xl bg-gray-100 p-1 text-xs font-bold">
@@ -157,7 +138,7 @@
         </div>
 
         <div class="text-center text-xs text-white/80 py-2">
-            Sistema de Geração de Proposta (SGP) - Nº v2.6 | Desenvolvido por 
+            Sistema de Geração de Proposta (SGP) | Desenvolvido por 
             <a href="https://www.linkedin.com/in/rafaelrobertonascimento" target="_blank" rel="noopener noreferrer" class="text-white font-bold underline">
                 Rafael Nascimento <i class="fa-brands fa-linkedin text-xs ml-0.5"></i>
             </a>
@@ -181,7 +162,7 @@
                     </svg>
                 </div>
 
-                <span class="text-xs bg-blue-100 text-blue-800 px-2.5 py-1 rounded-full font-bold">SGP v2.6</span>
+                <span class="text-xs bg-blue-100 text-blue-800 px-2.5 py-1 rounded-full font-bold">SGP</span>
             </div>
 
             <nav class="flex items-center space-x-3">
@@ -213,20 +194,8 @@
                 <!-- Formulário Vendedor -->
                 <div class="lg:col-span-5 bg-white p-6 rounded-2xl shadow-sm border border-gray-200 space-y-6">
                     <h2 class="text-xl font-bold text-gray-900 border-b pb-3 flex items-center justify-between">
-                        <span><i class="fa-solid fa-file-signature text-blue-600 mr-2"></i> Dados para o Template</span>
+                        <span><i class="fa-solid fa-file-signature text-blue-600 mr-2"></i> Montar Proposta</span>
                     </h2>
-
-                    <!-- Dados do Cliente -->
-                    <div class="grid grid-cols-2 gap-3 bg-gray-50 p-3 rounded-xl border">
-                        <div>
-                            <label class="block text-[11px] font-bold text-gray-700 uppercase">Empresa / Razão Social *</label>
-                            <input type="text" id="vendedor-empresa" placeholder="Razão social..." oninput="calculateProposal()" class="w-full p-2 border rounded-lg text-sm bg-white">
-                        </div>
-                        <div>
-                            <label class="block text-[11px] font-bold text-gray-700 uppercase">CNPJ *</label>
-                            <input type="text" id="vendedor-cnpj" placeholder="00.000.000/0001-00" oninput="calculateProposal()" class="w-full p-2 border rounded-lg text-sm bg-white">
-                        </div>
-                    </div>
 
                     <!-- Módulo de Adicionar Produtos -->
                     <div class="border rounded-xl p-4 bg-gray-50 space-y-3">
@@ -280,7 +249,7 @@
                     <div class="p-3 bg-blue-50 border border-blue-200 rounded-xl space-y-2">
                         <label class="flex items-center text-xs font-bold text-blue-900 cursor-pointer">
                             <input type="checkbox" id="vendedor-ocultar-setup" onchange="calculateProposal()" class="w-4 h-4 text-blue-600 rounded mr-2">
-                            Ocultar Tabela/Linha de Setup no Slide 8
+                            Ocultar Tabela/Linha de Setup
                         </label>
                     </div>
 
@@ -350,23 +319,17 @@
                         </div>
                     </div>
 
-                    <!-- BOTÕES DE EMISSÃO -->
-                    <div class="space-y-2 border-t pt-4">
-                        <button onclick="generateOfficialProposalPDF()" id="btn-generate-pdf" class="w-full py-3.5 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl shadow-lg transition flex items-center justify-center text-base">
-                            <i class="fa-solid fa-file-pdf mr-2 text-xl"></i> Gerar PDF Oficial da Proposta (22 Páginas)
-                        </button>
-
-                        <button onclick="openPrintZoomModal()" class="w-full py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold rounded-xl transition flex items-center justify-center text-xs">
-                            <i class="fa-solid fa-expand mr-2"></i> Visualizar Apenas Página 8 (Modo Print)
-                        </button>
-                    </div>
+                    <!-- BOTÃO DE VISUALIZAÇÃO EM TELA CHEIA (PRINT) -->
+                    <button onclick="openPrintZoomModal()" class="w-full py-3.5 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl shadow-lg transition flex items-center justify-center text-base">
+                        <i class="fa-solid fa-expand mr-2 text-xl"></i> Visualizar Proposta em Tela Cheia (Modo Print)
+                    </button>
                 </div>
 
-                <!-- Preview do Slide 8 do Template -->
+                <!-- Preview do Slide -->
                 <div class="lg:col-span-7 space-y-4">
                     <div class="flex items-center justify-between">
-                        <h3 class="text-base font-bold text-gray-700 uppercase tracking-wide">Página 8 do Template Oficial</h3>
-                        <span class="text-xs bg-green-100 text-green-800 font-medium px-2.5 py-1 rounded-full">Investimento LifeApps</span>
+                        <h3 class="text-base font-bold text-gray-700 uppercase tracking-wide">Pré-visualização da Tabela</h3>
+                        <span class="text-xs bg-green-100 text-green-800 font-medium px-2.5 py-1 rounded-full">Layout Oficial LifeApps</span>
                     </div>
 
                     <div id="slide-container-target" class="slide-preview rounded-xl p-6 border border-gray-200 flex flex-col justify-between text-gray-800">
@@ -534,108 +497,10 @@
 
     </main>
 
-    <!-- ESTRUTURA OCULTA DO PDF OFICIAL DE 22 PÁGINAS -->
-    <div id="pdf-full-document" style="display: none;">
-        <!-- P1: Capa -->
-        <div class="pdf-slide bg-slate-900 text-white flex flex-col justify-between">
-            <div class="mt-20">
-                <h1 class="text-5xl font-black text-white">PROPOSTA COMERCIAL</h1>
-                <p class="text-2xl text-green-400 font-bold mt-4">Soluções de Tecnologia LifeApps</p>
-            </div>
-            <div class="text-sm text-gray-400">LifeApps Tecnologia © 2026</div>
-        </div>
-
-        <!-- P2: Resumo e Identificação -->
-        <div class="pdf-slide flex flex-col justify-between">
-            <div>
-                <h2 class="text-3xl font-bold text-blue-900 border-b-2 border-blue-900 pb-3 mb-8">02. Resumo da Proposta</h2>
-                <div class="space-y-6 text-sm bg-gray-50 p-8 rounded-2xl border border-gray-200">
-                    <div><strong>Empresa / Razão Social:</strong> <span id="pdf-empresa-p2" class="font-bold text-blue-900"></span></div>
-                    <div><strong>CNPJ:</strong> <span id="pdf-cnpj-p2" class="font-bold"></span></div>
-                    <div><strong>Itens Contemplados:</strong> <span id="pdf-produtos-p2"></span></div>
-                    <div><strong>Data de Criação:</strong> <span id="pdf-datacriacao-p2"></span></div>
-                    <div><strong>Validade da Proposta:</strong> <span id="pdf-validade-p2" class="text-green-600 font-bold"></span></div>
-                    <div><strong>Consultor Comercial:</strong> <span id="pdf-vendedor-p2"></span></div>
-                </div>
-            </div>
-            <div class="text-xs text-gray-400">Página 02 de 22</div>
-        </div>
-
-        <!-- Páginas Institucionais 3 a 7 -->
-        <div class="pdf-slide"><h3 class="text-2xl font-bold text-blue-900">03. Desafios Identificados e Cenário Atual</h3></div>
-        <div class="pdf-slide"><h3 class="text-2xl font-bold text-blue-900">04. Plataforma Omnichannel LifeApps</h3></div>
-        <div class="pdf-slide"><h3 class="text-2xl font-bold text-blue-900">05. Ecossistema e Integrações ERP</h3></div>
-        <div class="pdf-slide"><h3 class="text-2xl font-bold text-blue-900">06. Casos de Sucesso e Quem Confia</h3></div>
-        <div class="pdf-slide"><h3 class="text-2xl font-bold text-blue-900">07. Resultados Obtidos</h3></div>
-
-        <!-- P8: Investimento LifeApps (Tabela Oficial) -->
-        <div class="pdf-slide flex flex-col justify-between">
-            <div>
-                <h2 class="text-3xl font-bold text-blue-900 border-b-2 border-blue-900 pb-3 mb-6">08. Investimento LifeApps</h2>
-                <div id="pdf-table-target-p8"></div>
-            </div>
-            <div class="text-xs text-gray-400">Página 08 de 22</div>
-        </div>
-
-        <!-- Páginas 9 a 21 -->
-        <div class="pdf-slide"><h3 class="text-2xl font-bold text-blue-900">09. Condições de Pagamento e Faixa de Faturamento</h3></div>
-        <div class="pdf-slide"><h3 class="text-2xl font-bold text-blue-900">10. Kick-off do Projeto e Cronograma</h3></div>
-        <div class="pdf-slide"><h3 class="text-2xl font-bold text-blue-900">11. Escopo Geral da Proposta</h3></div>
-        <div class="pdf-slide"><h3 class="text-2xl font-bold text-blue-900">12. Opções de Serviços e Assinatura Mensal</h3></div>
-        <div class="pdf-slide"><h3 class="text-2xl font-bold text-blue-900">13. Condições de Suporte e Manutenção</h3></div>
-        <div class="pdf-slide"><h3 class="text-2xl font-bold text-blue-900">14. Responsabilidades da Contratada</h3></div>
-        <div class="pdf-slide"><h3 class="text-2xl font-bold text-blue-900">15. Responsabilidades da Contratante</h3></div>
-        <div class="pdf-slide"><h3 class="text-2xl font-bold text-blue-900">16. Cláusula de Sigilo e Confidencialidade</h3></div>
-        <div class="pdf-slide"><h3 class="text-2xl font-bold text-blue-900">17. Proteção de Dados (LGPD)</h3></div>
-        <div class="pdf-slide"><h3 class="text-2xl font-bold text-blue-900">18. Validade da Proposta e Cancelamento</h3></div>
-        <div class="pdf-slide"><h3 class="text-2xl font-bold text-blue-900">19. Declaração do Cliente</h3></div>
-        <div class="pdf-slide"><h3 class="text-2xl font-bold text-blue-900">20. Vínculo ao Contrato de Licença de Uso</h3></div>
-        <div class="pdf-slide"><h3 class="text-2xl font-bold text-blue-900">21. Disposições Finais</h3></div>
-
-        <!-- P22: Termo de Aceite -->
-        <div class="pdf-slide flex flex-col justify-between">
-            <div>
-                <h2 class="text-3xl font-bold text-blue-900 border-b-2 border-blue-900 pb-3 mb-8">22. Termo de Aceite</h2>
-                <div class="space-y-4 text-sm bg-gray-50 p-8 rounded-2xl border border-gray-200 mb-12">
-                    <div><strong>Razão Social do Cliente:</strong> <span id="pdf-empresa-p22" class="font-bold text-blue-900"></span></div>
-                    <div><strong>CNPJ (NF-e):</strong> <span id="pdf-cnpj-p22" class="font-bold"></span></div>
-                </div>
-
-                <div class="grid grid-cols-2 gap-16 mt-24">
-                    <div class="border-t-2 border-gray-800 pt-3 text-center">
-                        <strong class="text-sm">LifeApps Tecnologia</strong><br>
-                        <span class="text-xs text-gray-500">Contratada</span>
-                    </div>
-                    <div class="border-t-2 border-gray-800 pt-3 text-center">
-                        <strong id="pdf-empresa-sign-p22" class="text-sm"></strong><br>
-                        <span class="text-xs text-gray-500">Contratante</span>
-                    </div>
-                </div>
-            </div>
-            <div class="text-xs text-gray-400">Página 22 de 22</div>
-        </div>
-    </div>
-
-    <!-- MODAL DE BARRA DE PROGRESSO DO PDF -->
-    <div id="pdf-progress-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl w-full max-w-md p-6 shadow-2xl text-center space-y-4">
-            <div class="w-12 h-12 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto text-xl">
-                <i class="fa-solid fa-file-pdf"></i>
-            </div>
-            <h3 id="pdf-progress-title" class="text-base font-bold text-gray-800">Gerando arquivo PDF...</h3>
-            
-            <div class="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
-                <div id="pdf-progress-bar" class="bg-green-600 h-full transition-all duration-300 w-0"></div>
-            </div>
-
-            <p id="pdf-progress-text" class="text-xs font-semibold text-gray-500">0% concluído</p>
-        </div>
-    </div>
-
     <!-- FOOTER INSTITUCIONAL FIXO -->
     <footer class="bg-white border-t border-gray-200 py-4 text-center text-xs text-gray-500 mt-auto">
         <div class="max-w-7xl mx-auto px-4">
-            Sistema de Geração de Proposta (SGP) - Nº v2.6 | Desenvolvido por 
+            Sistema de Geração de Proposta (SGP) | Desenvolvido por 
             <a href="https://www.linkedin.com/in/rafaelrobertonascimento" target="_blank" rel="noopener noreferrer" class="text-blue-600 font-bold hover:underline">
                 Rafael Nascimento <i class="fa-brands fa-linkedin text-xs ml-0.5"></i>
             </a>
@@ -673,7 +538,7 @@
         <div class="bg-white rounded-2xl w-full max-w-6xl p-6 relative shadow-2xl flex flex-col space-y-4 max-h-[95vh] overflow-y-auto">
             <div class="flex justify-between items-center border-b pb-3">
                 <div class="flex items-center space-x-2">
-                    <span class="text-lg font-bold text-gray-800">Modo de Captura de Tela (Print da Página 8)</span>
+                    <span class="text-lg font-bold text-gray-800">Modo de Captura de Tela (Print da Proposta)</span>
                 </div>
                 <button onclick="closePrintZoomModal()" class="w-8 h-8 rounded-full bg-gray-100 hover:bg-red-100 hover:text-red-600 flex items-center justify-center font-bold text-gray-600 transition">
                     <i class="fa-solid fa-xmark text-lg"></i>
@@ -728,7 +593,7 @@
                     dbUsers.push({ id: doc.id, ...doc.data() });
                 });
 
-                // Cria Vendedor Padrão se não existir
+                // Cria Vendedor Padrão pré-aprovado se não existir
                 if (!dbUsers.some(u => u.email === 'vendedor@lifeapps.com.br')) {
                     db.collection("usuarios").add({
                         nome: "Vendedor Padrão",
@@ -769,24 +634,38 @@
             defaults.forEach(p => db.collection("produtos").add(p));
         }
 
+        // LIMPEZA TOTAL DOS CAMPOS AO FAZER LOGOFF / SAIR
         function clearProposalState() {
             proposalProducts = [];
-            document.getElementById('vendedor-empresa').value = '';
-            document.getElementById('vendedor-cnpj').value = '';
-            document.getElementById('vendedor-search-input').value = '';
-            document.getElementById('selected-product-id').value = '';
-            document.getElementById('vendedor-qtd-setup').value = 1;
-            document.getElementById('vendedor-qtd-mensal').value = 1;
-            document.getElementById('vendedor-sem-setup').checked = false;
-            document.getElementById('vendedor-bonificar-setup').checked = false;
-            document.getElementById('vendedor-bonificar-mensal').checked = false;
-            document.getElementById('vendedor-ocultar-setup').checked = false;
-            document.getElementById('desc-setup').value = 0;
-            document.getElementById('desc-mensal').value = 0;
-            document.getElementById('vendedor-extrator').value = 'nao';
-            document.getElementById('vendedor-parc-setup').value = '3';
-            document.getElementById('vendedor-data-setup').value = '';
-            document.getElementById('vendedor-data-mensal').value = '';
+            const searchInput = document.getElementById('vendedor-search-input');
+            const selectedProdId = document.getElementById('selected-product-id');
+            const qtdSetup = document.getElementById('vendedor-qtd-setup');
+            const qtdMensal = document.getElementById('vendedor-qtd-mensal');
+            const semSetup = document.getElementById('vendedor-sem-setup');
+            const bonifSetup = document.getElementById('vendedor-bonificar-setup');
+            const bonifMensal = document.getElementById('vendedor-bonificar-mensal');
+            const ocultarSetup = document.getElementById('vendedor-ocultar-setup');
+            const descSetup = document.getElementById('desc-setup');
+            const descMensal = document.getElementById('desc-mensal');
+            const extrator = document.getElementById('vendedor-extrator');
+            const parcSetup = document.getElementById('vendedor-parc-setup');
+            const dataSetup = document.getElementById('vendedor-data-setup');
+            const dataMensal = document.getElementById('vendedor-data-mensal');
+
+            if (searchInput) searchInput.value = '';
+            if (selectedProdId) selectedProdId.value = '';
+            if (qtdSetup) qtdSetup.value = 1;
+            if (qtdMensal) qtdMensal.value = 1;
+            if (semSetup) semSetup.checked = false;
+            if (bonifSetup) bonifSetup.checked = false;
+            if (bonifMensal) bonifMensal.checked = false;
+            if (ocultarSetup) ocultarSetup.checked = false;
+            if (descSetup) descSetup.value = 0;
+            if (descMensal) descMensal.value = 0;
+            if (extrator) extrator.value = 'nao';
+            if (parcSetup) parcSetup.value = '3';
+            if (dataSetup) dataSetup.value = '';
+            if (dataMensal) dataMensal.value = '';
             
             renderProposalItemsList();
             calculateProposal();
@@ -836,13 +715,19 @@
             switchAuthTab('vendedor');
         }
 
+        // Login Vendedor com suporte ao e-mail/senha padrão
         function handleVendedorLogin(e) {
             e.preventDefault();
             const email = document.getElementById('login-vendedor-email').value.trim().toLowerCase();
             const pass = document.getElementById('login-vendedor-senha').value;
             const rememberMe = document.getElementById('remember-me').checked;
 
-            const user = dbUsers.find(u => u.email === email && u.senha === pass);
+            let user = dbUsers.find(u => u.email === email && u.senha === pass);
+
+            // Permite login imediato do Vendedor de teste
+            if (!user && email === 'vendedor@lifeapps.com.br' && pass === '123') {
+                user = { nome: "Vendedor Padrão", email: "vendedor@lifeapps.com.br", status: "aprovado" };
+            }
 
             if (!user) {
                 alert('E-mail ou senha inválidos!');
@@ -1355,92 +1240,6 @@
 
             html += `</tbody>`;
             table.innerHTML = html;
-        }
-
-        // GERAÇÃO DO PDF DE 22 PÁGINAS COM BARRA DE PROGRESSO
-        function generateOfficialProposalPDF() {
-            const empresa = document.getElementById('vendedor-empresa').value.trim();
-            const cnpj = document.getElementById('vendedor-cnpj').value.trim();
-
-            if (!empresa || !cnpj) {
-                alert('Por favor, informe a Razão Social da Empresa e o CNPJ do cliente antes de gerar o PDF!');
-                return;
-            }
-
-            if (proposalProducts.length === 0) {
-                alert('Adicione ao menos um produto na proposta!');
-                return;
-            }
-
-            const now = new Date();
-            const dataCriacao = `${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
-            const validade = `20/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
-            const vendedorNome = currentUser ? currentUser.nome : "Consultor Comercial";
-
-            // Preenche os dados no HTML do PDF
-            document.getElementById('pdf-empresa-p2').innerText = empresa;
-            document.getElementById('pdf-cnpj-p2').innerText = cnpj;
-            document.getElementById('pdf-produtos-p2').innerText = proposalProducts.map(p => p.name).join(', ');
-            document.getElementById('pdf-datacriacao-p2').innerText = dataCriacao;
-            document.getElementById('pdf-validade-p2').innerText = validade;
-            document.getElementById('pdf-vendedor-p2').innerText = vendedorNome;
-
-            document.getElementById('pdf-table-target-p8').innerHTML = document.getElementById('slide-container-target').innerHTML;
-
-            document.getElementById('pdf-empresa-p22').innerText = empresa;
-            document.getElementById('pdf-cnpj-p22').innerText = cnpj;
-            document.getElementById('pdf-empresa-sign-p22').innerText = empresa;
-
-            // Exibe Modal de Barra de Progresso
-            const modalProgress = document.getElementById('pdf-progress-modal');
-            const progressBar = document.getElementById('pdf-progress-bar');
-            const progressText = document.getElementById('pdf-progress-text');
-            modalProgress.classList.remove('hidden');
-
-            let percent = 0;
-            const interval = setInterval(() => {
-                percent += 10;
-                if (percent <= 90) {
-                    progressBar.style.width = percent + '%';
-                    progressText.innerText = percent + '% concluído';
-                }
-            }, 100);
-
-            // Torna o documento visível temporariamente fora de tela pro renderizador
-            const element = document.getElementById('pdf-full-document');
-            element.style.display = 'block';
-            element.style.position = 'absolute';
-            element.style.left = '-9999px';
-            element.style.top = '0';
-
-            setTimeout(() => {
-                const opt = {
-                    margin:       0,
-                    filename:     `Proposta_Comercial_LifeApps_${empresa.replace(/\s+/g, '_')}.pdf`,
-                    image:        { type: 'jpeg', quality: 0.98 },
-                    html2canvas:  { scale: 2, useCORS: true, logging: false },
-                    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' }
-                };
-
-                html2pdf().set(opt).from(element).save().then(() => {
-                    clearInterval(interval);
-                    progressBar.style.width = '100%';
-                    progressText.innerText = '100% Concluído!';
-
-                    setTimeout(() => {
-                        element.style.display = 'none';
-                        element.style.position = 'static';
-                        modalProgress.classList.add('hidden');
-                        progressBar.style.width = '0%';
-                    }, 500);
-                }).catch(err => {
-                    clearInterval(interval);
-                    console.error("Erro ao gerar PDF:", err);
-                    alert("Ocorreu um erro ao gerar o PDF. Tente novamente.");
-                    element.style.display = 'none';
-                    modalProgress.classList.add('hidden');
-                });
-            }, 400);
         }
 
         function openEditModal(id, name, setup, mensal) {
