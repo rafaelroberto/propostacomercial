@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SGP - Sistema de Geração de Propostas v1.3</title>
+    <title>SGP - Sistema de Geração de Propostas v1.4</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -15,6 +15,9 @@
     <style>
         body { font-family: 'Inter', system-ui, sans-serif; background-color: #f8fafc; }
         .slide-preview { background-color: #ffffff; aspect-ratio: 16/9; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1); }
+        .draggable-card { cursor: grab; user-select: none; }
+        .draggable-card:active { cursor: grabbing; }
+        .draggable-card.dragging { opacity: 0.4; border: 2px dashed #3b82f6; }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800 min-h-screen flex flex-col justify-between">
@@ -38,7 +41,7 @@
                     </svg>
                 </div>
 
-                <span class="text-xs bg-blue-100 text-blue-800 px-2.5 py-1 rounded-full font-bold">SGP v1.3</span>
+                <span class="text-xs bg-blue-100 text-blue-800 px-2.5 py-1 rounded-full font-bold">SGP v1.4</span>
                 <span class="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full font-medium flex items-center">
                     <span class="w-1.5 h-1.5 bg-green-500 rounded-full mr-1.5"></span> Firebase Online
                 </span>
@@ -71,9 +74,14 @@
                     <div class="border rounded-xl p-4 bg-gray-50 space-y-3">
                         <label class="block text-xs font-bold text-gray-700 uppercase">Adicionar Produto</label>
                         <div class="space-y-3">
-                            <select id="vendedor-produto-select" onchange="handleProductSelectionChange()" class="w-full p-2.5 border rounded-lg text-sm bg-white font-medium">
-                                <option value="" disabled selected>-- Selecione um produto --</option>
-                            </select>
+                            
+                            <!-- Campo de Busca por Digitação e Seleção de Produto -->
+                            <div class="relative space-y-1">
+                                <input type="text" id="vendedor-search-input" placeholder="🔍 Digite para buscar o produto..." oninput="filterProductSearch()" class="w-full p-2.5 border rounded-lg text-sm bg-white font-medium focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                                <select id="vendedor-produto-select" onchange="handleProductSelectionChange()" class="w-full p-2.5 border rounded-lg text-sm bg-white font-medium">
+                                    <option value="" disabled selected>-- Selecione um produto --</option>
+                                </select>
+                            </div>
 
                             <!-- Quantidades -->
                             <div class="grid grid-cols-2 gap-3">
@@ -113,6 +121,15 @@
                                 <i class="fa-solid fa-plus mr-1"></i> Adicionar à Proposta
                             </button>
                         </div>
+                    </div>
+
+                    <!-- Opções de Visualização do Layout da Proposta -->
+                    <div class="p-3 bg-blue-50 border border-blue-200 rounded-xl space-y-2">
+                        <label class="flex items-center text-xs font-bold text-blue-900 cursor-pointer">
+                            <input type="checkbox" id="vendedor-ocultar-setup" onchange="calculateProposal()" class="w-4 h-4 text-blue-600 rounded mr-2">
+                            Ocultar Tabela/Linha de Setup na Proposta
+                        </label>
+                        <p class="text-[11px] text-blue-700">Ative para propostas com foco 100% recorrente (Mensalidade).</p>
                     </div>
 
                     <!-- Lista de Produtos Adicionados -->
@@ -217,8 +234,8 @@
                                 </div>
                             </div>
 
-                            <!-- Tabela Setup -->
-                            <div class="mb-5">
+                            <!-- Tabela Setup (Ocultável) -->
+                            <div id="slide-section-setup" class="mb-5">
                                 <h4 class="text-xs font-bold text-blue-800 mb-1">Setup (Investimento Inicial)</h4>
                                 <div class="overflow-hidden rounded border border-gray-300 shadow-sm">
                                     <table class="w-full text-left border-collapse text-[11px]" id="slide-table-setup"></table>
@@ -232,7 +249,7 @@
                             </div>
 
                             <!-- Tabela Mensalidade -->
-                            <div>
+                            <div id="slide-section-mensal">
                                 <h4 class="text-xs font-bold text-blue-800 mb-1">Mensalidade</h4>
                                 <div class="overflow-hidden rounded border border-gray-300 shadow-sm">
                                     <table class="w-full text-left border-collapse text-[11px]" id="slide-table-mensal"></table>
@@ -259,7 +276,7 @@
                 <div class="flex justify-between items-center border-b pb-4">
                     <div>
                         <h2 class="text-xl font-bold text-gray-900">Painel Administrativo - Firebase Cloud</h2>
-                        <p class="text-xs text-gray-500">Gerencie a ordem, visibilidade e valores dos produtos.</p>
+                        <p class="text-xs text-gray-500">Arraste e solte os cards para organizar a ordem de exibição.</p>
                     </div>
                     <div class="flex items-center space-x-3">
                         <span class="bg-green-100 text-green-800 text-xs px-3 py-1 rounded-full font-medium">Autenticado</span>
@@ -292,10 +309,15 @@
                         </div>
                     </div>
 
-                    <!-- Gestão de Produtos -->
+                    <!-- Gestão de Produtos com Drag and Drop -->
                     <div class="mt-6 space-y-3">
                         <div class="flex justify-between items-center">
-                            <h4 class="text-xs font-bold text-gray-500 uppercase">Produtos Cadastrados</h4>
+                            <div class="flex items-center space-x-2">
+                                <h4 class="text-xs font-bold text-gray-500 uppercase">Produtos Cadastrados</h4>
+                                <span class="text-[10px] bg-blue-50 text-blue-700 border border-blue-200 px-2 py-0.5 rounded font-semibold">
+                                    <i class="fa-solid fa-hand-pointer mr-1"></i> Arraste os cards para reordenar
+                                </span>
+                            </div>
                             <div class="flex space-x-2">
                                 <button onclick="deleteSelectedProducts()" class="px-3 py-1 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 text-xs font-semibold rounded-lg transition">
                                     <i class="fa-solid fa-trash mr-1"></i> Excluir Selecionados
@@ -306,6 +328,7 @@
                             </div>
                         </div>
 
+                        <!-- Grid Reordenável via Drag & Drop -->
                         <div id="admin-products-list" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
                     </div>
                 </div>
@@ -317,7 +340,7 @@
     <!-- FOOTER INSTITUCIONAL FIXO -->
     <footer class="bg-white border-t border-gray-200 py-4 text-center text-xs text-gray-500 mt-auto">
         <div class="max-w-7xl mx-auto px-4">
-            Sistema de Geração de Proposta (SGP) - Nº v1.3 | Desenvolvido por 
+            Sistema de Geração de Proposta (SGP) - Nº v1.4 | Desenvolvido por 
             <a href="https://www.linkedin.com/in/rafaelrobertonascimento" target="_blank" rel="noopener noreferrer" class="text-blue-600 font-bold hover:underline">
                 Rafael Nascimento <i class="fa-brands fa-linkedin text-xs ml-0.5"></i>
             </a>
@@ -388,6 +411,7 @@
         let isAuthenticated = false;
         let dbProducts = [];
         let proposalProducts = [];
+        let draggedItemIndex = null;
 
         const dbExtras = {
             extrator: 250.00
@@ -400,7 +424,6 @@
                     dbProducts.push({ id: doc.id, ...doc.data() });
                 });
                 
-                // Ordenação local pelo campo order (se houver)
                 dbProducts.sort((a, b) => (a.order || 0) - (b.order || 0));
 
                 if (dbProducts.length === 0) {
@@ -450,11 +473,33 @@
             }
         }
 
+        // Povoa e Agrupa Produtos por Nome / Família
         function populateProductOptions() {
             const select = document.getElementById('vendedor-produto-select');
             select.innerHTML = `<option value="" disabled selected>-- Selecione um produto --</option>`;
-            dbProducts.filter(p => p.active !== false).forEach(prod => {
+
+            const activeProducts = dbProducts.filter(p => p.active !== false);
+
+            // Agrupamento alfabético inteligente
+            activeProducts.sort((a, b) => a.name.localeCompare(b.name));
+
+            activeProducts.forEach(prod => {
                 select.innerHTML += `<option value="${prod.id}">${prod.name}</option>`;
+            });
+        }
+
+        // Filtro por digitação no campo de busca do vendedor
+        function filterProductSearch() {
+            const term = document.getElementById('vendedor-search-input').value.toLowerCase();
+            const select = document.getElementById('vendedor-produto-select');
+            
+            const activeProducts = dbProducts.filter(p => p.active !== false);
+            select.innerHTML = `<option value="" disabled selected>-- Selecione um produto --</option>`;
+
+            activeProducts.forEach(prod => {
+                if (prod.name.toLowerCase().includes(term)) {
+                    select.innerHTML += `<option value="${prod.id}">${prod.name}</option>`;
+                }
             });
         }
 
@@ -562,6 +607,7 @@
 
         function calculateProposal() {
             const extratorOp = document.getElementById('vendedor-extrator').value;
+            const ocultarSetup = document.getElementById('vendedor-ocultar-setup').checked;
             
             const descSetupPercent = (parseFloat(document.getElementById('desc-setup').value) || 0) / 100;
             const descMensalPercent = (parseFloat(document.getElementById('desc-mensal').value) || 0) / 100;
@@ -570,20 +616,30 @@
             const dataSetupInput = document.getElementById('vendedor-data-setup').value;
             const dataMensalInput = document.getElementById('vendedor-data-mensal').value;
 
+            // Ocultar ou Exibir Seção de Setup no Layout
+            const setupSection = document.getElementById('slide-section-setup');
+            if (ocultarSetup) {
+                setupSection.style.display = 'none';
+            } else {
+                setupSection.style.display = 'block';
+            }
+
             // Tabela Setup
             let setupItems = [];
-            proposalProducts.forEach(p => {
-                if (p.hasSetup) {
-                    setupItems.push({
-                        nome: `Setup: ${p.name}`,
-                        qtd: p.qtdSetup,
-                        valorIndividual: p.unitSetup,
-                        valorTotal: p.unitSetup * p.qtdSetup,
-                        desc: descSetupPercent,
-                        isBonificado: p.isBonificadoSetup
-                    });
-                }
-            });
+            if (!ocultarSetup) {
+                proposalProducts.forEach(p => {
+                    if (p.hasSetup) {
+                        setupItems.push({
+                            nome: `Setup: ${p.name}`,
+                            qtd: p.qtdSetup,
+                            valorIndividual: p.unitSetup,
+                            valorTotal: p.unitSetup * p.qtdSetup,
+                            desc: descSetupPercent,
+                            isBonificado: p.isBonificadoSetup
+                        });
+                    }
+                });
+            }
 
             // Tabela Mensalidade
             let mensalItems = [];
@@ -620,8 +676,7 @@
                 });
             }
 
-            // Desativação Inteligente de Parcelas e Datas Inúteis
-            const hasChargeableSetup = setupItems.some(i => !i.isBonificado && i.valorTotal > 0);
+            const hasChargeableSetup = !ocultarSetup && setupItems.some(i => !i.isBonificado && i.valorTotal > 0);
             const hasChargeableMensal = mensalItems.some(i => !i.isBonificado && i.valorTotal > 0);
 
             document.getElementById('vendedor-parc-setup').disabled = !hasChargeableSetup;
@@ -641,7 +696,6 @@
             document.getElementById('slide-total-mensal').innerText = formatBRL(totalMensal);
         }
 
-        // Tabela Setup sem exibição de Parcelamento/Data se For Bonificado
         function renderSetupTable(tableId, items, showDiscount, parcelamentoText, dataText) {
             const table = document.getElementById(tableId);
             let html = `
@@ -685,7 +739,6 @@
             table.innerHTML = html;
         }
 
-        // Tabela Mensalidade sem Data se Bonificado
         function renderMensalTable(tableId, items, showDiscount, dataText) {
             const table = document.getElementById(tableId);
             let html = `
@@ -756,27 +809,11 @@
             }).catch(err => alert("Erro ao atualizar: " + err.message));
         }
 
-        // Ativar / Desativar visibilidade do produto
         function toggleProductActive(id, currentStatus) {
             const newStatus = !currentStatus;
             db.collection("produtos").doc(id).update({ active: newStatus }).then(() => {
                 alert(`Produto ${newStatus ? 'Ativado' : 'Desativado'} com sucesso!`);
             });
-        }
-
-        // Mudar Ordem dos Produtos
-        function moveProductOrder(index, direction) {
-            const targetIndex = index + direction;
-            if (targetIndex < 0 || targetIndex >= dbProducts.length) return;
-
-            const currentProd = dbProducts[index];
-            const targetProd = dbProducts[targetIndex];
-
-            const currentOrder = currentProd.order || (index + 1);
-            const targetOrder = targetProd.order || (targetIndex + 1);
-
-            db.collection("produtos").doc(currentProd.id).update({ order: targetOrder });
-            db.collection("produtos").doc(targetProd.id).update({ order: currentOrder });
         }
 
         function deleteProductFirebase(id) {
@@ -843,6 +880,36 @@
             });
         }
 
+        // LÓGICA DRAG AND DROP PARA O PAINEL ADM
+        function handleDragStart(e, index) {
+            draggedItemIndex = index;
+            e.target.classList.add('dragging');
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+        }
+
+        function handleDrop(e, targetIndex) {
+            e.preventDefault();
+            if (draggedItemIndex === null || draggedItemIndex === targetIndex) return;
+
+            // Reordena o array local
+            const draggedItem = dbProducts.splice(draggedItemIndex, 1)[0];
+            dbProducts.splice(targetIndex, 0, draggedItem);
+
+            // Atualiza no Firestore
+            dbProducts.forEach((prod, newIdx) => {
+                db.collection("produtos").doc(prod.id).update({ order: newIdx + 1 });
+            });
+
+            draggedItemIndex = null;
+        }
+
+        function handleDragEnd(e) {
+            e.target.classList.remove('dragging');
+        }
+
         function renderAdminProducts() {
             const list = document.getElementById('admin-products-list');
             list.innerHTML = '';
@@ -850,19 +917,18 @@
                 const isActive = prod.active !== false;
 
                 list.innerHTML += `
-                    <div class="p-4 bg-gray-50 border rounded-xl space-y-2 relative ${!isActive ? 'opacity-60 bg-gray-100' : ''}">
+                    <div class="p-4 bg-gray-50 border rounded-xl space-y-2 relative draggable-card shadow-sm hover:shadow-md transition-all"
+                         draggable="true" 
+                         ondragstart="handleDragStart(event, ${index})" 
+                         ondragover="handleDragOver(event)" 
+                         ondrop="handleDrop(event, ${index})"
+                         ondragend="handleDragEnd(event)">
+                        
                         <div class="flex items-center justify-between border-b pb-2">
                             <input type="checkbox" value="${prod.id}" class="prod-checkbox w-4 h-4 text-blue-600 rounded cursor-pointer">
-                            
-                            <!-- Botoes de Ordenacao -->
-                            <div class="flex items-center space-x-1">
-                                <button onclick="moveProductOrder(${index}, -1)" ${index === 0 ? 'disabled' : ''} class="px-2 py-0.5 bg-gray-200 hover:bg-gray-300 disabled:opacity-30 rounded text-xs">
-                                    <i class="fa-solid fa-arrow-up"></i>
-                                </button>
-                                <button onclick="moveProductOrder(${index}, 1)" ${index === dbProducts.length - 1 ? 'disabled' : ''} class="px-2 py-0.5 bg-gray-200 hover:bg-gray-300 disabled:opacity-30 rounded text-xs">
-                                    <i class="fa-solid fa-arrow-down"></i>
-                                </button>
-                            </div>
+                            <span class="text-[10px] text-gray-400 font-bold">
+                                <i class="fa-solid fa-grip-vertical mr-1"></i> Arraste para mover
+                            </span>
                         </div>
 
                         <div class="flex justify-between items-start pt-1">
