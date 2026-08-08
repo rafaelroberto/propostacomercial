@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SGP - Sistema de Geração de Propostas v2.4</title>
+    <title>SGP - Sistema de Geração de Propostas v2.5</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -23,7 +23,7 @@
         .draggable-card.dragging { opacity: 0.4; border: 2px dashed #3b82f6; }
         .auth-bg { background: linear-gradient(135deg, #0f172a 0%, #005691 50%, #3eb049 100%); }
         
-        /* Estilização dos Slides do PDF de 22 páginas */
+        /* Slides do PDF em Formato 16:9 Landscape */
         .pdf-slide {
             width: 297mm;
             height: 210mm;
@@ -34,7 +34,7 @@
             page-break-after: always;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
-            flex-col: column;
+            flex-direction: column;
             justify-content: space-between;
         }
     </style>
@@ -58,7 +58,7 @@
                         <text x="188" y="68" font-family="'Segoe UI', Roboto, Arial, sans-serif" font-size="34" font-weight="500" fill="#3eb049">apps</text>
                     </svg>
                     <h2 class="text-xs font-bold text-gray-500 tracking-wider uppercase">Sistema de Geração de Proposta (SGP)</h2>
-                    <span class="text-[10px] bg-green-100 text-green-800 px-2.5 py-0.5 rounded-full font-bold mt-1">Gerador Oficial PDF</span>
+                    <span class="text-[10px] bg-green-100 text-green-800 px-2.5 py-0.5 rounded-full font-bold mt-1">Gerador Oficial PDF Template</span>
                 </div>
 
                 <div class="flex rounded-xl bg-gray-100 p-1 text-xs font-bold">
@@ -71,7 +71,7 @@
                     <div>
                         <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">E-mail Corporativo</label>
                         <div class="relative">
-                            <input type="email" id="login-vendedor-email" required placeholder="seu.nome@lifeapps.com.br" class="w-full pl-9 pr-3 py-2.5 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                            <input type="email" id="login-vendedor-email" required placeholder="vendedor@lifeapps.com.br" class="w-full pl-9 pr-3 py-2.5 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
                             <i class="fa-solid fa-envelope absolute left-3 top-3.5 text-gray-400 text-xs"></i>
                         </div>
                     </div>
@@ -79,9 +79,16 @@
                     <div>
                         <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Senha</label>
                         <div class="relative">
-                            <input type="password" id="login-vendedor-senha" required placeholder="••••••••" class="w-full pl-9 pr-3 py-2.5 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                            <input type="password" id="login-vendedor-senha" required placeholder="123456" class="w-full pl-9 pr-3 py-2.5 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
                             <i class="fa-solid fa-lock absolute left-3 top-3.5 text-gray-400 text-xs"></i>
                         </div>
+                    </div>
+
+                    <div class="flex items-center justify-between text-xs">
+                        <label class="flex items-center text-gray-600 font-medium cursor-pointer">
+                            <input type="checkbox" id="remember-me" class="w-4 h-4 text-blue-600 rounded mr-2">
+                            Lembrar de mim neste dispositivo
+                        </label>
                     </div>
 
                     <button type="submit" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg transition flex items-center justify-center">
@@ -150,7 +157,7 @@
         </div>
 
         <div class="text-center text-xs text-white/80 py-2">
-            Sistema de Geração de Proposta (SGP) - Nº v2.4 | Desenvolvido por 
+            Sistema de Geração de Proposta (SGP) - Nº v2.5 | Desenvolvido por 
             <a href="https://www.linkedin.com/in/rafaelrobertonascimento" target="_blank" rel="noopener noreferrer" class="text-white font-bold underline">
                 Rafael Nascimento <i class="fa-brands fa-linkedin text-xs ml-0.5"></i>
             </a>
@@ -174,7 +181,7 @@
                     </svg>
                 </div>
 
-                <span class="text-xs bg-blue-100 text-blue-800 px-2.5 py-1 rounded-full font-bold">SGP v2.4</span>
+                <span class="text-xs bg-blue-100 text-blue-800 px-2.5 py-1 rounded-full font-bold">SGP v2.5</span>
             </div>
 
             <nav class="flex items-center space-x-3">
@@ -612,7 +619,7 @@
     <!-- FOOTER INSTITUCIONAL FIXO -->
     <footer class="bg-white border-t border-gray-200 py-4 text-center text-xs text-gray-500 mt-auto">
         <div class="max-w-7xl mx-auto px-4">
-            Sistema de Geração de Proposta (SGP) - Nº v2.4 | Desenvolvido por 
+            Sistema de Geração de Proposta (SGP) - Nº v2.5 | Desenvolvido por 
             <a href="https://www.linkedin.com/in/rafaelrobertonascimento" target="_blank" rel="noopener noreferrer" class="text-blue-600 font-bold hover:underline">
                 Rafael Nascimento <i class="fa-brands fa-linkedin text-xs ml-0.5"></i>
             </a>
@@ -704,6 +711,18 @@
                 snapshot.forEach((doc) => {
                     dbUsers.push({ id: doc.id, ...doc.data() });
                 });
+
+                // Se não houver nenhum vendedor, cadastra o Vendedor Padrão pré-aprovado
+                if (!dbUsers.some(u => u.email === 'vendedor@lifeapps.com.br')) {
+                    db.collection("usuarios").add({
+                        nome: "Vendedor Padrão",
+                        email: "vendedor@lifeapps.com.br",
+                        senha: "123456",
+                        status: "aprovado",
+                        dataCriacao: new Date().toISOString()
+                    });
+                }
+
                 renderAdminUsers();
                 checkRememberedUser();
             });
@@ -734,7 +753,6 @@
             defaults.forEach(p => db.collection("produtos").add(p));
         }
 
-        // LIMPEZA TOTAL DOS CAMPOS AO FAZER LOGOFF / SAIR
         function clearProposalState() {
             proposalProducts = [];
             document.getElementById('vendedor-empresa').value = '';
@@ -1343,7 +1361,6 @@
             const validade = `20/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
             const vendedorNome = currentUser ? currentUser.nome : "Consultor Comercial";
 
-            // Preenchimento Página 2 (Resumo da Proposta)
             document.getElementById('pdf-empresa-p2').innerText = empresa;
             document.getElementById('pdf-cnpj-p2').innerText = cnpj;
             document.getElementById('pdf-produtos-p2').innerText = proposalProducts.map(p => p.name).join(', ');
@@ -1351,15 +1368,12 @@
             document.getElementById('pdf-validade-p2').innerText = validade;
             document.getElementById('pdf-vendedor-p2').innerText = vendedorNome;
 
-            // Preenchimento Página 8 (Tabela Dinâmica de Investimento)
             document.getElementById('pdf-table-target-p8').innerHTML = document.getElementById('slide-container-target').innerHTML;
 
-            // Preenchimento Página 22 (Termo de Aceite)
             document.getElementById('pdf-empresa-p22').innerText = empresa;
             document.getElementById('pdf-cnpj-p22').innerText = cnpj;
             document.getElementById('pdf-empresa-sign-p22').innerText = empresa;
 
-            // Ativa contêiner do PDF
             const element = document.getElementById('pdf-full-document');
             element.style.display = 'block';
 
@@ -1473,7 +1487,6 @@
             });
         }
 
-        // DRAG AND DROP
         function handleDragStart(e, index) {
             draggedItemIndex = index;
             e.target.classList.add('dragging');
