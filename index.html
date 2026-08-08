@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SGP - Sistema de Geração de Propostas v1.2</title>
+    <title>SGP - Sistema de Geração de Propostas v1.3</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -38,7 +38,7 @@
                     </svg>
                 </div>
 
-                <span class="text-xs bg-blue-100 text-blue-800 px-2.5 py-1 rounded-full font-bold">SGP v1.2</span>
+                <span class="text-xs bg-blue-100 text-blue-800 px-2.5 py-1 rounded-full font-bold">SGP v1.3</span>
                 <span class="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full font-medium flex items-center">
                     <span class="w-1.5 h-1.5 bg-green-500 rounded-full mr-1.5"></span> Firebase Online
                 </span>
@@ -71,7 +71,7 @@
                     <div class="border rounded-xl p-4 bg-gray-50 space-y-3">
                         <label class="block text-xs font-bold text-gray-700 uppercase">Adicionar Produto</label>
                         <div class="space-y-3">
-                            <select id="vendedor-produto-select" class="w-full p-2.5 border rounded-lg text-sm bg-white font-medium">
+                            <select id="vendedor-produto-select" onchange="handleProductSelectionChange()" class="w-full p-2.5 border rounded-lg text-sm bg-white font-medium">
                                 <option value="" disabled selected>-- Selecione um produto --</option>
                             </select>
 
@@ -82,7 +82,7 @@
                                     <input type="number" id="vendedor-qtd-setup" value="1" min="1" class="w-full p-2 border rounded-lg text-sm bg-white">
                                 </div>
                                 <div>
-                                    <label class="text-[11px] font-semibold text-gray-600 uppercase">Qtd. Mensalidade</label>
+                                    <label class="text-[11px] font-semibold text-gray-600 uppercase">Qtd. Mensal/Usuários</label>
                                     <input type="number" id="vendedor-qtd-mensal" value="1" min="0" class="w-full p-2 border rounded-lg text-sm bg-white">
                                 </div>
                             </div>
@@ -123,7 +123,7 @@
                         </div>
                     </div>
 
-                    <!-- Serviços Extras (Apenas Extrator) -->
+                    <!-- Serviços Extras -->
                     <div class="space-y-3 border-t pt-4">
                         <label class="block text-xs font-semibold text-gray-600 uppercase">Serviço Adicional</label>
                         <div>
@@ -151,7 +151,7 @@
                         </div>
                     </div>
 
-                    <!-- Parcelamento e Datas (Bloqueados automaticamente se bonificados) -->
+                    <!-- Parcelamento e Datas -->
                     <div class="space-y-3 border-t pt-4">
                         <label class="block text-xs font-semibold text-gray-600 uppercase">Condições & Parcelamento</label>
                         <div class="grid grid-cols-2 gap-3">
@@ -259,7 +259,7 @@
                 <div class="flex justify-between items-center border-b pb-4">
                     <div>
                         <h2 class="text-xl font-bold text-gray-900">Painel Administrativo - Firebase Cloud</h2>
-                        <p class="text-xs text-gray-500">Sincronização em tempo real de produtos e valores.</p>
+                        <p class="text-xs text-gray-500">Gerencie a ordem, visibilidade e valores dos produtos.</p>
                     </div>
                     <div class="flex items-center space-x-3">
                         <span class="bg-green-100 text-green-800 text-xs px-3 py-1 rounded-full font-medium">Autenticado</span>
@@ -317,7 +317,7 @@
     <!-- FOOTER INSTITUCIONAL FIXO -->
     <footer class="bg-white border-t border-gray-200 py-4 text-center text-xs text-gray-500 mt-auto">
         <div class="max-w-7xl mx-auto px-4">
-            Sistema de Geração de Proposta (SGP) - Nº v1.2 | Desenvolvido por 
+            Sistema de Geração de Proposta (SGP) - Nº v1.3 | Desenvolvido por 
             <a href="https://www.linkedin.com/in/rafaelrobertonascimento" target="_blank" rel="noopener noreferrer" class="text-blue-600 font-bold hover:underline">
                 Rafael Nascimento <i class="fa-brands fa-linkedin text-xs ml-0.5"></i>
             </a>
@@ -400,6 +400,9 @@
                     dbProducts.push({ id: doc.id, ...doc.data() });
                 });
                 
+                // Ordenação local pelo campo order (se houver)
+                dbProducts.sort((a, b) => (a.order || 0) - (b.order || 0));
+
                 if (dbProducts.length === 0) {
                     seedDefaultProducts();
                 } else {
@@ -411,9 +414,9 @@
 
         function seedDefaultProducts() {
             const defaults = [
-                { name: 'E-Commerce + App (iOS e Android)', setup: 18742.50, mensal: 2490.00 },
-                { name: 'LifeGrowth', setup: 5000.00, mensal: 1200.00 },
-                { name: 'LifeChat', setup: 3500.00, mensal: 890.00 }
+                { name: 'E-Commerce + App (iOS e Android)', setup: 18742.50, mensal: 2490.00, active: true, order: 1 },
+                { name: 'LifeGrowth', setup: 5000.00, mensal: 1200.00, active: true, order: 2 },
+                { name: 'LifeChat', setup: 3500.00, mensal: 890.00, active: true, order: 3 }
             ];
             defaults.forEach(p => db.collection("produtos").add(p));
         }
@@ -450,9 +453,25 @@
         function populateProductOptions() {
             const select = document.getElementById('vendedor-produto-select');
             select.innerHTML = `<option value="" disabled selected>-- Selecione um produto --</option>`;
-            dbProducts.forEach(prod => {
+            dbProducts.filter(p => p.active !== false).forEach(prod => {
                 select.innerHTML += `<option value="${prod.id}">${prod.name}</option>`;
             });
+        }
+
+        // Preenchimento Automático de 5 Usuários para LifeChat e LifeGrowth
+        function handleProductSelectionChange() {
+            const select = document.getElementById('vendedor-produto-select');
+            const prodId = select.value;
+            const prodObj = dbProducts.find(p => p.id === prodId);
+
+            if (prodObj) {
+                const nameLower = prodObj.name.toLowerCase();
+                if (nameLower.includes('lifechat') || nameLower.includes('lifegrowth')) {
+                    document.getElementById('vendedor-qtd-mensal').value = 5;
+                } else {
+                    document.getElementById('vendedor-qtd-mensal').value = 1;
+                }
+            }
         }
 
         function toggleSetupInputs() {
@@ -601,7 +620,7 @@
                 });
             }
 
-            // Lógica Inteligente para Bloqueio de Parcela e Datas Inúteis
+            // Desativação Inteligente de Parcelas e Datas Inúteis
             const hasChargeableSetup = setupItems.some(i => !i.isBonificado && i.valorTotal > 0);
             const hasChargeableMensal = mensalItems.some(i => !i.isBonificado && i.valorTotal > 0);
 
@@ -609,8 +628,8 @@
             document.getElementById('vendedor-data-setup').disabled = !hasChargeableSetup;
             document.getElementById('vendedor-data-mensal').disabled = !hasChargeableMensal;
 
-            const dataSetupFormatted = hasChargeableSetup ? formatDateStr(dataSetupInput) : 'Isento';
-            const dataMensalFormatted = hasChargeableMensal ? formatDateStr(dataMensalInput) : 'Isento';
+            const dataSetupFormatted = hasChargeableSetup ? formatDateStr(dataSetupInput) : '-';
+            const dataMensalFormatted = hasChargeableMensal ? formatDateStr(dataMensalInput) : '-';
 
             renderSetupTable('slide-table-setup', setupItems, descSetupPercent > 0, `${parcSetup}x`, dataSetupFormatted);
             renderMensalTable('slide-table-mensal', mensalItems, descMensalPercent > 0, dataMensalFormatted);
@@ -622,6 +641,7 @@
             document.getElementById('slide-total-mensal').innerText = formatBRL(totalMensal);
         }
 
+        // Tabela Setup sem exibição de Parcelamento/Data se For Bonificado
         function renderSetupTable(tableId, items, showDiscount, parcelamentoText, dataText) {
             const table = document.getElementById(tableId);
             let html = `
@@ -655,7 +675,7 @@
                                 <td class="p-2 text-right font-bold text-gray-900">${formatBRL(valorComDesc, item.isBonificado)}</td>
                             ` : ''}
                             <td class="p-2 text-center text-gray-600">${item.isBonificado ? '-' : parcelamentoText}</td>
-                            <td class="p-2 text-center text-gray-600 font-semibold">${dataText}</td>
+                            <td class="p-2 text-center text-gray-600 font-semibold">${item.isBonificado ? '-' : dataText}</td>
                         </tr>
                     `;
                 });
@@ -665,6 +685,7 @@
             table.innerHTML = html;
         }
 
+        // Tabela Mensalidade sem Data se Bonificado
         function renderMensalTable(tableId, items, showDiscount, dataText) {
             const table = document.getElementById(tableId);
             let html = `
@@ -698,7 +719,7 @@
                                 <td class="p-2 text-right font-bold text-gray-900">${formatBRL(valorComDesc, item.isBonificado)}</td>
                             ` : ''}
                             <td class="p-2 text-right font-bold text-gray-900">${formatBRL(showDiscount ? valorComDesc : item.valorTotal, item.isBonificado)}</td>
-                            <td class="p-2 text-center text-gray-600 font-semibold">${dataText}</td>
+                            <td class="p-2 text-center text-gray-600 font-semibold">${item.isBonificado ? '-' : dataText}</td>
                         </tr>
                     `;
                 });
@@ -735,7 +756,29 @@
             }).catch(err => alert("Erro ao atualizar: " + err.message));
         }
 
-        // Funções de Exclusão de Produtos no Firestore
+        // Ativar / Desativar visibilidade do produto
+        function toggleProductActive(id, currentStatus) {
+            const newStatus = !currentStatus;
+            db.collection("produtos").doc(id).update({ active: newStatus }).then(() => {
+                alert(`Produto ${newStatus ? 'Ativado' : 'Desativado'} com sucesso!`);
+            });
+        }
+
+        // Mudar Ordem dos Produtos
+        function moveProductOrder(index, direction) {
+            const targetIndex = index + direction;
+            if (targetIndex < 0 || targetIndex >= dbProducts.length) return;
+
+            const currentProd = dbProducts[index];
+            const targetProd = dbProducts[targetIndex];
+
+            const currentOrder = currentProd.order || (index + 1);
+            const targetOrder = targetProd.order || (targetIndex + 1);
+
+            db.collection("produtos").doc(currentProd.id).update({ order: targetOrder });
+            db.collection("produtos").doc(targetProd.id).update({ order: currentOrder });
+        }
+
         function deleteProductFirebase(id) {
             if (confirm('Deseja excluir este produto?')) {
                 db.collection("produtos").doc(id).delete().then(() => {
@@ -790,7 +833,9 @@
 
             if (!name) { alert('Digite o nome do produto!'); return; }
 
-            db.collection("produtos").add({ name, setup, mensal }).then(() => {
+            const newOrder = dbProducts.length + 1;
+
+            db.collection("produtos").add({ name, setup, mensal, active: true, order: newOrder }).then(() => {
                 alert('Produto cadastrado com sucesso!');
                 document.getElementById('new-prod-name').value = '';
                 document.getElementById('new-prod-setup').value = '';
@@ -801,23 +846,43 @@
         function renderAdminProducts() {
             const list = document.getElementById('admin-products-list');
             list.innerHTML = '';
-            dbProducts.forEach((prod) => {
+            dbProducts.forEach((prod, index) => {
+                const isActive = prod.active !== false;
+
                 list.innerHTML += `
-                    <div class="p-4 bg-gray-50 border rounded-xl space-y-2 relative">
-                        <div class="flex items-start justify-between">
+                    <div class="p-4 bg-gray-50 border rounded-xl space-y-2 relative ${!isActive ? 'opacity-60 bg-gray-100' : ''}">
+                        <div class="flex items-center justify-between border-b pb-2">
                             <input type="checkbox" value="${prod.id}" class="prod-checkbox w-4 h-4 text-blue-600 rounded cursor-pointer">
-                            <div class="flex space-x-2">
-                                <button onclick="openEditModal('${prod.id}', '${prod.name}', ${prod.setup}, ${prod.mensal})" class="text-blue-600 hover:text-blue-800 text-xs font-bold">
-                                    <i class="fa-solid fa-pen-to-square"></i> Editar
+                            
+                            <!-- Botoes de Ordenacao -->
+                            <div class="flex items-center space-x-1">
+                                <button onclick="moveProductOrder(${index}, -1)" ${index === 0 ? 'disabled' : ''} class="px-2 py-0.5 bg-gray-200 hover:bg-gray-300 disabled:opacity-30 rounded text-xs">
+                                    <i class="fa-solid fa-arrow-up"></i>
                                 </button>
-                                <button onclick="deleteProductFirebase('${prod.id}')" class="text-red-600 hover:text-red-800 text-xs font-bold">
-                                    <i class="fa-solid fa-trash"></i> Excluir
+                                <button onclick="moveProductOrder(${index}, 1)" ${index === dbProducts.length - 1 ? 'disabled' : ''} class="px-2 py-0.5 bg-gray-200 hover:bg-gray-300 disabled:opacity-30 rounded text-xs">
+                                    <i class="fa-solid fa-arrow-down"></i>
                                 </button>
                             </div>
                         </div>
-                        <h4 class="font-bold text-sm text-gray-900">${prod.name}</h4>
+
+                        <div class="flex justify-between items-start pt-1">
+                            <h4 class="font-bold text-sm text-gray-900">${prod.name}</h4>
+                            <button onclick="toggleProductActive('${prod.id}', ${isActive})" class="px-2 py-0.5 text-[10px] font-bold rounded-full ${isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                                ${isActive ? 'Visível' : 'Oculto'}
+                            </button>
+                        </div>
+
                         <div class="text-xs text-gray-600">Setup: <strong>${formatBRL(prod.setup)}</strong></div>
                         <div class="text-xs text-gray-600">Mensal: <strong>${formatBRL(prod.mensal)}</strong></div>
+
+                        <div class="flex justify-end space-x-2 pt-2 border-t text-xs">
+                            <button onclick="openEditModal('${prod.id}', '${prod.name}', ${prod.setup}, ${prod.mensal})" class="text-blue-600 hover:text-blue-800 font-bold">
+                                <i class="fa-solid fa-pen-to-square"></i> Editar
+                            </button>
+                            <button onclick="deleteProductFirebase('${prod.id}')" class="text-red-600 hover:text-red-800 font-bold">
+                                <i class="fa-solid fa-trash"></i> Excluir
+                            </button>
+                        </div>
                     </div>
                 `;
             });
