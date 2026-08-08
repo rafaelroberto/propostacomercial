@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SGP - Sistema de Geração de Propostas v1.5</title>
+    <title>SGP - Sistema de Geração de Propostas v2.0</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -18,15 +18,134 @@
         .draggable-card { cursor: grab; user-select: none; }
         .draggable-card:active { cursor: grabbing; }
         .draggable-card.dragging { opacity: 0.4; border: 2px dashed #3b82f6; }
+        .auth-bg {
+            background: linear-gradient(135deg, #0f172a 0%, #005691 50%, #3eb049 100%);
+        }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800 min-h-screen flex flex-col justify-between">
 
-    <!-- Header Navigation -->
-    <header class="bg-white border-b border-gray-200 sticky top-0 z-50">
+    <!-- TELA DE LOGIN / REGISTRO (ESTILO APP DE BANCO) -->
+    <section id="screen-auth" class="fixed inset-0 z-50 auth-bg flex items-center justify-center p-4">
+        <div class="bg-white/95 backdrop-blur-md rounded-3xl w-full max-w-md p-8 shadow-2xl space-y-6 border border-white/20">
+            
+            <!-- Logo Oficial LifeApps no Login -->
+            <div class="text-center flex flex-col items-center">
+                <svg class="h-10 w-auto mb-2" viewBox="0 0 320 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="0" y="55" width="14" height="15" rx="1.5" fill="#3eb049"/>
+                    <rect x="22" y="30" width="14" height="40" rx="1.5" fill="#3eb049"/>
+                    <rect x="44" y="42" width="14" height="28" rx="1.5" fill="#3eb049"/>
+                    <rect x="70" y="5" width="14" height="65" rx="3" fill="#005691"/>
+                    <rect x="94" y="28" width="14" height="42" rx="3" fill="#005691"/>
+                    <path d="M 125 18 C 125 10 132 5 142 5 L 148 5 L 148 18 L 140 18 C 138 18 137 19 137 21 L 137 28 L 148 28 L 148 40 L 137 40 L 137 70 L 125 70 Z" fill="#005691"/>
+                    <path d="M 185 48 C 185 36 175 27 163 27 C 151 27 141 36 141 49 C 141 62 151 71 163 71 C 172 71 180 66 183 58 L 172 54 C 170 58 167 60 163 60 C 157 60 153 56 153 51 L 185 51 Z M 153 43 C 154 39 158 36 163 36 C 168 36 172 39 173 43 Z" fill="#005691"/>
+                    <text x="188" y="68" font-family="'Segoe UI', Roboto, Arial, sans-serif" font-size="34" font-weight="500" fill="#3eb049">apps</text>
+                </svg>
+                <h2 class="text-sm font-bold text-gray-500 tracking-wider uppercase">Sistema de Geração de Proposta</h2>
+            </div>
+
+            <!-- Abas de Troca Login Vendedor / Login Admin -->
+            <div class="flex rounded-xl bg-gray-100 p-1 text-xs font-bold">
+                <button onclick="switchAuthTab('vendedor')" id="auth-tab-vendedor" class="flex-1 py-2 rounded-lg bg-white shadow text-blue-900 transition">Vendedor</button>
+                <button onclick="switchAuthTab('admin')" id="auth-tab-admin" class="flex-1 py-2 rounded-lg text-gray-500 hover:text-gray-900 transition">Administrador</button>
+            </div>
+
+            <!-- FORMULÁRIO LOGIN VENDEDOR -->
+            <form id="form-login-vendedor" onsubmit="handleVendedorLogin(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">E-mail Corporativo</label>
+                    <div class="relative">
+                        <input type="email" id="login-vendedor-email" required placeholder="seu.nome@lifeapps.com.br" class="w-full pl-9 pr-3 py-2.5 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                        <i class="fa-solid fa-envelope absolute left-3 top-3.5 text-gray-400 text-xs"></i>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Senha</label>
+                    <div class="relative">
+                        <input type="password" id="login-vendedor-senha" required placeholder="••••••••" class="w-full pl-9 pr-3 py-2.5 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                        <i class="fa-solid fa-lock absolute left-3 top-3.5 text-gray-400 text-xs"></i>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg transition flex items-center justify-center">
+                    Entrar no SGP <i class="fa-solid fa-arrow-right-to-bracket ml-2"></i>
+                </button>
+
+                <div class="text-center pt-2">
+                    <button type="button" onclick="showRegisterScreen()" class="text-xs text-blue-600 font-bold hover:underline">
+                        Ainda não tem conta? Criar conta
+                    </button>
+                </div>
+            </form>
+
+            <!-- FORMULÁRIO LOGIN ADMIN -->
+            <form id="form-login-admin" onsubmit="handleAdminLogin(event)" class="space-y-4 hidden">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Senha do Administrador</label>
+                    <div class="relative">
+                        <input type="password" id="login-admin-senha" required placeholder="Digite a senha de administrador..." class="w-full pl-9 pr-3 py-2.5 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                        <i class="fa-solid fa-shield-halved absolute left-3 top-3.5 text-gray-400 text-xs"></i>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl shadow-lg transition flex items-center justify-center">
+                    Acessar Painel Adm <i class="fa-solid fa-user-shield ml-2"></i>
+                </button>
+            </form>
+
+            <!-- FORMULÁRIO DE REGISTRO DE VENDEDOR -->
+            <form id="form-register-vendedor" onsubmit="handleVendedorRegister(event)" class="space-y-3 hidden">
+                <h3 class="text-xs font-bold text-gray-700 uppercase border-b pb-1">Criar Conta de Vendedor</h3>
+
+                <div>
+                    <label class="block text-[11px] font-semibold text-gray-600 uppercase">Nome Completo</label>
+                    <input type="text" id="reg-nome" required placeholder="Seu nome" class="w-full p-2 border rounded-lg text-sm">
+                </div>
+
+                <div>
+                    <label class="block text-[11px] font-semibold text-gray-600 uppercase">E-mail Corporativo (@lifeapps.com.br)</label>
+                    <input type="email" id="reg-email" required placeholder="nome@lifeapps.com.br" class="w-full p-2 border rounded-lg text-sm">
+                </div>
+
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-[11px] font-semibold text-gray-600 uppercase">Senha</label>
+                        <input type="password" id="reg-senha" required placeholder="••••••••" class="w-full p-2 border rounded-lg text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-semibold text-gray-600 uppercase">Confirmar Senha</label>
+                        <input type="password" id="reg-senha-confirm" required placeholder="••••••••" class="w-full p-2 border rounded-lg text-sm">
+                    </div>
+                </div>
+
+                <!-- VERIFICAÇÃO "NÃO SOU UM ROBÔ" -->
+                <div class="p-3 bg-gray-50 border rounded-xl flex items-center justify-between">
+                    <label class="flex items-center space-x-2 cursor-pointer">
+                        <input type="checkbox" id="reg-captcha" required class="w-4 h-4 text-blue-600 rounded">
+                        <span class="text-xs font-medium text-gray-700">Não sou um robô</span>
+                    </label>
+                    <i class="fa-solid fa-robot text-gray-400 text-lg"></i>
+                </div>
+
+                <button type="submit" class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow transition">
+                    Cadastrar Minha Conta
+                </button>
+
+                <div class="text-center pt-1">
+                    <button type="button" onclick="hideRegisterScreen()" class="text-xs text-gray-500 font-bold hover:underline">
+                        Voltar para o Login
+                    </button>
+                </div>
+            </form>
+
+        </div>
+    </section>
+
+    <!-- Header Navigation (Após Autenticação) -->
+    <header class="bg-white border-b border-gray-200 sticky top-0 z-40">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             
-            <!-- Logo Oficial LifeApps -->
             <div class="flex items-center space-x-4">
                 <div class="flex items-end">
                     <svg class="h-8 w-auto" viewBox="0 0 320 80" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -41,20 +160,20 @@
                     </svg>
                 </div>
 
-                <span class="text-xs bg-blue-100 text-blue-800 px-2.5 py-1 rounded-full font-bold">SGP v1.5</span>
+                <span class="text-xs bg-blue-100 text-blue-800 px-2.5 py-1 rounded-full font-bold">SGP v2.0</span>
                 <span class="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full font-medium flex items-center">
                     <span class="w-1.5 h-1.5 bg-green-500 rounded-full mr-1.5"></span> Firebase Online
                 </span>
             </div>
             
-            <nav class="flex space-x-4">
-                <button onclick="switchTab('vendedor')" id="tab-vendedor" class="px-4 py-2 rounded-lg font-medium text-sm transition-all bg-blue-600 text-white shadow-sm">
-                    <i class="fa-solid fa-calculator mr-2"></i>Área do Vendedor
+            <div class="flex items-center space-x-4">
+                <span id="header-user-display" class="text-xs font-bold text-gray-700 bg-gray-100 px-3 py-1.5 rounded-lg border">
+                    <i class="fa-solid fa-user text-blue-600 mr-1.5"></i> Vendedor
+                </span>
+                <button onclick="logoutSystem()" class="px-3 py-1.5 bg-red-100 hover:bg-red-200 text-red-700 text-xs font-bold rounded-lg transition flex items-center">
+                    <i class="fa-solid fa-power-off mr-1.5"></i> Sair
                 </button>
-                <button onclick="openAdminWithPassword()" id="tab-admin" class="px-4 py-2 rounded-lg font-medium text-sm transition-all text-gray-600 hover:bg-gray-100">
-                    <i class="fa-solid fa-lock mr-2"></i>Painel Administrativo
-                </button>
-            </nav>
+            </div>
         </div>
     </header>
 
@@ -82,10 +201,7 @@
                                     <i class="fa-solid fa-chevron-down absolute right-3 top-3.5 text-gray-400 text-xs pointer-events-none"></i>
                                 </div>
 
-                                <!-- Lista Suspensa de Resultados -->
-                                <div id="custom-product-dropdown" class="absolute left-0 right-0 top-full mt-1 bg-white border border-gray-200 rounded-lg shadow-xl max-h-56 overflow-y-auto z-50 hidden divide-y divide-gray-100">
-                                    <!-- Injetado dinamicamente via JS -->
-                                </div>
+                                <div id="custom-product-dropdown" class="absolute left-0 right-0 top-full mt-1 bg-white border border-gray-200 rounded-lg shadow-xl max-h-56 overflow-y-auto z-50 hidden divide-y divide-gray-100"></div>
                                 <input type="hidden" id="selected-product-id">
                             </div>
 
@@ -279,21 +395,31 @@
         <!-- PAINEL ADM -->
         <section id="screen-admin" class="hidden space-y-6">
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 space-y-6">
+                
+                <!-- Header Painel Adm -->
                 <div class="flex justify-between items-center border-b pb-4">
                     <div>
-                        <h2 class="text-xl font-bold text-gray-900">Painel Administrativo - Firebase Cloud</h2>
-                        <p class="text-xs text-gray-500">Arraste e solte os cards para organizar a ordem de exibição.</p>
+                        <h2 class="text-xl font-bold text-gray-900">Painel Administrativo - Gestão Geral</h2>
+                        <p class="text-xs text-gray-500">Gerencie usuários, produtos e segurança do SGP.</p>
                     </div>
-                    <div class="flex items-center space-x-3">
-                        <span class="bg-green-100 text-green-800 text-xs px-3 py-1 rounded-full font-medium">Autenticado</span>
-                        <button onclick="logoutAdmin()" class="px-3 py-1 bg-red-100 hover:bg-red-200 text-red-700 text-xs font-bold rounded-lg transition flex items-center">
-                            <i class="fa-solid fa-right-from-bracket mr-1"></i> Sair
-                        </button>
-                    </div>
+                    <span class="bg-green-100 text-green-800 text-xs px-3 py-1 rounded-full font-medium">SGP Admin Sincronizado</span>
                 </div>
 
-                <!-- Cadastro de Produto -->
-                <div class="space-y-4">
+                <!-- Abas do Painel Adm -->
+                <div class="flex space-x-2 border-b">
+                    <button onclick="switchAdminSubTab('produtos')" id="adm-subtab-produtos" class="px-4 py-2 text-xs font-bold border-b-2 border-blue-600 text-blue-600">
+                        <i class="fa-solid fa-box mr-1"></i> Gestão de Produtos
+                    </button>
+                    <button onclick="switchAdminSubTab('usuarios')" id="adm-subtab-usuarios" class="px-4 py-2 text-xs font-bold text-gray-500 hover:text-gray-800">
+                        <i class="fa-solid fa-users mr-1"></i> Gestão de Vendedores
+                    </button>
+                    <button onclick="switchAdminSubTab('seguranca')" id="adm-subtab-seguranca" class="px-4 py-2 text-xs font-bold text-gray-500 hover:text-gray-800">
+                        <i class="fa-solid fa-key mr-1"></i> Alterar Senha Admin
+                    </button>
+                </div>
+
+                <!-- SUB-ABA 1: GESTÃO DE PRODUTOS -->
+                <div id="adm-sec-produtos" class="space-y-4">
                     <h3 class="text-md font-bold text-gray-800">Cadastrar Novo Produto na Nuvem</h3>
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-3 bg-gray-50 p-4 rounded-xl border">
                         <div>
@@ -315,21 +441,15 @@
                         </div>
                     </div>
 
-                    <!-- Gestão de Produtos -->
                     <div class="mt-6 space-y-3">
                         <div class="flex justify-between items-center">
-                            <div class="flex items-center space-x-2">
-                                <h4 class="text-xs font-bold text-gray-500 uppercase">Produtos Cadastrados</h4>
-                                <span class="text-[10px] bg-blue-50 text-blue-700 border border-blue-200 px-2 py-0.5 rounded font-semibold">
-                                    <i class="fa-solid fa-hand-pointer mr-1"></i> Arraste os cards para reordenar
-                                </span>
-                            </div>
+                            <h4 class="text-xs font-bold text-gray-500 uppercase">Produtos Cadastrados (Arraste para mover)</h4>
                             <div class="flex space-x-2">
                                 <button onclick="deleteSelectedProducts()" class="px-3 py-1 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 text-xs font-semibold rounded-lg transition">
-                                    <i class="fa-solid fa-trash mr-1"></i> Excluir Selecionados
+                                    Excluir Selecionados
                                 </button>
                                 <button onclick="deleteAllProducts()" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white text-xs font-semibold rounded-lg transition">
-                                    <i class="fa-solid fa-dumpster mr-1"></i> Excluir Todos
+                                    Excluir Todos
                                 </button>
                             </div>
                         </div>
@@ -337,6 +457,47 @@
                         <div id="admin-products-list" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
                     </div>
                 </div>
+
+                <!-- SUB-ABA 2: GESTÃO DE VENDEDORES E APROVAÇÃO -->
+                <div id="adm-sec-usuarios" class="space-y-4 hidden">
+                    <h3 class="text-md font-bold text-gray-800">Aprovação e Controle de Vendedores</h3>
+                    <div class="bg-gray-50 p-4 rounded-xl border">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-xs border-collapse">
+                                <thead>
+                                    <tr class="bg-gray-200 text-gray-700 uppercase font-bold">
+                                        <th class="p-2.5">Nome</th>
+                                        <th class="p-2.5">E-mail Corporativo</th>
+                                        <th class="p-2.5 text-center">Status</th>
+                                        <th class="p-2.5 text-center">Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="admin-users-table-body" class="divide-y divide-gray-200">
+                                    <!-- Injetado via JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SUB-ABA 3: ALTERAR SENHA ADMIN -->
+                <div id="adm-sec-seguranca" class="space-y-4 hidden max-w-md">
+                    <h3 class="text-md font-bold text-gray-800">Alterar Senha do Administrador</h3>
+                    <div class="bg-gray-50 p-4 rounded-xl border space-y-3">
+                        <div>
+                            <label class="text-xs text-gray-600 font-medium">Nova Senha</label>
+                            <input type="password" id="admin-new-pass" placeholder="Digite a nova senha..." class="w-full p-2 border rounded text-sm mt-1">
+                        </div>
+                        <div>
+                            <label class="text-xs text-gray-600 font-medium">Confirmar Nova Senha</label>
+                            <input type="password" id="admin-confirm-pass" placeholder="Confirme a nova senha..." class="w-full p-2 border rounded text-sm mt-1">
+                        </div>
+                        <button onclick="saveAdminPassword()" class="w-full py-2 bg-blue-600 text-white rounded-lg text-xs font-bold hover:bg-blue-700">
+                            Atualizar Senha do Admin
+                        </button>
+                    </div>
+                </div>
+
             </div>
         </section>
 
@@ -345,7 +506,7 @@
     <!-- FOOTER INSTITUCIONAL FIXO -->
     <footer class="bg-white border-t border-gray-200 py-4 text-center text-xs text-gray-500 mt-auto">
         <div class="max-w-7xl mx-auto px-4">
-            Sistema de Geração de Proposta (SGP) - Nº v1.5 | Desenvolvido por 
+            Sistema de Geração de Proposta (SGP) - Nº v2.0 | Desenvolvido por 
             <a href="https://www.linkedin.com/in/rafaelrobertonascimento" target="_blank" rel="noopener noreferrer" class="text-blue-600 font-bold hover:underline">
                 Rafael Nascimento <i class="fa-brands fa-linkedin text-xs ml-0.5"></i>
             </a>
@@ -413,14 +574,36 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        let isAuthenticated = false;
+        let currentUser = null;
+        let adminPassHash = "lifeapps123";
         let dbProducts = [];
+        let dbUsers = [];
         let proposalProducts = [];
         let draggedItemIndex = null;
 
-        const dbExtras = {
-            extrator: 250.00
-        };
+        const dbExtras = { extrator: 250.00 };
+
+        // Carrega configurações gerais (Senha do Admin)
+        function listenSystemSettings() {
+            db.collection("settings").doc("config").onSnapshot((doc) => {
+                if (doc.exists && doc.data().adminPass) {
+                    adminPassHash = doc.data().adminPass;
+                } else {
+                    db.collection("settings").doc("config").set({ adminPass: "lifeapps123" });
+                }
+            });
+        }
+
+        // Carrega Usuários / Vendedores do Firebase
+        function listenFirebaseUsers() {
+            db.collection("usuarios").onSnapshot((snapshot) => {
+                dbUsers = [];
+                snapshot.forEach((doc) => {
+                    dbUsers.push({ id: doc.id, ...doc.data() });
+                });
+                renderAdminUsers();
+            });
+        }
 
         function listenFirebaseProducts() {
             db.collection("produtos").onSnapshot((snapshot) => {
@@ -428,12 +611,10 @@
                 snapshot.forEach((doc) => {
                     dbProducts.push({ id: doc.id, ...doc.data() });
                 });
-                
                 dbProducts.sort((a, b) => (a.order || 0) - (b.order || 0));
 
-                if (dbProducts.length === 0) {
-                    seedDefaultProducts();
-                } else {
+                if (dbProducts.length === 0) seedDefaultProducts();
+                else {
                     renderCustomDropdownList();
                     renderAdminProducts();
                 }
@@ -449,23 +630,116 @@
             defaults.forEach(p => db.collection("produtos").add(p));
         }
 
-        function openAdminWithPassword() {
-            if (!isAuthenticated) {
-                const pass = prompt('Digite a senha do Painel Administrativo:');
-                if (pass === 'lifeapps123') {
-                    isAuthenticated = true;
-                    switchTab('admin');
-                } else {
-                    alert('Senha incorreta!');
-                }
+        // LÓGICA DE AUTENTICAÇÃO E LOGIN
+        function switchAuthTab(type) {
+            document.getElementById('form-login-vendedor').classList.add('hidden');
+            document.getElementById('form-login-admin').classList.add('hidden');
+            document.getElementById('form-register-vendedor').classList.add('hidden');
+
+            document.getElementById('auth-tab-vendedor').className = "flex-1 py-2 rounded-lg text-gray-500 hover:text-gray-900 transition";
+            document.getElementById('auth-tab-admin').className = "flex-1 py-2 rounded-lg text-gray-500 hover:text-gray-900 transition";
+
+            if (type === 'vendedor') {
+                document.getElementById('form-login-vendedor').classList.remove('hidden');
+                document.getElementById('auth-tab-vendedor').className = "flex-1 py-2 rounded-lg bg-white shadow text-blue-900 transition font-bold";
             } else {
-                switchTab('admin');
+                document.getElementById('form-login-admin').classList.remove('hidden');
+                document.getElementById('auth-tab-admin').className = "flex-1 py-2 rounded-lg bg-white shadow text-blue-900 transition font-bold";
             }
         }
 
-        function logoutAdmin() {
-            isAuthenticated = false;
+        function showRegisterScreen() {
+            document.getElementById('form-login-vendedor').classList.add('hidden');
+            document.getElementById('form-login-admin').classList.add('hidden');
+            document.getElementById('form-register-vendedor').classList.remove('hidden');
+        }
+
+        function hideRegisterScreen() {
+            switchAuthTab('vendedor');
+        }
+
+        // Login do Vendedor
+        function handleVendedorLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('login-vendedor-email').value.trim().toLowerCase();
+            const pass = document.getElementById('login-vendedor-senha').value;
+
+            const user = dbUsers.find(u => u.email === email && u.senha === pass);
+
+            if (!user) {
+                alert('E-mail ou senha inválidos!');
+                return;
+            }
+
+            if (user.status !== 'aprovado') {
+                alert('Seu cadastro foi realizado. Aguardando autorização da gestão para você acessar.');
+                return;
+            }
+
+            currentUser = user;
+            document.getElementById('header-user-display').innerHTML = `<i class="fa-solid fa-user text-blue-600 mr-1.5"></i> ${user.nome}`;
+            document.getElementById('screen-auth').classList.add('hidden');
             switchTab('vendedor');
+        }
+
+        // Login do Admin
+        function handleAdminLogin(e) {
+            e.preventDefault();
+            const pass = document.getElementById('login-admin-senha').value;
+
+            if (pass === adminPassHash) {
+                currentUser = { nome: "Administrador", role: "admin" };
+                document.getElementById('header-user-display').innerHTML = `<i class="fa-solid fa-shield-halved text-green-600 mr-1.5"></i> Admin SGP`;
+                document.getElementById('screen-auth').classList.add('hidden');
+                switchTab('vendedor');
+                alert('Acesso autenticado ao SGP! Use a aba do Painel Adm no menu superior se necessário.');
+            } else {
+                alert('Senha de administrador incorreta!');
+            }
+        }
+
+        // Registro do Vendedor
+        function handleVendedorRegister(e) {
+            e.preventDefault();
+            const nome = document.getElementById('reg-nome').value.trim();
+            const email = document.getElementById('reg-email').value.trim().toLowerCase();
+            const senha = document.getElementById('reg-senha').value;
+            const confirm = document.getElementById('reg-senha-confirm').value;
+
+            if (!email.endsWith('@lifeapps.com.br')) {
+                alert('Por favor, utilize seu e-mail corporativo finalizado em @lifeapps.com.br');
+                return;
+            }
+
+            if (senha !== confirm) {
+                alert('As senhas digitadas não coincidem!');
+                return;
+            }
+
+            const exists = dbUsers.some(u => u.email === email);
+            if (exists) {
+                alert('Este e-mail corporativo já possui conta cadastrada!');
+                return;
+            }
+
+            db.collection("usuarios").add({
+                nome,
+                email,
+                senha,
+                status: 'pendente',
+                dataCriacao: new Date().toISOString()
+            }).then(() => {
+                alert('Seu cadastro foi realizado com sucesso!\nAguardando autorização da gestão para você acessar.');
+                hideRegisterScreen();
+            });
+        }
+
+        function logoutSystem() {
+            currentUser = null;
+            document.getElementById('login-vendedor-email').value = '';
+            document.getElementById('login-vendedor-senha').value = '';
+            document.getElementById('login-admin-senha').value = '';
+            document.getElementById('screen-auth').classList.remove('hidden');
         }
 
         function switchTab(tab) {
@@ -478,7 +752,88 @@
             }
         }
 
-        // NOVO DROPDOWN CUSTOMIZADO ESTILO GOOGLE
+        // SUB-ABAS DO PAINEL ADM
+        function switchAdminSubTab(sec) {
+            document.getElementById('adm-sec-produtos').classList.add('hidden');
+            document.getElementById('adm-sec-usuarios').classList.add('hidden');
+            document.getElementById('adm-sec-seguranca').classList.add('hidden');
+
+            document.getElementById('adm-subtab-produtos').className = "px-4 py-2 text-xs font-bold text-gray-500 hover:text-gray-800";
+            document.getElementById('adm-subtab-usuarios').className = "px-4 py-2 text-xs font-bold text-gray-500 hover:text-gray-800";
+            document.getElementById('adm-subtab-seguranca').className = "px-4 py-2 text-xs font-bold text-gray-500 hover:text-gray-800";
+
+            if (sec === 'produtos') {
+                document.getElementById('adm-sec-produtos').classList.remove('hidden');
+                document.getElementById('adm-subtab-produtos').className = "px-4 py-2 text-xs font-bold border-b-2 border-blue-600 text-blue-600";
+            } else if (sec === 'usuarios') {
+                document.getElementById('adm-sec-usuarios').classList.remove('hidden');
+                document.getElementById('adm-subtab-usuarios').className = "px-4 py-2 text-xs font-bold border-b-2 border-blue-600 text-blue-600";
+            } else {
+                document.getElementById('adm-sec-seguranca').classList.remove('hidden');
+                document.getElementById('adm-subtab-seguranca').className = "px-4 py-2 text-xs font-bold border-b-2 border-blue-600 text-blue-600";
+            }
+        }
+
+        // Alterar Senha do Admin
+        function saveAdminPassword() {
+            const newPass = document.getElementById('admin-new-pass').value;
+            const confirmPass = document.getElementById('admin-confirm-pass').value;
+
+            if (!newPass || newPass !== confirmPass) {
+                alert('Senhas inválidas ou divergentes!');
+                return;
+            }
+
+            db.collection("settings").doc("config").update({ adminPass: newPass }).then(() => {
+                alert('Senha do Administrador atualizada com sucesso!');
+                document.getElementById('admin-new-pass').value = '';
+                document.getElementById('admin-confirm-pass').value = '';
+            });
+        }
+
+        // Ações de Usuário pelo Admin
+        function setUserStatus(userId, status) {
+            db.collection("usuarios").doc(userId).update({ status }).then(() => {
+                alert(`Status do usuário atualizado para: ${status.toUpperCase()}`);
+            });
+        }
+
+        function deleteUser(userId) {
+            if (confirm('Deseja excluir este vendedor do sistema?')) {
+                db.collection("usuarios").doc(userId).delete();
+            }
+        }
+
+        function renderAdminUsers() {
+            const tbody = document.getElementById('admin-users-table-body');
+            tbody.innerHTML = '';
+
+            if (dbUsers.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-gray-400 italic">Nenhum vendedor cadastrado ainda.</td></tr>`;
+                return;
+            }
+
+            dbUsers.forEach(u => {
+                let badge = `<span class="px-2 py-0.5 bg-yellow-100 text-yellow-800 rounded font-bold">Pendente</span>`;
+                if (u.status === 'aprovado') badge = `<span class="px-2 py-0.5 bg-green-100 text-green-800 rounded font-bold">Aprovado</span>`;
+                if (u.status === 'bloqueado') badge = `<span class="px-2 py-0.5 bg-red-100 text-red-800 rounded font-bold">Bloqueado</span>`;
+
+                tbody.innerHTML += `
+                    <tr class="hover:bg-gray-50">
+                        <td class="p-2.5 font-bold text-gray-800">${u.nome}</td>
+                        <td class="p-2.5 text-gray-600">${u.email}</td>
+                        <td class="p-2.5 text-center">${badge}</td>
+                        <td class="p-2.5 text-center space-x-1">
+                            <button onclick="setUserStatus('${u.id}', 'aprovado')" class="px-2 py-1 bg-green-600 hover:bg-green-700 text-white rounded text-[10px] font-bold">Autorizar</button>
+                            <button onclick="setUserStatus('${u.id}', 'bloqueado')" class="px-2 py-1 bg-yellow-500 hover:bg-yellow-600 text-white rounded text-[10px] font-bold">Bloquear</button>
+                            <button onclick="deleteUser('${u.id}')" class="px-2 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-[10px] font-bold">Excluir</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        // DROPDOWN AUTOCOMPLETE ESTILO GOOGLE
         function renderCustomDropdownList(filterTerm = '') {
             const container = document.getElementById('custom-product-dropdown');
             const activeProducts = dbProducts.filter(p => p.active !== false);
@@ -522,7 +877,6 @@
             document.getElementById('vendedor-search-input').value = name;
             document.getElementById('custom-product-dropdown').classList.add('hidden');
 
-            // Regra dos 5 usuários automáticos para LifeChat / LifeGrowth
             const nameLower = name.toLowerCase();
             if (nameLower.includes('lifechat') || nameLower.includes('lifegrowth')) {
                 document.getElementById('vendedor-qtd-mensal').value = 5;
@@ -531,7 +885,6 @@
             }
         }
 
-        // Fecha a lista ao clicar fora
         document.addEventListener('click', function(e) {
             const searchBox = document.getElementById('vendedor-search-input');
             const dropdown = document.getElementById('custom-product-dropdown');
@@ -577,7 +930,6 @@
                     hasMensal: qtdMensal > 0
                 });
                 
-                // Limpa campos do busca
                 document.getElementById('selected-product-id').value = '';
                 document.getElementById('vendedor-search-input').value = '';
                 
@@ -641,15 +993,10 @@
             const dataSetupInput = document.getElementById('vendedor-data-setup').value;
             const dataMensalInput = document.getElementById('vendedor-data-mensal').value;
 
-            // Ocultar ou Exibir Seção de Setup no Layout
             const setupSection = document.getElementById('slide-section-setup');
-            if (ocultarSetup) {
-                setupSection.style.display = 'none';
-            } else {
-                setupSection.style.display = 'block';
-            }
+            if (ocultarSetup) setupSection.style.display = 'none';
+            else setupSection.style.display = 'block';
 
-            // Tabela Setup
             let setupItems = [];
             if (!ocultarSetup) {
                 proposalProducts.forEach(p => {
@@ -666,7 +1013,6 @@
                 });
             }
 
-            // Tabela Mensalidade
             let mensalItems = [];
             proposalProducts.forEach(p => {
                 if (p.hasMensal) {
@@ -807,7 +1153,6 @@
             table.innerHTML = html;
         }
 
-        // Funções do Modal de Edição
         function openEditModal(id, name, setup, mensal) {
             document.getElementById('edit-prod-id').value = id;
             document.getElementById('edit-prod-name').value = name;
@@ -905,7 +1250,7 @@
             });
         }
 
-        // LÓGICA DRAG AND DROP PARA O PAINEL ADM
+        // LÓGICA DRAG AND DROP
         function handleDragStart(e, index) {
             draggedItemIndex = index;
             e.target.classList.add('dragging');
@@ -977,6 +1322,9 @@
             });
         }
 
+        // Inicialização
+        listenSystemSettings();
+        listenFirebaseUsers();
         listenFirebaseProducts();
     </script>
 </body>
