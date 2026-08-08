@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SGP - Sistema de Geração de Propostas v2.5</title>
+    <title>SGP - Sistema de Geração de Propostas v2.6</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -71,7 +71,7 @@
                     <div>
                         <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">E-mail Corporativo</label>
                         <div class="relative">
-                            <input type="email" id="login-vendedor-email" required placeholder="vendedor@lifeapps.com.br" class="w-full pl-9 pr-3 py-2.5 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                            <input type="email" id="login-vendedor-email" required placeholder="vendedor@lifeapps.com.br" value="vendedor@lifeapps.com.br" class="w-full pl-9 pr-3 py-2.5 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
                             <i class="fa-solid fa-envelope absolute left-3 top-3.5 text-gray-400 text-xs"></i>
                         </div>
                     </div>
@@ -79,7 +79,7 @@
                     <div>
                         <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Senha</label>
                         <div class="relative">
-                            <input type="password" id="login-vendedor-senha" required placeholder="123456" class="w-full pl-9 pr-3 py-2.5 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                            <input type="password" id="login-vendedor-senha" required placeholder="123" value="123" class="w-full pl-9 pr-3 py-2.5 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
                             <i class="fa-solid fa-lock absolute left-3 top-3.5 text-gray-400 text-xs"></i>
                         </div>
                     </div>
@@ -157,7 +157,7 @@
         </div>
 
         <div class="text-center text-xs text-white/80 py-2">
-            Sistema de Geração de Proposta (SGP) - Nº v2.5 | Desenvolvido por 
+            Sistema de Geração de Proposta (SGP) - Nº v2.6 | Desenvolvido por 
             <a href="https://www.linkedin.com/in/rafaelrobertonascimento" target="_blank" rel="noopener noreferrer" class="text-white font-bold underline">
                 Rafael Nascimento <i class="fa-brands fa-linkedin text-xs ml-0.5"></i>
             </a>
@@ -181,7 +181,7 @@
                     </svg>
                 </div>
 
-                <span class="text-xs bg-blue-100 text-blue-800 px-2.5 py-1 rounded-full font-bold">SGP v2.5</span>
+                <span class="text-xs bg-blue-100 text-blue-800 px-2.5 py-1 rounded-full font-bold">SGP v2.6</span>
             </div>
 
             <nav class="flex items-center space-x-3">
@@ -352,7 +352,7 @@
 
                     <!-- BOTÕES DE EMISSÃO -->
                     <div class="space-y-2 border-t pt-4">
-                        <button onclick="generateOfficialProposalPDF()" class="w-full py-3.5 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl shadow-lg transition flex items-center justify-center text-base">
+                        <button onclick="generateOfficialProposalPDF()" id="btn-generate-pdf" class="w-full py-3.5 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl shadow-lg transition flex items-center justify-center text-base">
                             <i class="fa-solid fa-file-pdf mr-2 text-xl"></i> Gerar PDF Oficial da Proposta (22 Páginas)
                         </button>
 
@@ -616,10 +616,26 @@
         </div>
     </div>
 
+    <!-- MODAL DE BARRA DE PROGRESSO DO PDF -->
+    <div id="pdf-progress-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl w-full max-w-md p-6 shadow-2xl text-center space-y-4">
+            <div class="w-12 h-12 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto text-xl">
+                <i class="fa-solid fa-file-pdf"></i>
+            </div>
+            <h3 id="pdf-progress-title" class="text-base font-bold text-gray-800">Gerando arquivo PDF...</h3>
+            
+            <div class="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+                <div id="pdf-progress-bar" class="bg-green-600 h-full transition-all duration-300 w-0"></div>
+            </div>
+
+            <p id="pdf-progress-text" class="text-xs font-semibold text-gray-500">0% concluído</p>
+        </div>
+    </div>
+
     <!-- FOOTER INSTITUCIONAL FIXO -->
     <footer class="bg-white border-t border-gray-200 py-4 text-center text-xs text-gray-500 mt-auto">
         <div class="max-w-7xl mx-auto px-4">
-            Sistema de Geração de Proposta (SGP) - Nº v2.5 | Desenvolvido por 
+            Sistema de Geração de Proposta (SGP) - Nº v2.6 | Desenvolvido por 
             <a href="https://www.linkedin.com/in/rafaelrobertonascimento" target="_blank" rel="noopener noreferrer" class="text-blue-600 font-bold hover:underline">
                 Rafael Nascimento <i class="fa-brands fa-linkedin text-xs ml-0.5"></i>
             </a>
@@ -712,12 +728,12 @@
                     dbUsers.push({ id: doc.id, ...doc.data() });
                 });
 
-                // Se não houver nenhum vendedor, cadastra o Vendedor Padrão pré-aprovado
+                // Cria Vendedor Padrão se não existir
                 if (!dbUsers.some(u => u.email === 'vendedor@lifeapps.com.br')) {
                     db.collection("usuarios").add({
                         nome: "Vendedor Padrão",
                         email: "vendedor@lifeapps.com.br",
-                        senha: "123456",
+                        senha: "123",
                         status: "aprovado",
                         dataCriacao: new Date().toISOString()
                     });
@@ -1341,7 +1357,7 @@
             table.innerHTML = html;
         }
 
-        // GERAÇÃO DO PDF OFICIAL DE 22 PÁGINAS OBEDECENDO O TEMPLATE
+        // GERAÇÃO DO PDF DE 22 PÁGINAS COM BARRA DE PROGRESSO
         function generateOfficialProposalPDF() {
             const empresa = document.getElementById('vendedor-empresa').value.trim();
             const cnpj = document.getElementById('vendedor-cnpj').value.trim();
@@ -1361,6 +1377,7 @@
             const validade = `20/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
             const vendedorNome = currentUser ? currentUser.nome : "Consultor Comercial";
 
+            // Preenche os dados no HTML do PDF
             document.getElementById('pdf-empresa-p2').innerText = empresa;
             document.getElementById('pdf-cnpj-p2').innerText = cnpj;
             document.getElementById('pdf-produtos-p2').innerText = proposalProducts.map(p => p.name).join(', ');
@@ -1374,20 +1391,56 @@
             document.getElementById('pdf-cnpj-p22').innerText = cnpj;
             document.getElementById('pdf-empresa-sign-p22').innerText = empresa;
 
+            // Exibe Modal de Barra de Progresso
+            const modalProgress = document.getElementById('pdf-progress-modal');
+            const progressBar = document.getElementById('pdf-progress-bar');
+            const progressText = document.getElementById('pdf-progress-text');
+            modalProgress.classList.remove('hidden');
+
+            let percent = 0;
+            const interval = setInterval(() => {
+                percent += 10;
+                if (percent <= 90) {
+                    progressBar.style.width = percent + '%';
+                    progressText.innerText = percent + '% concluído';
+                }
+            }, 100);
+
+            // Torna o documento visível temporariamente fora de tela pro renderizador
             const element = document.getElementById('pdf-full-document');
             element.style.display = 'block';
+            element.style.position = 'absolute';
+            element.style.left = '-9999px';
+            element.style.top = '0';
 
-            const opt = {
-                margin:       0,
-                filename:     `Proposta_Comercial_LifeApps_${empresa.replace(/\s+/g, '_')}.pdf`,
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2 },
-                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' }
-            };
+            setTimeout(() => {
+                const opt = {
+                    margin:       0,
+                    filename:     `Proposta_Comercial_LifeApps_${empresa.replace(/\s+/g, '_')}.pdf`,
+                    image:        { type: 'jpeg', quality: 0.98 },
+                    html2canvas:  { scale: 2, useCORS: true, logging: false },
+                    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' }
+                };
 
-            html2pdf().set(opt).from(element).save().then(() => {
-                element.style.display = 'none';
-            });
+                html2pdf().set(opt).from(element).save().then(() => {
+                    clearInterval(interval);
+                    progressBar.style.width = '100%';
+                    progressText.innerText = '100% Concluído!';
+
+                    setTimeout(() => {
+                        element.style.display = 'none';
+                        element.style.position = 'static';
+                        modalProgress.classList.add('hidden');
+                        progressBar.style.width = '0%';
+                    }, 500);
+                }).catch(err => {
+                    clearInterval(interval);
+                    console.error("Erro ao gerar PDF:", err);
+                    alert("Ocorreu um erro ao gerar o PDF. Tente novamente.");
+                    element.style.display = 'none';
+                    modalProgress.classList.add('hidden');
+                });
+            }, 400);
         }
 
         function openEditModal(id, name, setup, mensal) {
