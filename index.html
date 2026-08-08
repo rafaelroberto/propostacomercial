@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SGP - Sistema de Geração de Propostas v1.4</title>
+    <title>SGP - Sistema de Geração de Propostas v1.5</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -41,7 +41,7 @@
                     </svg>
                 </div>
 
-                <span class="text-xs bg-blue-100 text-blue-800 px-2.5 py-1 rounded-full font-bold">SGP v1.4</span>
+                <span class="text-xs bg-blue-100 text-blue-800 px-2.5 py-1 rounded-full font-bold">SGP v1.5</span>
                 <span class="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full font-medium flex items-center">
                     <span class="w-1.5 h-1.5 bg-green-500 rounded-full mr-1.5"></span> Firebase Online
                 </span>
@@ -75,12 +75,18 @@
                         <label class="block text-xs font-bold text-gray-700 uppercase">Adicionar Produto</label>
                         <div class="space-y-3">
                             
-                            <!-- Campo de Busca por Digitação e Seleção de Produto -->
-                            <div class="relative space-y-1">
-                                <input type="text" id="vendedor-search-input" placeholder="🔍 Digite para buscar o produto..." oninput="filterProductSearch()" class="w-full p-2.5 border rounded-lg text-sm bg-white font-medium focus:ring-2 focus:ring-blue-500 focus:outline-none">
-                                <select id="vendedor-produto-select" onchange="handleProductSelectionChange()" class="w-full p-2.5 border rounded-lg text-sm bg-white font-medium">
-                                    <option value="" disabled selected>-- Selecione um produto --</option>
-                                </select>
+                            <!-- COMBOBOX AUTOCOMPLETE ESTILO GOOGLE -->
+                            <div class="relative">
+                                <div class="relative">
+                                    <input type="text" id="vendedor-search-input" placeholder="🔍 Digite para pesquisar o produto..." onfocus="openProductDropdown()" oninput="filterProductsList()" class="w-full p-2.5 pr-10 border rounded-lg text-sm bg-white font-medium focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                                    <i class="fa-solid fa-chevron-down absolute right-3 top-3.5 text-gray-400 text-xs pointer-events-none"></i>
+                                </div>
+
+                                <!-- Lista Suspensa de Resultados -->
+                                <div id="custom-product-dropdown" class="absolute left-0 right-0 top-full mt-1 bg-white border border-gray-200 rounded-lg shadow-xl max-h-56 overflow-y-auto z-50 hidden divide-y divide-gray-100">
+                                    <!-- Injetado dinamicamente via JS -->
+                                </div>
+                                <input type="hidden" id="selected-product-id">
                             </div>
 
                             <!-- Quantidades -->
@@ -309,7 +315,7 @@
                         </div>
                     </div>
 
-                    <!-- Gestão de Produtos com Drag and Drop -->
+                    <!-- Gestão de Produtos -->
                     <div class="mt-6 space-y-3">
                         <div class="flex justify-between items-center">
                             <div class="flex items-center space-x-2">
@@ -328,7 +334,6 @@
                             </div>
                         </div>
 
-                        <!-- Grid Reordenável via Drag & Drop -->
                         <div id="admin-products-list" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
                     </div>
                 </div>
@@ -340,7 +345,7 @@
     <!-- FOOTER INSTITUCIONAL FIXO -->
     <footer class="bg-white border-t border-gray-200 py-4 text-center text-xs text-gray-500 mt-auto">
         <div class="max-w-7xl mx-auto px-4">
-            Sistema de Geração de Proposta (SGP) - Nº v1.4 | Desenvolvido por 
+            Sistema de Geração de Proposta (SGP) - Nº v1.5 | Desenvolvido por 
             <a href="https://www.linkedin.com/in/rafaelrobertonascimento" target="_blank" rel="noopener noreferrer" class="text-blue-600 font-bold hover:underline">
                 Rafael Nascimento <i class="fa-brands fa-linkedin text-xs ml-0.5"></i>
             </a>
@@ -429,7 +434,7 @@
                 if (dbProducts.length === 0) {
                     seedDefaultProducts();
                 } else {
-                    populateProductOptions();
+                    renderCustomDropdownList();
                     renderAdminProducts();
                 }
             });
@@ -473,51 +478,67 @@
             }
         }
 
-        // Povoa e Agrupa Produtos por Nome / Família
-        function populateProductOptions() {
-            const select = document.getElementById('vendedor-produto-select');
-            select.innerHTML = `<option value="" disabled selected>-- Selecione um produto --</option>`;
-
+        // NOVO DROPDOWN CUSTOMIZADO ESTILO GOOGLE
+        function renderCustomDropdownList(filterTerm = '') {
+            const container = document.getElementById('custom-product-dropdown');
             const activeProducts = dbProducts.filter(p => p.active !== false);
 
-            // Agrupamento alfabético inteligente
-            activeProducts.sort((a, b) => a.name.localeCompare(b.name));
+            let filtered = activeProducts;
+            if (filterTerm.trim() !== '') {
+                filtered = activeProducts.filter(p => p.name.toLowerCase().includes(filterTerm.toLowerCase()));
+            }
 
-            activeProducts.forEach(prod => {
-                select.innerHTML += `<option value="${prod.id}">${prod.name}</option>`;
+            if (filtered.length === 0) {
+                container.innerHTML = `<div class="p-3 text-xs text-gray-400 text-center italic">Nenhum produto encontrado</div>`;
+                return;
+            }
+
+            let html = '';
+            filtered.forEach(prod => {
+                html += `
+                    <div onclick="selectProductFromDropdown('${prod.id}', '${prod.name}')" 
+                         class="p-2.5 text-xs text-gray-700 hover:bg-blue-50 hover:text-blue-700 font-medium cursor-pointer transition flex items-center justify-between">
+                        <span><i class="fa-solid fa-box text-blue-500 mr-2"></i> ${prod.name}</span>
+                        <span class="text-[10px] text-gray-400">Setup: ${formatBRL(prod.setup)}</span>
+                    </div>
+                `;
             });
+            container.innerHTML = html;
         }
 
-        // Filtro por digitação no campo de busca do vendedor
-        function filterProductSearch() {
-            const term = document.getElementById('vendedor-search-input').value.toLowerCase();
-            const select = document.getElementById('vendedor-produto-select');
-            
-            const activeProducts = dbProducts.filter(p => p.active !== false);
-            select.innerHTML = `<option value="" disabled selected>-- Selecione um produto --</option>`;
-
-            activeProducts.forEach(prod => {
-                if (prod.name.toLowerCase().includes(term)) {
-                    select.innerHTML += `<option value="${prod.id}">${prod.name}</option>`;
-                }
-            });
+        function openProductDropdown() {
+            document.getElementById('custom-product-dropdown').classList.remove('hidden');
+            renderCustomDropdownList(document.getElementById('vendedor-search-input').value);
         }
 
-        // Preenchimento Automático de 5 Usuários para LifeChat e LifeGrowth
-        function handleProductSelectionChange() {
-            const select = document.getElementById('vendedor-produto-select');
-            const prodId = select.value;
-            const prodObj = dbProducts.find(p => p.id === prodId);
+        function filterProductsList() {
+            const term = document.getElementById('vendedor-search-input').value;
+            document.getElementById('custom-product-dropdown').classList.remove('hidden');
+            renderCustomDropdownList(term);
+        }
 
-            if (prodObj) {
-                const nameLower = prodObj.name.toLowerCase();
-                if (nameLower.includes('lifechat') || nameLower.includes('lifegrowth')) {
-                    document.getElementById('vendedor-qtd-mensal').value = 5;
-                } else {
-                    document.getElementById('vendedor-qtd-mensal').value = 1;
-                }
+        function selectProductFromDropdown(id, name) {
+            document.getElementById('selected-product-id').value = id;
+            document.getElementById('vendedor-search-input').value = name;
+            document.getElementById('custom-product-dropdown').classList.add('hidden');
+
+            // Regra dos 5 usuários automáticos para LifeChat / LifeGrowth
+            const nameLower = name.toLowerCase();
+            if (nameLower.includes('lifechat') || nameLower.includes('lifegrowth')) {
+                document.getElementById('vendedor-qtd-mensal').value = 5;
+            } else {
+                document.getElementById('vendedor-qtd-mensal').value = 1;
             }
         }
+
+        // Fecha a lista ao clicar fora
+        document.addEventListener('click', function(e) {
+            const searchBox = document.getElementById('vendedor-search-input');
+            const dropdown = document.getElementById('custom-product-dropdown');
+            if (searchBox && dropdown && !searchBox.contains(e.target) && !dropdown.contains(e.target)) {
+                dropdown.classList.add('hidden');
+            }
+        });
 
         function toggleSetupInputs() {
             const isSemSetup = document.getElementById('vendedor-sem-setup').checked;
@@ -527,8 +548,7 @@
         }
 
         function addProductToProposal() {
-            const select = document.getElementById('vendedor-produto-select');
-            const prodId = select.value;
+            const prodId = document.getElementById('selected-product-id').value;
             const isSemSetup = document.getElementById('vendedor-sem-setup').checked;
             const bonificarSetup = document.getElementById('vendedor-bonificar-setup').checked;
             const bonificarMensal = document.getElementById('vendedor-bonificar-mensal').checked;
@@ -537,7 +557,7 @@
             const qtdMensal = parseInt(document.getElementById('vendedor-qtd-mensal').value || 1);
 
             if (!prodId) {
-                alert('Selecione um produto primeiro!');
+                alert('Pesquise e selecione um produto da lista primeiro!');
                 return;
             }
 
@@ -556,6 +576,11 @@
                     hasSetup: !isSemSetup && qtdSetup > 0,
                     hasMensal: qtdMensal > 0
                 });
+                
+                // Limpa campos do busca
+                document.getElementById('selected-product-id').value = '';
+                document.getElementById('vendedor-search-input').value = '';
+                
                 renderProposalItemsList();
                 calculateProposal();
             }
@@ -894,11 +919,9 @@
             e.preventDefault();
             if (draggedItemIndex === null || draggedItemIndex === targetIndex) return;
 
-            // Reordena o array local
             const draggedItem = dbProducts.splice(draggedItemIndex, 1)[0];
             dbProducts.splice(targetIndex, 0, draggedItem);
 
-            // Atualiza no Firestore
             dbProducts.forEach((prod, newIdx) => {
                 db.collection("produtos").doc(prod.id).update({ order: newIdx + 1 });
             });
