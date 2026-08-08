@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LifeApps - Gerador de Propostas Comerciais</title>
+    <title>SGP - Sistema de Geração de Propostas v1.2</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- Firebase SDKs -->
+    <!-- Firebase SDKs (v9 Compat) -->
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 
@@ -17,7 +17,7 @@
         .slide-preview { background-color: #ffffff; aspect-ratio: 16/9; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1); }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800 min-h-screen">
+<body class="bg-gray-50 text-gray-800 min-h-screen flex flex-col justify-between">
 
     <!-- Header Navigation -->
     <header class="bg-white border-b border-gray-200 sticky top-0 z-50">
@@ -38,7 +38,7 @@
                     </svg>
                 </div>
 
-                <span class="text-xs bg-blue-100 text-blue-800 px-2.5 py-1 rounded-full font-bold">Propostas</span>
+                <span class="text-xs bg-blue-100 text-blue-800 px-2.5 py-1 rounded-full font-bold">SGP v1.2</span>
                 <span class="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full font-medium flex items-center">
                     <span class="w-1.5 h-1.5 bg-green-500 rounded-full mr-1.5"></span> Firebase Online
                 </span>
@@ -55,7 +55,7 @@
         </div>
     </header>
 
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
         
         <!-- TELA DO VENDEDOR -->
         <section id="screen-vendedor" class="space-y-8">
@@ -87,7 +87,7 @@
                                 </div>
                             </div>
 
-                            <!-- Oções de Isenção e Bonificação de Valores -->
+                            <!-- Isenção e Bonificação -->
                             <div class="space-y-2 bg-white p-3 rounded-lg border text-xs">
                                 <label class="flex items-center text-gray-700 font-medium cursor-pointer">
                                     <input type="checkbox" id="vendedor-sem-setup" class="w-4 h-4 text-blue-600 rounded mr-2" onchange="toggleSetupInputs()">
@@ -115,7 +115,7 @@
                         </div>
                     </div>
 
-                    <!-- Lista de Produtos Adicionados na Proposta -->
+                    <!-- Lista de Produtos Adicionados -->
                     <div class="space-y-2">
                         <label class="block text-xs font-semibold text-gray-600 uppercase">Produtos Selecionados</label>
                         <div id="proposal-items-list" class="space-y-2">
@@ -123,22 +123,16 @@
                         </div>
                     </div>
 
-                    <!-- Extras -->
+                    <!-- Serviços Extras (Apenas Extrator) -->
                     <div class="space-y-3 border-t pt-4">
-                        <label class="block text-xs font-semibold text-gray-600 uppercase">Serviços / Horas Extras</label>
-                        <div class="grid grid-cols-2 gap-3 text-sm">
-                            <div>
-                                <label class="text-xs text-gray-500">Horas Dev. Extra</label>
-                                <input type="number" id="vendedor-horas-dev" value="0" min="0" onchange="calculateProposal()" class="w-full p-2 border rounded-lg text-sm">
-                            </div>
-                            <div>
-                                <label class="text-xs text-gray-500">Instalação Extrator</label>
-                                <select id="vendedor-extrator" onchange="calculateProposal()" class="w-full p-2 border rounded-lg text-sm">
-                                    <option value="nao">Não</option>
-                                    <option value="sim">Sim (R$ 250,00)</option>
-                                    <option value="bonificado">Bonificado (R$ 0,00)</option>
-                                </select>
-                            </div>
+                        <label class="block text-xs font-semibold text-gray-600 uppercase">Serviço Adicional</label>
+                        <div>
+                            <label class="text-xs text-gray-500">Instalação Extrator</label>
+                            <select id="vendedor-extrator" onchange="calculateProposal()" class="w-full p-2 border rounded-lg text-sm bg-white">
+                                <option value="nao">Não</option>
+                                <option value="sim">Sim (R$ 250,00)</option>
+                                <option value="bonificado">Bonificado (R$ 0,00)</option>
+                            </select>
                         </div>
                     </div>
 
@@ -157,12 +151,12 @@
                         </div>
                     </div>
 
-                    <!-- Parcelamento e Datas -->
+                    <!-- Parcelamento e Datas (Bloqueados automaticamente se bonificados) -->
                     <div class="space-y-3 border-t pt-4">
                         <label class="block text-xs font-semibold text-gray-600 uppercase">Condições & Parcelamento</label>
                         <div class="grid grid-cols-2 gap-3">
                             <div>
-                                <label class="text-xs text-gray-500">Parc. Setup (Apenas Setup)</label>
+                                <label class="text-xs text-gray-500">Parc. Setup</label>
                                 <select id="vendedor-parc-setup" onchange="calculateProposal()" class="w-full p-2 border rounded-lg text-sm">
                                     <option value="1">À vista (1x)</option>
                                     <option value="2">2x Sem juros</option>
@@ -269,7 +263,6 @@
                     </div>
                     <div class="flex items-center space-x-3">
                         <span class="bg-green-100 text-green-800 text-xs px-3 py-1 rounded-full font-medium">Autenticado</span>
-                        <!-- Botão de Sair (Deslogar) -->
                         <button onclick="logoutAdmin()" class="px-3 py-1 bg-red-100 hover:bg-red-200 text-red-700 text-xs font-bold rounded-lg transition flex items-center">
                             <i class="fa-solid fa-right-from-bracket mr-1"></i> Sair
                         </button>
@@ -299,7 +292,7 @@
                         </div>
                     </div>
 
-                    <!-- Gestão e Ações em Lote para Produtos -->
+                    <!-- Gestão de Produtos -->
                     <div class="mt-6 space-y-3">
                         <div class="flex justify-between items-center">
                             <h4 class="text-xs font-bold text-gray-500 uppercase">Produtos Cadastrados</h4>
@@ -320,6 +313,16 @@
         </section>
 
     </main>
+
+    <!-- FOOTER INSTITUCIONAL FIXO -->
+    <footer class="bg-white border-t border-gray-200 py-4 text-center text-xs text-gray-500 mt-auto">
+        <div class="max-w-7xl mx-auto px-4">
+            Sistema de Geração de Proposta (SGP) - Nº v1.2 | Desenvolvido por 
+            <a href="https://www.linkedin.com/in/rafaelrobertonascimento" target="_blank" rel="noopener noreferrer" class="text-blue-600 font-bold hover:underline">
+                Rafael Nascimento <i class="fa-brands fa-linkedin text-xs ml-0.5"></i>
+            </a>
+        </div>
+    </footer>
 
     <!-- MODAL DE EDIÇÃO DE PRODUTO -->
     <div id="edit-product-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
@@ -387,7 +390,6 @@
         let proposalProducts = [];
 
         const dbExtras = {
-            horaDev: 200.00,
             extrator: 250.00
         };
 
@@ -540,7 +542,6 @@
         }
 
         function calculateProposal() {
-            const horasDev = parseInt(document.getElementById('vendedor-horas-dev').value || 0);
             const extratorOp = document.getElementById('vendedor-extrator').value;
             
             const descSetupPercent = (parseFloat(document.getElementById('desc-setup').value) || 0) / 100;
@@ -549,9 +550,6 @@
             const parcSetup = document.getElementById('vendedor-parc-setup').value;
             const dataSetupInput = document.getElementById('vendedor-data-setup').value;
             const dataMensalInput = document.getElementById('vendedor-data-mensal').value;
-
-            const dataSetupFormatted = formatDateStr(dataSetupInput);
-            const dataMensalFormatted = formatDateStr(dataMensalInput);
 
             // Tabela Setup
             let setupItems = [];
@@ -567,17 +565,6 @@
                     });
                 }
             });
-
-            if (horasDev > 0) {
-                setupItems.push({
-                    nome: "Horas de Desenvolvimento Extra",
-                    qtd: horasDev,
-                    valorIndividual: dbExtras.horaDev,
-                    valorTotal: dbExtras.horaDev * horasDev,
-                    desc: descSetupPercent,
-                    isBonificado: false
-                });
-            }
 
             // Tabela Mensalidade
             let mensalItems = [];
@@ -613,6 +600,17 @@
                     isBonificado: true
                 });
             }
+
+            // Lógica Inteligente para Bloqueio de Parcela e Datas Inúteis
+            const hasChargeableSetup = setupItems.some(i => !i.isBonificado && i.valorTotal > 0);
+            const hasChargeableMensal = mensalItems.some(i => !i.isBonificado && i.valorTotal > 0);
+
+            document.getElementById('vendedor-parc-setup').disabled = !hasChargeableSetup;
+            document.getElementById('vendedor-data-setup').disabled = !hasChargeableSetup;
+            document.getElementById('vendedor-data-mensal').disabled = !hasChargeableMensal;
+
+            const dataSetupFormatted = hasChargeableSetup ? formatDateStr(dataSetupInput) : 'Isento';
+            const dataMensalFormatted = hasChargeableMensal ? formatDateStr(dataMensalInput) : 'Isento';
 
             renderSetupTable('slide-table-setup', setupItems, descSetupPercent > 0, `${parcSetup}x`, dataSetupFormatted);
             renderMensalTable('slide-table-mensal', mensalItems, descMensalPercent > 0, dataMensalFormatted);
@@ -656,7 +654,7 @@
                                 <td class="p-2 text-right text-green-700 font-semibold">${item.isBonificado ? '-' : descFormatted}</td>
                                 <td class="p-2 text-right font-bold text-gray-900">${formatBRL(valorComDesc, item.isBonificado)}</td>
                             ` : ''}
-                            <td class="p-2 text-center text-gray-600">${parcelamentoText}</td>
+                            <td class="p-2 text-center text-gray-600">${item.isBonificado ? '-' : parcelamentoText}</td>
                             <td class="p-2 text-center text-gray-600 font-semibold">${dataText}</td>
                         </tr>
                     `;
@@ -710,7 +708,7 @@
             table.innerHTML = html;
         }
 
-        // Modal de Edição de Produtos do Admin
+        // Funções do Modal de Edição
         function openEditModal(id, name, setup, mensal) {
             document.getElementById('edit-prod-id').value = id;
             document.getElementById('edit-prod-name').value = name;
@@ -734,7 +732,16 @@
             db.collection("produtos").doc(id).update({ name, setup, mensal }).then(() => {
                 alert('Produto atualizado com sucesso!');
                 closeEditModal();
-            });
+            }).catch(err => alert("Erro ao atualizar: " + err.message));
+        }
+
+        // Funções de Exclusão de Produtos no Firestore
+        function deleteProductFirebase(id) {
+            if (confirm('Deseja excluir este produto?')) {
+                db.collection("produtos").doc(id).delete().then(() => {
+                    alert('Produto excluído com sucesso!');
+                }).catch(err => alert("Erro ao excluir: " + err.message));
+            }
         }
 
         function deleteSelectedProducts() {
@@ -798,10 +805,13 @@
                 list.innerHTML += `
                     <div class="p-4 bg-gray-50 border rounded-xl space-y-2 relative">
                         <div class="flex items-start justify-between">
-                            <input type="checkbox" value="${prod.id}" class="prod-checkbox w-4 h-4 text-blue-600 rounded">
-                            <div class="flex space-x-1">
-                                <button onclick="openEditModal('${prod.id}', '${prod.name}', ${prod.setup}, ${prod.mensal})" class="text-blue-600 hover:text-blue-800 p-1 text-xs font-bold">
+                            <input type="checkbox" value="${prod.id}" class="prod-checkbox w-4 h-4 text-blue-600 rounded cursor-pointer">
+                            <div class="flex space-x-2">
+                                <button onclick="openEditModal('${prod.id}', '${prod.name}', ${prod.setup}, ${prod.mensal})" class="text-blue-600 hover:text-blue-800 text-xs font-bold">
                                     <i class="fa-solid fa-pen-to-square"></i> Editar
+                                </button>
+                                <button onclick="deleteProductFirebase('${prod.id}')" class="text-red-600 hover:text-red-800 text-xs font-bold">
+                                    <i class="fa-solid fa-trash"></i> Excluir
                                 </button>
                             </div>
                         </div>
