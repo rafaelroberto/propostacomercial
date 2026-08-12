@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SGP - Sistema de Geração de Propostas v2.9</title>
+    <title>SGP - Sistema de Geração de Propostas v3.0</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -165,7 +165,7 @@
                     </svg>
                 </div>
 
-                <span class="text-xs bg-blue-100 text-blue-800 px-2.5 py-1 rounded-full font-bold">SGP v2.9</span>
+                <span class="text-xs bg-blue-100 text-blue-800 px-2.5 py-1 rounded-full font-bold">SGP v3.0</span>
             </div>
 
             <nav class="flex items-center space-x-3">
@@ -196,9 +196,15 @@
                 
                 <!-- Formulário Vendedor -->
                 <div class="lg:col-span-5 bg-white p-6 rounded-2xl shadow-sm border border-gray-200 space-y-6">
-                    <h2 class="text-xl font-bold text-gray-900 border-b pb-3 flex items-center justify-between">
-                        <span><i class="fa-solid fa-file-signature text-blue-600 mr-2"></i> Montar Proposta</span>
-                    </h2>
+                    <div class="flex justify-between items-center border-b pb-3">
+                        <h2 class="text-xl font-bold text-gray-900">
+                            <i class="fa-solid fa-file-signature text-blue-600 mr-2"></i> Montar Proposta
+                        </h2>
+                        <!-- Botão de Ver Meus Orçamentos Salvos -->
+                        <button onclick="openVendedorPropostasModal()" class="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg text-xs font-bold border border-blue-200 transition flex items-center">
+                            <i class="fa-solid fa-folder-open mr-1.5"></i> Meus Orçamentos
+                        </button>
+                    </div>
 
                     <!-- Módulo de Adicionar Produtos -->
                     <div class="border rounded-xl p-4 bg-gray-50 space-y-3">
@@ -322,10 +328,16 @@
                         </div>
                     </div>
 
-                    <!-- BOTÃO DE VISUALIZAÇÃO EM TELA CHEIA (PRINT) -->
-                    <button onclick="openPrintZoomModal()" class="w-full py-3.5 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl shadow-lg transition flex items-center justify-center text-base">
-                        <i class="fa-solid fa-expand mr-2 text-xl"></i> Visualizar Proposta em Tela Cheia (Modo Print)
-                    </button>
+                    <!-- BOTÕES DE SALVAR E PRINT -->
+                    <div class="space-y-2 border-t pt-4">
+                        <button onclick="saveProposalToDatabase()" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow transition flex items-center justify-center text-sm">
+                            <i class="fa-solid fa-floppy-disk mr-2 text-base"></i> Salvar Orçamento no Meu Perfil
+                        </button>
+
+                        <button onclick="openPrintZoomModal()" class="w-full py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl shadow transition flex items-center justify-center text-sm">
+                            <i class="fa-solid fa-expand mr-2 text-base"></i> Visualizar Proposta em Tela Cheia (Modo Print)
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Preview do Slide -->
@@ -400,7 +412,7 @@
                 <div class="flex justify-between items-center border-b pb-4">
                     <div>
                         <h2 class="text-xl font-bold text-gray-900">Painel Administrativo - Gestão Geral</h2>
-                        <p class="text-xs text-gray-500">Gerencie usuários, produtos e segurança do SGP.</p>
+                        <p class="text-xs text-gray-500">Gerencie usuários, produtos, orçamentos e segurança do SGP.</p>
                     </div>
                     <span class="bg-green-100 text-green-800 text-xs px-3 py-1 rounded-full font-medium">Admin Autenticado</span>
                 </div>
@@ -408,6 +420,9 @@
                 <div class="flex space-x-2 border-b">
                     <button onclick="switchAdminSubTab('produtos')" id="adm-subtab-produtos" class="px-4 py-2 text-xs font-bold border-b-2 border-blue-600 text-blue-600">
                         <i class="fa-solid fa-box mr-1"></i> Gestão de Produtos
+                    </button>
+                    <button onclick="switchAdminSubTab('orcamentos')" id="adm-subtab-orcamentos" class="px-4 py-2 text-xs font-bold text-gray-500 hover:text-gray-800">
+                        <i class="fa-solid fa-folder-tree mr-1"></i> Todos os Orçamentos
                     </button>
                     <button onclick="switchAdminSubTab('usuarios')" id="adm-subtab-usuarios" class="px-4 py-2 text-xs font-bold text-gray-500 hover:text-gray-800">
                         <i class="fa-solid fa-users mr-1"></i> Gestão de Vendedores
@@ -457,7 +472,55 @@
                     </div>
                 </div>
 
-                <!-- SUB-ABA 2: GESTÃO DE VENDEDORES -->
+                <!-- SUB-ABA 2: GESTÃO DE TODOS OS ORÇAMENTOS (ADMIN) -->
+                <div id="adm-sec-orcamentos" class="space-y-4 hidden">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-md font-bold text-gray-800">Visão Geral de Orçamentos Criados pelos Vendedores</h3>
+                        <div class="flex space-x-2">
+                            <button onclick="deleteSelectedPropostasAdmin()" class="px-3 py-1 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 text-xs font-semibold rounded-lg transition">
+                                Excluir Selecionados
+                            </button>
+                            <button onclick="deleteAllPropostasAdmin()" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white text-xs font-semibold rounded-lg transition">
+                                Excluir Todos
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Filtros e Busca no Admin -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 bg-gray-50 p-3 rounded-xl border">
+                        <div>
+                            <label class="text-[11px] font-bold text-gray-600 uppercase">Filtrar por Cliente</label>
+                            <input type="text" id="admin-filter-cliente" oninput="renderAdminPropostasTable()" placeholder="Nome do cliente..." class="w-full p-2 border rounded-lg text-xs bg-white">
+                        </div>
+                        <div>
+                            <label class="text-[11px] font-bold text-gray-600 uppercase">Filtrar por Vendedor</label>
+                            <input type="text" id="admin-filter-vendedor" oninput="renderAdminPropostasTable()" placeholder="Nome do vendedor..." class="w-full p-2 border rounded-lg text-xs bg-white">
+                        </div>
+                        <div>
+                            <label class="text-[11px] font-bold text-gray-600 uppercase">Filtrar por Data</label>
+                            <input type="date" id="admin-filter-data" onchange="renderAdminPropostasTable()" class="w-full p-2 border rounded-lg text-xs bg-white">
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-50 p-4 rounded-xl border overflow-x-auto">
+                        <table class="w-full text-left text-xs border-collapse">
+                            <thead>
+                                <tr class="bg-gray-200 text-gray-700 uppercase font-bold">
+                                    <th class="p-2.5 w-8 text-center"><input type="checkbox" id="admin-select-all-prop" onchange="toggleSelectAllPropostas(this)"></th>
+                                    <th class="p-2.5">Cliente</th>
+                                    <th class="p-2.5">Vendedor</th>
+                                    <th class="p-2.5">Data Criação</th>
+                                    <th class="p-2.5 text-right">Total Setup</th>
+                                    <th class="p-2.5 text-right">Total Mensal</th>
+                                    <th class="p-2.5 text-center">Ação</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-propostas-table-body" class="divide-y divide-gray-200 bg-white"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- SUB-ABA 3: GESTÃO DE VENDEDORES -->
                 <div id="adm-sec-usuarios" class="space-y-4 hidden">
                     <h3 class="text-md font-bold text-gray-800">Aprovação e Controle de Vendedores</h3>
                     <div class="bg-gray-50 p-4 rounded-xl border">
@@ -477,7 +540,7 @@
                     </div>
                 </div>
 
-                <!-- SUB-ABA 3: ALTERAR SENHA ADMIN -->
+                <!-- SUB-ABA 4: ALTERAR SENHA ADMIN -->
                 <div id="adm-sec-seguranca" class="space-y-4 hidden max-w-md">
                     <h3 class="text-md font-bold text-gray-800">Alterar Senha do Administrador</h3>
                     <div class="bg-gray-50 p-4 rounded-xl border space-y-3">
@@ -503,12 +566,43 @@
     <!-- FOOTER INSTITUCIONAL FIXO -->
     <footer class="bg-white border-t border-gray-200 py-4 text-center text-xs text-gray-500 mt-auto">
         <div class="max-w-7xl mx-auto px-4">
-            Sistema de Geração de Proposta (SGP) | Desenvolvido por 
+            Sistema de Geração de Proposta (SGP) - Nº v3.0 | Desenvolvido por 
             <a href="https://www.linkedin.com/in/rafaelrobertonascimento" target="_blank" rel="noopener noreferrer" class="text-blue-600 font-bold hover:underline">
                 Rafael Nascimento <i class="fa-brands fa-linkedin text-xs ml-0.5"></i>
             </a>
         </div>
     </footer>
+
+    <!-- MODAL MEUS ORÇAMENTOS SALVOS (VENDEDOR) -->
+    <div id="vendedor-propostas-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl w-full max-w-4xl p-6 relative shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center border-b pb-3">
+                <div>
+                    <h3 class="text-lg font-bold text-gray-800">Meus Orçamentos Salvos</h3>
+                    <p class="text-xs text-gray-500">Gerencie ou recarregue propostas salvas no seu perfil.</p>
+                </div>
+                <button onclick="closeVendedorPropostasModal()" class="w-8 h-8 rounded-full bg-gray-100 hover:bg-red-100 hover:text-red-600 flex items-center justify-center font-bold text-gray-600 transition">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Filtros do Vendedor -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 bg-gray-50 p-3 rounded-xl border">
+                <div>
+                    <label class="text-[11px] font-bold text-gray-600 uppercase">Pesquisar por Cliente</label>
+                    <input type="text" id="vendedor-filter-cliente" oninput="renderVendedorPropostasList()" placeholder="Nome do cliente..." class="w-full p-2 border rounded-lg text-xs bg-white">
+                </div>
+                <div>
+                    <label class="text-[11px] font-bold text-gray-600 uppercase">Pesquisar por Data</label>
+                    <input type="date" id="vendedor-filter-data" onchange="renderVendedorPropostasList()" class="w-full p-2 border rounded-lg text-xs bg-white">
+                </div>
+            </div>
+
+            <div id="vendedor-propostas-list-container" class="space-y-3 pt-2">
+                <!-- Injetado dinamicamente -->
+            </div>
+        </div>
+    </div>
 
     <!-- MODAL DE EDIÇÃO DE PRODUTO -->
     <div id="edit-product-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
@@ -536,7 +630,7 @@
         </div>
     </div>
 
-    <!-- MODAL DE ZOOM PARA PRINT & DOWNLOAD DE IMAGEM HD -->
+    <!-- MODAL DE ZOOM PARA PRINT -->
     <div id="print-zoom-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl w-full max-w-6xl p-6 relative shadow-2xl flex flex-col space-y-4 max-h-[95vh] overflow-y-auto">
             <div class="flex justify-between items-center border-b pb-3">
@@ -554,11 +648,10 @@
                 </div>
             </div>
 
-            <!-- CONTAINER APENAS COM AS TABELAS ISOLADAS (SEM CABEÇALHO/LOGO) -->
             <div id="zoom-content-box" class="p-6 bg-white rounded-xl shadow-sm overflow-x-auto flex flex-col justify-center"></div>
 
             <div class="text-center text-xs text-gray-500">
-                Ou pressione <strong>Windows + Shift + S</strong> (ou <strong>Cmd + Shift + 4</strong> no Mac) para capturar o print da área da tela.
+                Pressione <strong>Windows + Shift + S</strong> (ou <strong>Cmd + Shift + 4</strong> no Mac) para capturar o print da área da tela.
             </div>
         </div>
     </div>
@@ -581,6 +674,7 @@
         let adminPassHash = "lifeapps123";
         let dbProducts = [];
         let dbUsers = [];
+        let dbPropostas = []; // Todos os orçamentos salvos
         let proposalProducts = [];
         let draggedItemIndex = null;
 
@@ -631,6 +725,18 @@
                     renderCustomDropdownList();
                     renderAdminProducts();
                 }
+            });
+        }
+
+        // Escuta os Orçamentos Salvos na Nuvem
+        function listenFirebasePropostas() {
+            db.collection("propostas").onSnapshot((snapshot) => {
+                dbPropostas = [];
+                snapshot.forEach((doc) => {
+                    dbPropostas.push({ id: doc.id, ...doc.data() });
+                });
+                renderAdminPropostasTable();
+                renderVendedorPropostasList();
             });
         }
 
@@ -853,16 +959,21 @@
 
         function switchAdminSubTab(sec) {
             document.getElementById('adm-sec-produtos').classList.add('hidden');
+            document.getElementById('adm-sec-orcamentos').classList.add('hidden');
             document.getElementById('adm-sec-usuarios').classList.add('hidden');
             document.getElementById('adm-sec-seguranca').classList.add('hidden');
 
             document.getElementById('adm-subtab-produtos').className = "px-4 py-2 text-xs font-bold text-gray-500 hover:text-gray-800";
+            document.getElementById('adm-subtab-orcamentos').className = "px-4 py-2 text-xs font-bold text-gray-500 hover:text-gray-800";
             document.getElementById('adm-subtab-usuarios').className = "px-4 py-2 text-xs font-bold text-gray-500 hover:text-gray-800";
             document.getElementById('adm-subtab-seguranca').className = "px-4 py-2 text-xs font-bold text-gray-500 hover:text-gray-800";
 
             if (sec === 'produtos') {
                 document.getElementById('adm-sec-produtos').classList.remove('hidden');
                 document.getElementById('adm-subtab-produtos').className = "px-4 py-2 text-xs font-bold border-b-2 border-blue-600 text-blue-600";
+            } else if (sec === 'orcamentos') {
+                document.getElementById('adm-sec-orcamentos').classList.remove('hidden');
+                document.getElementById('adm-subtab-orcamentos').className = "px-4 py-2 text-xs font-bold border-b-2 border-blue-600 text-blue-600";
             } else if (sec === 'usuarios') {
                 document.getElementById('adm-sec-usuarios').classList.remove('hidden');
                 document.getElementById('adm-subtab-usuarios').className = "px-4 py-2 text-xs font-bold border-b-2 border-blue-600 text-blue-600";
@@ -927,6 +1038,202 @@
                     </tr>
                 `;
             });
+        }
+
+        // SALVAR ORÇAMENTO NO BANCO DE DADOS
+        function saveProposalToDatabase() {
+            if (proposalProducts.length === 0) {
+                alert('Adicione ao menos um produto antes de salvar o orçamento!');
+                return;
+            }
+
+            const clienteNome = prompt('Digite o Nome do Cliente / Empresa para salvar este orçamento:');
+            if (!clienteNome || clienteNome.trim() === '') {
+                alert('Nome do cliente é obrigatório para salvar o orçamento!');
+                return;
+            }
+
+            const totalSetupText = document.getElementById('slide-total-setup').innerText;
+            const totalMensalText = document.getElementById('slide-total-mensal').innerText;
+
+            const proposalData = {
+                vendedorId: currentUser ? (currentUser.id || 'padrao') : 'padrao',
+                vendedorNome: currentUser ? currentUser.nome : 'Vendedor Padrão',
+                clienteNome: clienteNome.trim(),
+                dataCriacao: new Date().toISOString(),
+                totalSetup: totalSetupText,
+                totalMensal: totalMensalText,
+                proposalProducts: proposalProducts,
+                descSetup: parseFloat(document.getElementById('desc-setup').value || 0),
+                descMensal: parseFloat(document.getElementById('desc-mensal').value || 0),
+                extrator: document.getElementById('vendedor-extrator').value,
+                parcSetup: document.getElementById('vendedor-parc-setup').value,
+                dataSetup: document.getElementById('vendedor-data-setup').value,
+                dataMensal: document.getElementById('vendedor-data-mensal').value,
+                ocultarSetup: document.getElementById('vendedor-ocultar-setup').checked
+            };
+
+            db.collection("propostas").add(proposalData).then(() => {
+                alert(`Orçamento para "${clienteNome}" salvo com sucesso no seu perfil!`);
+            }).catch(err => alert("Erro ao salvar orçamento: " + err.message));
+        }
+
+        // CARREGAR/EDITAR PROPOSTA SALVA
+        function loadProposalToState(propObj) {
+            proposalProducts = propObj.proposalProducts || [];
+            document.getElementById('desc-setup').value = propObj.descSetup || 0;
+            document.getElementById('desc-mensal').value = propObj.descMensal || 0;
+            document.getElementById('vendedor-extrator').value = propObj.extrator || 'nao';
+            document.getElementById('vendedor-parc-setup').value = propObj.parcSetup || '3';
+            document.getElementById('vendedor-data-setup').value = propObj.dataSetup || '';
+            document.getElementById('vendedor-data-mensal').value = propObj.dataMensal || '';
+            document.getElementById('vendedor-ocultar-setup').checked = !!propObj.ocultarSetup;
+
+            renderProposalItemsList();
+            calculateProposal();
+            closeVendedorPropostasModal();
+            alert(`Orçamento de "${propObj.clienteNome}" carregado para edição!`);
+        }
+
+        function deleteProposalFirebase(id) {
+            if (confirm('Deseja excluir este orçamento salvo?')) {
+                db.collection("propostas").doc(id).delete();
+            }
+        }
+
+        // GESTÃO DE ORÇAMENTOS NO VENDEDOR
+        function openVendedorPropostasModal() {
+            document.getElementById('vendedor-propostas-modal').classList.remove('hidden');
+            renderVendedorPropostasList();
+        }
+
+        function closeVendedorPropostasModal() {
+            document.getElementById('vendedor-propostas-modal').classList.add('hidden');
+        }
+
+        function renderVendedorPropostasList() {
+            const container = document.getElementById('vendedor-propostas-list-container');
+            const filterCliente = (document.getElementById('vendedor-filter-cliente')?.value || '').toLowerCase();
+            const filterData = document.getElementById('vendedor-filter-data')?.value || '';
+
+            const userVendedorId = currentUser ? currentUser.id : 'padrao';
+            
+            // Filtra orçamentos do próprio vendedor
+            let userProps = dbPropostas.filter(p => p.vendedorId === userVendedorId || p.vendedorNome === (currentUser ? currentUser.nome : 'Vendedor Padrão'));
+
+            if (filterCliente) {
+                userProps = userProps.filter(p => p.clienteNome.toLowerCase().includes(filterCliente));
+            }
+
+            if (filterData) {
+                userProps = userProps.filter(p => p.dataCriacao && p.dataCriacao.startsWith(filterData));
+            }
+
+            if (userProps.length === 0) {
+                container.innerHTML = `<p class="text-xs text-gray-400 text-center italic py-4">Nenhum orçamento encontrado.</p>`;
+                return;
+            }
+
+            let html = '';
+            userProps.forEach(p => {
+                const dataFormatada = new Date(p.dataCriacao).toLocaleDateString('pt-BR');
+
+                html += `
+                    <div class="p-4 bg-gray-50 border rounded-xl flex items-center justify-between shadow-sm hover:shadow transition">
+                        <div>
+                            <h4 class="font-bold text-sm text-blue-900">${p.clienteNome}</h4>
+                            <div class="text-xs text-gray-500 mt-1 flex space-x-4">
+                                <span><i class="fa-solid fa-calendar text-gray-400 mr-1"></i> ${dataFormatada}</span>
+                                <span>Setup: <strong class="text-gray-800">${p.totalSetup}</strong></span>
+                                <span>Mensal: <strong class="text-gray-800">${p.totalMensal}</strong></span>
+                            </div>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button onclick='loadProposalToState(${JSON.stringify(p).replace(/'/g, "&apos;")})' class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold transition">
+                                <i class="fa-solid fa-pen-to-square mr-1"></i> Carregar / Editar
+                            </button>
+                            <button onclick="deleteProposalFirebase('${p.id}')" class="px-3 py-1.5 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg text-xs font-bold transition">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        // GESTÃO DE ORÇAMENTOS NO PAINEL ADM
+        function renderAdminPropostasTable() {
+            const tbody = document.getElementById('admin-propostas-table-body');
+            const filterCliente = (document.getElementById('admin-filter-cliente')?.value || '').toLowerCase();
+            const filterVendedor = (document.getElementById('admin-filter-vendedor')?.value || '').toLowerCase();
+            const filterData = document.getElementById('admin-filter-data')?.value || '';
+
+            let filtered = dbPropostas;
+
+            if (filterCliente) {
+                filtered = filtered.filter(p => p.clienteNome && p.clienteNome.toLowerCase().includes(filterCliente));
+            }
+
+            if (filterVendedor) {
+                filtered = filtered.filter(p => p.vendedorNome && p.vendedorNome.toLowerCase().includes(filterVendedor));
+            }
+
+            if (filterData) {
+                filtered = filtered.filter(p => p.dataCriacao && p.dataCriacao.startsWith(filterData));
+            }
+
+            tbody.innerHTML = '';
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-gray-400 italic">Nenhum orçamento encontrado no banco de dados.</td></tr>`;
+                return;
+            }
+
+            filtered.forEach(p => {
+                const dataFormatada = new Date(p.dataCriacao).toLocaleDateString('pt-BR');
+
+                tbody.innerHTML += `
+                    <tr class="hover:bg-gray-50">
+                        <td class="p-2.5 text-center"><input type="checkbox" value="${p.id}" class="admin-prop-checkbox w-4 h-4 text-blue-600 rounded cursor-pointer"></td>
+                        <td class="p-2.5 font-bold text-gray-800">${p.clienteNome}</td>
+                        <td class="p-2.5 text-gray-600">${p.vendedorNome}</td>
+                        <td class="p-2.5 text-gray-500">${dataFormatada}</td>
+                        <td class="p-2.5 text-right font-medium text-gray-800">${p.totalSetup}</td>
+                        <td class="p-2.5 text-right font-bold text-blue-900">${p.totalMensal}</td>
+                        <td class="p-2.5 text-center">
+                            <button onclick="deleteProposalFirebase('${p.id}')" class="px-2 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-[10px] font-bold">Excluir</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function toggleSelectAllPropostas(source) {
+            const checkboxes = document.querySelectorAll('.admin-prop-checkbox');
+            checkboxes.forEach(cb => cb.checked = source.checked);
+        }
+
+        function deleteSelectedPropostasAdmin() {
+            const checkboxes = document.querySelectorAll('.admin-prop-checkbox:checked');
+            if (checkboxes.length === 0) {
+                alert('Selecione ao menos um orçamento para excluir!');
+                return;
+            }
+
+            if (confirm(`Deseja excluir os ${checkboxes.length} orçamentos selecionados?`)) {
+                checkboxes.forEach(cb => {
+                    db.collection("propostas").doc(cb.value).delete();
+                });
+            }
+        }
+
+        function deleteAllPropostasAdmin() {
+            if (confirm('ATENÇÃO: Deseja realmente excluir TODOS os orçamentos do banco de dados?')) {
+                dbPropostas.forEach(p => {
+                    db.collection("propostas").doc(p.id).delete();
+                });
+            }
         }
 
         function renderCustomDropdownList(filterTerm = '') {
@@ -1265,12 +1572,10 @@
             table.innerHTML = html;
         }
 
-        // VISUALIZAÇÃO APENAS DAS TABELAS EM TELA CHEIA (SEM TÍTULO E LOGO NO ZOOM)
         function openPrintZoomModal() {
             const container = document.getElementById('slide-container-target');
             const clone = container.cloneNode(true);
             
-            // Remove o cabeçalho superior interno com o título e a logo
             const headerElement = clone.querySelector('.flex.justify-between.items-start.mb-4');
             if (headerElement) {
                 headerElement.remove();
@@ -1290,7 +1595,6 @@
             document.getElementById('print-zoom-modal').classList.add('hidden');
         }
 
-        // DOWNLOAD DA IMAGEM EM ALTA QUALIDADE
         function downloadTablesImageHD() {
             const zoomBox = document.getElementById('zoom-content-box');
             const targetElement = zoomBox.firstElementChild || zoomBox;
@@ -1301,7 +1605,7 @@
             btnDownload.disabled = true;
 
             html2canvas(targetElement, {
-                scale: 3, // Alta resolução (3x)
+                scale: 3,
                 useCORS: true,
                 backgroundColor: '#ffffff',
                 logging: false
@@ -1475,6 +1779,7 @@
         listenSystemSettings();
         listenFirebaseUsers();
         listenFirebaseProducts();
+        listenFirebasePropostas();
     </script>
 </body>
 </html>
