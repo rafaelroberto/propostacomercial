@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SGP - Sistema de Geração de Propostas v2.7</title>
+    <title>SGP - Sistema de Geração de Propostas v2.8</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -162,7 +162,7 @@
                     </svg>
                 </div>
 
-                <span class="text-xs bg-blue-100 text-blue-800 px-2.5 py-1 rounded-full font-bold">SGP v2.7</span>
+                <span class="text-xs bg-blue-100 text-blue-800 px-2.5 py-1 rounded-full font-bold">SGP v2.8</span>
             </div>
 
             <nav class="flex items-center space-x-3">
@@ -1074,7 +1074,7 @@
             const descSetupPercent = (parseFloat(document.getElementById('desc-setup').value) || 0) / 100;
             const descMensalPercent = (parseFloat(document.getElementById('desc-mensal').value) || 0) / 100;
 
-            const parcSetup = document.getElementById('vendedor-parc-setup').value;
+            const parcSetup = parseInt(document.getElementById('vendedor-parc-setup').value || 1);
             const dataSetupInput = document.getElementById('vendedor-data-setup').value;
             const dataMensalInput = document.getElementById('vendedor-data-mensal').value;
 
@@ -1142,7 +1142,7 @@
             const dataSetupFormatted = hasChargeableSetup ? formatDateStr(dataSetupInput) : '-';
             const dataMensalFormatted = hasChargeableMensal ? formatDateStr(dataMensalInput) : '-';
 
-            renderSetupTable('slide-table-setup', setupItems, descSetupPercent > 0, `${parcSetup}x`, dataSetupFormatted);
+            renderSetupTable('slide-table-setup', setupItems, descSetupPercent > 0, parcSetup, dataSetupFormatted);
             renderMensalTable('slide-table-mensal', mensalItems, descMensalPercent > 0, dataMensalFormatted);
 
             const totalSetup = setupItems.reduce((acc, i) => acc + (i.isBonificado ? 0 : i.valorTotal * (1 - i.desc)), 0);
@@ -1152,17 +1152,23 @@
             document.getElementById('slide-total-mensal').innerText = formatBRL(totalMensal);
         }
 
-        // Tabela Setup com coluna "Valor Individual c/ Desconto"
-        function renderSetupTable(tableId, items, showDiscount, parcelamentoText, dataText) {
+        // Tabela Setup com Regras da v2.8 (Oculta Valor Indiv c/ desc se Qtd=1 e Mostra Parcela se Parc > 1x)
+        function renderSetupTable(tableId, items, showDiscount, parcNum, dataText) {
             const table = document.getElementById(tableId);
+            const showMultipleUnitDiscount = items.some(i => i.qtd > 1);
+            const showInstallmentValue = parcNum > 1;
+
             let html = `
                 <thead>
                     <tr class="bg-green-600 text-white font-bold text-[10px]">
                         <th class="p-2">Produto/Serviço</th>
                         <th class="p-2 text-center">QTD</th>
                         <th class="p-2 text-right">Valor Individual</th>
-                        ${showDiscount ? `<th class="p-2 text-right bg-green-700/30">Desconto (%)</th><th class="p-2 text-right bg-green-700/30">Valor Indiv. c/ desconto</th><th class="p-2 text-right bg-green-700/30">Valor Total c/ desconto</th>` : ''}
+                        ${showDiscount ? `<th class="p-2 text-right bg-green-700/30">Desconto</th>` : ''}
+                        ${showDiscount && showMultipleUnitDiscount ? `<th class="p-2 text-right bg-green-700/30">Valor Indiv. c/ desc</th>` : ''}
+                        ${showDiscount ? `<th class="p-2 text-right bg-green-700/30">Valor c/ desconto</th>` : ''}
                         <th class="p-2 text-center">Parcelamento</th>
+                        ${showInstallmentValue ? `<th class="p-2 text-right bg-green-700/30">Valor da Parcela</th>` : ''}
                         <th class="p-2 text-center">Data 1ª Parcela</th>
                     </tr>
                 </thead>
@@ -1170,24 +1176,28 @@
             `;
 
             if (items.length === 0) {
-                html += `<tr><td colspan="${showDiscount ? 7 : 5}" class="p-3 text-center text-gray-400 italic">Nenhum item de setup inserido</td></tr>`;
+                let cols = 5;
+                if (showDiscount) cols += 2;
+                if (showDiscount && showMultipleUnitDiscount) cols += 1;
+                if (showInstallmentValue) cols += 1;
+                html += `<tr><td colspan="${cols}" class="p-3 text-center text-gray-400 italic">Nenhum item de setup inserido</td></tr>`;
             } else {
                 items.forEach(item => {
                     const unitComDesc = item.valorIndividual * (1 - item.desc);
                     const totalComDesc = item.valorTotal * (1 - item.desc);
                     const descFormatted = (item.desc * 100) + '%';
+                    const parcelValue = item.isBonificado ? 0 : (totalComDesc / parcNum);
 
                     html += `
                         <tr class="hover:bg-gray-50">
                             <td class="p-2 font-medium text-gray-800">${item.nome}</td>
                             <td class="p-2 text-center">${String(item.qtd).padStart(2, '0')}</td>
                             <td class="p-2 text-right font-medium">${formatBRL(item.valorIndividual, item.isBonificado)}</td>
-                            ${showDiscount ? `
-                                <td class="p-2 text-right text-green-700 font-semibold">${item.isBonificado ? '-' : descFormatted}</td>
-                                <td class="p-2 text-right font-bold text-gray-800">${formatBRL(unitComDesc, item.isBonificado)}</td>
-                                <td class="p-2 text-right font-bold text-gray-900">${formatBRL(totalComDesc, item.isBonificado)}</td>
-                            ` : ''}
-                            <td class="p-2 text-center text-gray-600">${item.isBonificado ? '-' : parcelamentoText}</td>
+                            ${showDiscount ? `<td class="p-2 text-right text-green-700 font-semibold">${item.isBonificado ? '-' : descFormatted}</td>` : ''}
+                            ${showDiscount && showMultipleUnitDiscount ? `<td class="p-2 text-right font-bold text-gray-800">${item.qtd > 1 ? formatBRL(unitComDesc, item.isBonificado) : '-'}</td>` : ''}
+                            ${showDiscount ? `<td class="p-2 text-right font-bold text-gray-900">${formatBRL(totalComDesc, item.isBonificado)}</td>` : ''}
+                            <td class="p-2 text-center text-gray-600">${item.isBonificado ? '-' : parcNum + 'x'}</td>
+                            ${showInstallmentValue ? `<td class="p-2 text-right text-green-700 font-bold">${item.isBonificado ? '-' : parcNum + 'x de ' + formatBRL(parcelValue)}</td>` : ''}
                             <td class="p-2 text-center text-gray-600 font-semibold">${item.isBonificado ? '-' : dataText}</td>
                         </tr>
                     `;
@@ -1198,16 +1208,18 @@
             table.innerHTML = html;
         }
 
-        // Tabela Mensalidade com coluna "Valor Individual c/ Desconto"
         function renderMensalTable(tableId, items, showDiscount, dataText) {
             const table = document.getElementById(tableId);
+            const showMultipleUnitDiscount = items.some(i => i.qtd > 1);
+
             let html = `
                 <thead>
                     <tr class="bg-blue-600 text-white font-bold text-[10px]">
                         <th class="p-2">Produto / Serviço</th>
                         <th class="p-2 text-center">Qtd</th>
                         <th class="p-2 text-right">Valor Individual</th>
-                        ${showDiscount ? `<th class="p-2 text-right bg-blue-700/30">Desconto (%)</th><th class="p-2 text-right bg-blue-700/30">Valor Indiv. c/ desconto</th>` : ''}
+                        ${showDiscount ? `<th class="p-2 text-right bg-blue-700/30">Desconto (%)</th>` : ''}
+                        ${showDiscount && showMultipleUnitDiscount ? `<th class="p-2 text-right bg-blue-700/30">Valor Indiv. c/ desc</th>` : ''}
                         <th class="p-2 text-right">Total</th>
                         <th class="p-2 text-center">1ª Parcela</th>
                     </tr>
@@ -1216,7 +1228,10 @@
             `;
 
             if (items.length === 0) {
-                html += `<tr><td colspan="${showDiscount ? 6 : 5}" class="p-3 text-center text-gray-400 italic">Nenhum item de mensalidade inserido</td></tr>`;
+                let cols = 5;
+                if (showDiscount) cols += 1;
+                if (showDiscount && showMultipleUnitDiscount) cols += 1;
+                html += `<tr><td colspan="${cols}" class="p-3 text-center text-gray-400 italic">Nenhum item de mensalidade inserido</td></tr>`;
             } else {
                 items.forEach(item => {
                     const unitComDesc = item.valorIndividual * (1 - item.desc);
@@ -1228,10 +1243,8 @@
                             <td class="p-2 font-medium text-gray-800">${item.nome}</td>
                             <td class="p-2 text-center">${String(item.qtd).padStart(2, '0')}</td>
                             <td class="p-2 text-right font-medium">${formatBRL(item.valorIndividual, item.isBonificado)}</td>
-                            ${showDiscount ? `
-                                <td class="p-2 text-right text-blue-700 font-semibold">${item.isBonificado ? '-' : descFormatted}</td>
-                                <td class="p-2 text-right font-bold text-gray-800">${formatBRL(unitComDesc, item.isBonificado)}</td>
-                            ` : ''}
+                            ${showDiscount ? `<td class="p-2 text-right text-blue-700 font-semibold">${item.isBonificado ? '-' : descFormatted}</td>` : ''}
+                            ${showDiscount && showMultipleUnitDiscount ? `<td class="p-2 text-right font-bold text-gray-800">${item.qtd > 1 ? formatBRL(unitComDesc, item.isBonificado) : '-'}</td>` : ''}
                             <td class="p-2 text-right font-bold text-gray-900">${formatBRL(showDiscount ? totalComDesc : item.valorTotal, item.isBonificado)}</td>
                             <td class="p-2 text-center text-gray-600 font-semibold">${item.isBonificado ? '-' : dataText}</td>
                         </tr>
