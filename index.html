@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SGP - Sistema de Geração de Propostas v3.0</title>
+    <title>SGP - Sistema de Geração de Propostas v3.1</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -165,7 +165,7 @@
                     </svg>
                 </div>
 
-                <span class="text-xs bg-blue-100 text-blue-800 px-2.5 py-1 rounded-full font-bold">SGP v3.0</span>
+                <span class="text-xs bg-blue-100 text-blue-800 px-2.5 py-1 rounded-full font-bold">SGP v3.1</span>
             </div>
 
             <nav class="flex items-center space-x-3">
@@ -200,10 +200,15 @@
                         <h2 class="text-xl font-bold text-gray-900">
                             <i class="fa-solid fa-file-signature text-blue-600 mr-2"></i> Montar Proposta
                         </h2>
-                        <!-- Botão de Ver Meus Orçamentos Salvos -->
-                        <button onclick="openVendedorPropostasModal()" class="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg text-xs font-bold border border-blue-200 transition flex items-center">
-                            <i class="fa-solid fa-folder-open mr-1.5"></i> Meus Orçamentos
-                        </button>
+                        <!-- BOTOES NOVO ORÇAMENTO E MEUS ORÇAMENTOS -->
+                        <div class="flex space-x-2">
+                            <button onclick="createNewProposal()" class="px-2.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold transition flex items-center">
+                                <i class="fa-solid fa-plus mr-1"></i> Novo Orçamento
+                            </button>
+                            <button onclick="openVendedorPropostasModal()" class="px-2.5 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg text-xs font-bold border border-blue-200 transition flex items-center">
+                                <i class="fa-solid fa-folder-open mr-1"></i> Meus Orçamentos
+                            </button>
+                        </div>
                     </div>
 
                     <!-- Módulo de Adicionar Produtos -->
@@ -486,7 +491,6 @@
                         </div>
                     </div>
 
-                    <!-- Filtros e Busca no Admin -->
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-3 bg-gray-50 p-3 rounded-xl border">
                         <div>
                             <label class="text-[11px] font-bold text-gray-600 uppercase">Filtrar por Cliente</label>
@@ -566,7 +570,7 @@
     <!-- FOOTER INSTITUCIONAL FIXO -->
     <footer class="bg-white border-t border-gray-200 py-4 text-center text-xs text-gray-500 mt-auto">
         <div class="max-w-7xl mx-auto px-4">
-            Sistema de Geração de Proposta (SGP) - Nº v3.0 | Desenvolvido por 
+            Sistema de Geração de Proposta (SGP) - Nº v3.1 | Desenvolvido por 
             <a href="https://www.linkedin.com/in/rafaelrobertonascimento" target="_blank" rel="noopener noreferrer" class="text-blue-600 font-bold hover:underline">
                 Rafael Nascimento <i class="fa-brands fa-linkedin text-xs ml-0.5"></i>
             </a>
@@ -586,7 +590,6 @@
                 </button>
             </div>
 
-            <!-- Filtros do Vendedor -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3 bg-gray-50 p-3 rounded-xl border">
                 <div>
                     <label class="text-[11px] font-bold text-gray-600 uppercase">Pesquisar por Cliente</label>
@@ -598,9 +601,7 @@
                 </div>
             </div>
 
-            <div id="vendedor-propostas-list-container" class="space-y-3 pt-2">
-                <!-- Injetado dinamicamente -->
-            </div>
+            <div id="vendedor-propostas-list-container" class="space-y-3 pt-2"></div>
         </div>
     </div>
 
@@ -674,7 +675,7 @@
         let adminPassHash = "lifeapps123";
         let dbProducts = [];
         let dbUsers = [];
-        let dbPropostas = []; // Todos os orçamentos salvos
+        let dbPropostas = [];
         let proposalProducts = [];
         let draggedItemIndex = null;
 
@@ -728,7 +729,6 @@
             });
         }
 
-        // Escuta os Orçamentos Salvos na Nuvem
         function listenFirebasePropostas() {
             db.collection("propostas").onSnapshot((snapshot) => {
                 dbPropostas = [];
@@ -783,6 +783,15 @@
             
             renderProposalItemsList();
             calculateProposal();
+        }
+
+        // NOVO ORÇAMENTO
+        function createNewProposal() {
+            if (proposalProducts.length > 0 && confirm("Deseja descartar a proposta atual e iniciar um Novo Orçamento em branco?")) {
+                clearProposalState();
+            } else if (proposalProducts.length === 0) {
+                clearProposalState();
+            }
         }
 
         function checkRememberedUser() {
@@ -1040,7 +1049,6 @@
             });
         }
 
-        // SALVAR ORÇAMENTO NO BANCO DE DADOS
         function saveProposalToDatabase() {
             if (proposalProducts.length === 0) {
                 alert('Adicione ao menos um produto antes de salvar o orçamento!');
@@ -1078,7 +1086,6 @@
             }).catch(err => alert("Erro ao salvar orçamento: " + err.message));
         }
 
-        // CARREGAR/EDITAR PROPOSTA SALVA
         function loadProposalToState(propObj) {
             proposalProducts = propObj.proposalProducts || [];
             document.getElementById('desc-setup').value = propObj.descSetup || 0;
@@ -1101,7 +1108,6 @@
             }
         }
 
-        // GESTÃO DE ORÇAMENTOS NO VENDEDOR
         function openVendedorPropostasModal() {
             document.getElementById('vendedor-propostas-modal').classList.remove('hidden');
             renderVendedorPropostasList();
@@ -1118,7 +1124,6 @@
 
             const userVendedorId = currentUser ? currentUser.id : 'padrao';
             
-            // Filtra orçamentos do próprio vendedor
             let userProps = dbPropostas.filter(p => p.vendedorId === userVendedorId || p.vendedorNome === (currentUser ? currentUser.nome : 'Vendedor Padrão'));
 
             if (filterCliente) {
@@ -1162,7 +1167,6 @@
             container.innerHTML = html;
         }
 
-        // GESTÃO DE ORÇAMENTOS NO PAINEL ADM
         function renderAdminPropostasTable() {
             const tbody = document.getElementById('admin-propostas-table-body');
             const filterCliente = (document.getElementById('admin-filter-cliente')?.value || '').toLowerCase();
@@ -1469,6 +1473,7 @@
             document.getElementById('slide-total-mensal').innerText = formatBRL(totalMensal);
         }
 
+        // Tabela Setup com Regras de Exibição Limpa
         function renderSetupTable(tableId, items, showDiscount, parcNum, dataText) {
             const table = document.getElementById(tableId);
             const showMultipleUnitDiscount = items.some(i => i.qtd > 1);
@@ -1513,7 +1518,7 @@
                             ${showDiscount && showMultipleUnitDiscount ? `<td class="p-2 text-right font-bold text-gray-800">${item.qtd > 1 ? formatBRL(unitComDesc, item.isBonificado) : '-'}</td>` : ''}
                             ${showDiscount ? `<td class="p-2 text-right font-bold text-gray-900">${formatBRL(totalComDesc, item.isBonificado)}</td>` : ''}
                             <td class="p-2 text-center text-gray-600">${item.isBonificado ? '-' : parcNum + 'x'}</td>
-                            ${showInstallmentValue ? `<td class="p-2 text-right text-green-700 font-bold">${item.isBonificado ? '-' : parcNum + 'x de ' + formatBRL(parcelValue)}</td>` : ''}
+                            ${showInstallmentValue ? `<td class="p-2 text-right text-green-700 font-bold">${item.isBonificado ? 'BONIFICADO' : formatBRL(parcelValue)}</td>` : ''}
                             <td class="p-2 text-center text-gray-600 font-semibold">${item.isBonificado ? '-' : dataText}</td>
                         </tr>
                     `;
@@ -1572,6 +1577,7 @@
             table.innerHTML = html;
         }
 
+        // VISUALIZAÇÃO APENAS DAS TABELAS EM TELA CHEIA (SEM CABEÇALHO/LOGO NO ZOOM)
         function openPrintZoomModal() {
             const container = document.getElementById('slide-container-target');
             const clone = container.cloneNode(true);
@@ -1595,6 +1601,7 @@
             document.getElementById('print-zoom-modal').classList.add('hidden');
         }
 
+        // DOWNLOAD DA IMAGEM EM ALTA QUALIDADE
         function downloadTablesImageHD() {
             const zoomBox = document.getElementById('zoom-content-box');
             const targetElement = zoomBox.firstElementChild || zoomBox;
