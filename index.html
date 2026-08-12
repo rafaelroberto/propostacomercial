@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SGP - Sistema de Geração de Propostas</title>
+    <title>SGP - Sistema de Geração de Propostas v2.7</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -162,7 +162,7 @@
                     </svg>
                 </div>
 
-                <span class="text-xs bg-blue-100 text-blue-800 px-2.5 py-1 rounded-full font-bold">SGP</span>
+                <span class="text-xs bg-blue-100 text-blue-800 px-2.5 py-1 rounded-full font-bold">SGP v2.7</span>
             </div>
 
             <nav class="flex items-center space-x-3">
@@ -593,7 +593,6 @@
                     dbUsers.push({ id: doc.id, ...doc.data() });
                 });
 
-                // Cria Vendedor Padrão pré-aprovado se não existir
                 if (!dbUsers.some(u => u.email === 'vendedor@lifeapps.com.br')) {
                     db.collection("usuarios").add({
                         nome: "Vendedor Padrão",
@@ -634,7 +633,6 @@
             defaults.forEach(p => db.collection("produtos").add(p));
         }
 
-        // LIMPEZA TOTAL DOS CAMPOS AO FAZER LOGOFF / SAIR
         function clearProposalState() {
             proposalProducts = [];
             const searchInput = document.getElementById('vendedor-search-input');
@@ -715,7 +713,6 @@
             switchAuthTab('vendedor');
         }
 
-        // Login Vendedor com suporte ao e-mail/senha padrão
         function handleVendedorLogin(e) {
             e.preventDefault();
             const email = document.getElementById('login-vendedor-email').value.trim().toLowerCase();
@@ -724,7 +721,6 @@
 
             let user = dbUsers.find(u => u.email === email && u.senha === pass);
 
-            // Permite login imediato do Vendedor de teste
             if (!user && email === 'vendedor@lifeapps.com.br' && pass === '123') {
                 user = { nome: "Vendedor Padrão", email: "vendedor@lifeapps.com.br", status: "aprovado" };
             }
@@ -1156,6 +1152,7 @@
             document.getElementById('slide-total-mensal').innerText = formatBRL(totalMensal);
         }
 
+        // Tabela Setup com coluna "Valor Individual c/ Desconto"
         function renderSetupTable(tableId, items, showDiscount, parcelamentoText, dataText) {
             const table = document.getElementById(tableId);
             let html = `
@@ -1164,7 +1161,7 @@
                         <th class="p-2">Produto/Serviço</th>
                         <th class="p-2 text-center">QTD</th>
                         <th class="p-2 text-right">Valor Individual</th>
-                        ${showDiscount ? `<th class="p-2 text-right bg-green-700/30">Desconto</th><th class="p-2 text-right bg-green-700/30">Valor c/ desconto</th>` : ''}
+                        ${showDiscount ? `<th class="p-2 text-right bg-green-700/30">Desconto (%)</th><th class="p-2 text-right bg-green-700/30">Valor Indiv. c/ desconto</th><th class="p-2 text-right bg-green-700/30">Valor Total c/ desconto</th>` : ''}
                         <th class="p-2 text-center">Parcelamento</th>
                         <th class="p-2 text-center">Data 1ª Parcela</th>
                     </tr>
@@ -1173,10 +1170,11 @@
             `;
 
             if (items.length === 0) {
-                html += `<tr><td colspan="${showDiscount ? 6 : 5}" class="p-3 text-center text-gray-400 italic">Nenhum item de setup inserido</td></tr>`;
+                html += `<tr><td colspan="${showDiscount ? 7 : 5}" class="p-3 text-center text-gray-400 italic">Nenhum item de setup inserido</td></tr>`;
             } else {
                 items.forEach(item => {
-                    const valorComDesc = item.valorTotal * (1 - item.desc);
+                    const unitComDesc = item.valorIndividual * (1 - item.desc);
+                    const totalComDesc = item.valorTotal * (1 - item.desc);
                     const descFormatted = (item.desc * 100) + '%';
 
                     html += `
@@ -1186,7 +1184,8 @@
                             <td class="p-2 text-right font-medium">${formatBRL(item.valorIndividual, item.isBonificado)}</td>
                             ${showDiscount ? `
                                 <td class="p-2 text-right text-green-700 font-semibold">${item.isBonificado ? '-' : descFormatted}</td>
-                                <td class="p-2 text-right font-bold text-gray-900">${formatBRL(valorComDesc, item.isBonificado)}</td>
+                                <td class="p-2 text-right font-bold text-gray-800">${formatBRL(unitComDesc, item.isBonificado)}</td>
+                                <td class="p-2 text-right font-bold text-gray-900">${formatBRL(totalComDesc, item.isBonificado)}</td>
                             ` : ''}
                             <td class="p-2 text-center text-gray-600">${item.isBonificado ? '-' : parcelamentoText}</td>
                             <td class="p-2 text-center text-gray-600 font-semibold">${item.isBonificado ? '-' : dataText}</td>
@@ -1199,6 +1198,7 @@
             table.innerHTML = html;
         }
 
+        // Tabela Mensalidade com coluna "Valor Individual c/ Desconto"
         function renderMensalTable(tableId, items, showDiscount, dataText) {
             const table = document.getElementById(tableId);
             let html = `
@@ -1207,7 +1207,7 @@
                         <th class="p-2">Produto / Serviço</th>
                         <th class="p-2 text-center">Qtd</th>
                         <th class="p-2 text-right">Valor Individual</th>
-                        ${showDiscount ? `<th class="p-2 text-right bg-blue-700/30">Desconto (%)</th><th class="p-2 text-right bg-blue-700/30">Valor c/ desconto</th>` : ''}
+                        ${showDiscount ? `<th class="p-2 text-right bg-blue-700/30">Desconto (%)</th><th class="p-2 text-right bg-blue-700/30">Valor Indiv. c/ desconto</th>` : ''}
                         <th class="p-2 text-right">Total</th>
                         <th class="p-2 text-center">1ª Parcela</th>
                     </tr>
@@ -1219,7 +1219,8 @@
                 html += `<tr><td colspan="${showDiscount ? 6 : 5}" class="p-3 text-center text-gray-400 italic">Nenhum item de mensalidade inserido</td></tr>`;
             } else {
                 items.forEach(item => {
-                    const valorComDesc = item.valorTotal * (1 - item.desc);
+                    const unitComDesc = item.valorIndividual * (1 - item.desc);
+                    const totalComDesc = item.valorTotal * (1 - item.desc);
                     const descFormatted = (item.desc * 100) + '%';
 
                     html += `
@@ -1229,9 +1230,9 @@
                             <td class="p-2 text-right font-medium">${formatBRL(item.valorIndividual, item.isBonificado)}</td>
                             ${showDiscount ? `
                                 <td class="p-2 text-right text-blue-700 font-semibold">${item.isBonificado ? '-' : descFormatted}</td>
-                                <td class="p-2 text-right font-bold text-gray-900">${formatBRL(valorComDesc, item.isBonificado)}</td>
+                                <td class="p-2 text-right font-bold text-gray-800">${formatBRL(unitComDesc, item.isBonificado)}</td>
                             ` : ''}
-                            <td class="p-2 text-right font-bold text-gray-900">${formatBRL(showDiscount ? valorComDesc : item.valorTotal, item.isBonificado)}</td>
+                            <td class="p-2 text-right font-bold text-gray-900">${formatBRL(showDiscount ? totalComDesc : item.valorTotal, item.isBonificado)}</td>
                             <td class="p-2 text-center text-gray-600 font-semibold">${item.isBonificado ? '-' : dataText}</td>
                         </tr>
                     `;
