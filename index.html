@@ -3,9 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SGP - Sistema de Geração de Propostas v2.8</title>
+    <title>SGP - Sistema de Geração de Propostas v2.9</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- html2canvas para captura de imagem em alta qualidade -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
@@ -162,7 +165,7 @@
                     </svg>
                 </div>
 
-                <span class="text-xs bg-blue-100 text-blue-800 px-2.5 py-1 rounded-full font-bold">SGP v2.8</span>
+                <span class="text-xs bg-blue-100 text-blue-800 px-2.5 py-1 rounded-full font-bold">SGP v2.9</span>
             </div>
 
             <nav class="flex items-center space-x-3">
@@ -533,22 +536,29 @@
         </div>
     </div>
 
-    <!-- MODAL DE ZOOM PARA PRINT -->
+    <!-- MODAL DE ZOOM PARA PRINT & DOWNLOAD DE IMAGEM HD -->
     <div id="print-zoom-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl w-full max-w-6xl p-6 relative shadow-2xl flex flex-col space-y-4 max-h-[95vh] overflow-y-auto">
             <div class="flex justify-between items-center border-b pb-3">
                 <div class="flex items-center space-x-2">
-                    <span class="text-lg font-bold text-gray-800">Modo de Captura de Tela (Print da Proposta)</span>
+                    <span class="text-lg font-bold text-gray-800">Tabelas de Investimento Comercial</span>
+                    <span class="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded font-bold">Pronto para Captura</span>
                 </div>
-                <button onclick="closePrintZoomModal()" class="w-8 h-8 rounded-full bg-gray-100 hover:bg-red-100 hover:text-red-600 flex items-center justify-center font-bold text-gray-600 transition">
-                    <i class="fa-solid fa-xmark text-lg"></i>
-                </button>
+                <div class="flex items-center space-x-3">
+                    <button onclick="downloadTablesImageHD()" id="btn-download-img" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg text-xs transition flex items-center">
+                        <i class="fa-solid fa-download mr-1.5"></i> Baixar Imagem em Alta Qualidade (PNG)
+                    </button>
+                    <button onclick="closePrintZoomModal()" class="w-8 h-8 rounded-full bg-gray-100 hover:bg-red-100 hover:text-red-600 flex items-center justify-center font-bold text-gray-600 transition">
+                        <i class="fa-solid fa-xmark text-lg"></i>
+                    </button>
+                </div>
             </div>
 
-            <div id="zoom-content-box" class="p-4 bg-gray-100 rounded-xl overflow-x-auto flex justify-center"></div>
+            <!-- CONTAINER APENAS COM AS TABELAS ISOLADAS (SEM CABEÇALHO/LOGO) -->
+            <div id="zoom-content-box" class="p-6 bg-white rounded-xl shadow-sm overflow-x-auto flex flex-col justify-center"></div>
 
             <div class="text-center text-xs text-gray-500">
-                Pressione <strong>Windows + Shift + S</strong> (ou <strong>Cmd + Shift + 4</strong> no Mac) para capturar o print.
+                Ou pressione <strong>Windows + Shift + S</strong> (ou <strong>Cmd + Shift + 4</strong> no Mac) para capturar o print da área da tela.
             </div>
         </div>
     </div>
@@ -1152,7 +1162,6 @@
             document.getElementById('slide-total-mensal').innerText = formatBRL(totalMensal);
         }
 
-        // Tabela Setup com Regras da v2.8 (Oculta Valor Indiv c/ desc se Qtd=1 e Mostra Parcela se Parc > 1x)
         function renderSetupTable(tableId, items, showDiscount, parcNum, dataText) {
             const table = document.getElementById(tableId);
             const showMultipleUnitDiscount = items.some(i => i.qtd > 1);
@@ -1256,6 +1265,62 @@
             table.innerHTML = html;
         }
 
+        // VISUALIZAÇÃO APENAS DAS TABELAS EM TELA CHEIA (SEM TÍTULO E LOGO NO ZOOM)
+        function openPrintZoomModal() {
+            const container = document.getElementById('slide-container-target');
+            const clone = container.cloneNode(true);
+            
+            // Remove o cabeçalho superior interno com o título e a logo
+            const headerElement = clone.querySelector('.flex.justify-between.items-start.mb-4');
+            if (headerElement) {
+                headerElement.remove();
+            }
+
+            clone.classList.remove('aspect-ratio');
+            clone.style.width = '1000px';
+
+            const zoomBox = document.getElementById('zoom-content-box');
+            zoomBox.innerHTML = '';
+            zoomBox.appendChild(clone);
+
+            document.getElementById('print-zoom-modal').classList.remove('hidden');
+        }
+
+        function closePrintZoomModal() {
+            document.getElementById('print-zoom-modal').classList.add('hidden');
+        }
+
+        // DOWNLOAD DA IMAGEM EM ALTA QUALIDADE
+        function downloadTablesImageHD() {
+            const zoomBox = document.getElementById('zoom-content-box');
+            const targetElement = zoomBox.firstElementChild || zoomBox;
+
+            const btnDownload = document.getElementById('btn-download-img');
+            const origText = btnDownload.innerHTML;
+            btnDownload.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1.5"></i> Gerando PNG HD...`;
+            btnDownload.disabled = true;
+
+            html2canvas(targetElement, {
+                scale: 3, // Alta resolução (3x)
+                useCORS: true,
+                backgroundColor: '#ffffff',
+                logging: false
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = `Proposta_Tabelas_Investimento.png`;
+                link.href = canvas.toDataURL('image/png', 1.0);
+                link.click();
+
+                btnDownload.innerHTML = origText;
+                btnDownload.disabled = false;
+            }).catch(err => {
+                console.error("Erro ao gerar imagem HD:", err);
+                alert("Ocorreu um erro ao gerar a imagem HD.");
+                btnDownload.innerHTML = origText;
+                btnDownload.disabled = false;
+            });
+        }
+
         function openEditModal(id, name, setup, mensal) {
             document.getElementById('edit-prod-id').value = id;
             document.getElementById('edit-prod-name').value = name;
@@ -1317,23 +1382,6 @@
                     db.collection("produtos").doc(prod.id).delete();
                 });
             }
-        }
-
-        function openPrintZoomModal() {
-            const container = document.getElementById('slide-container-target');
-            const clone = container.cloneNode(true);
-            clone.classList.remove('aspect-ratio');
-            clone.style.width = '1000px';
-
-            const zoomBox = document.getElementById('zoom-content-box');
-            zoomBox.innerHTML = '';
-            zoomBox.appendChild(clone);
-
-            document.getElementById('print-zoom-modal').classList.remove('hidden');
-        }
-
-        function closePrintZoomModal() {
-            document.getElementById('print-zoom-modal').classList.add('hidden');
         }
 
         function addNewProductFirebase() {
