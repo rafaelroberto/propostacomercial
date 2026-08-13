@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SGP - Sistema de Geração de Propostas v3.1</title>
+    <title>SGP - Sistema de Geração de Propostas v3.2</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -18,6 +18,9 @@
     <style>
         body { font-family: 'Inter', system-ui, sans-serif; background-color: #f8fafc; }
         .slide-preview { background-color: #ffffff; aspect-ratio: 16/9; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1); }
+        @media (max-width: 768px) {
+            .slide-preview { aspect-ratio: auto; }
+        }
         .draggable-card { cursor: grab; user-select: none; }
         .draggable-card:active { cursor: grabbing; }
         .draggable-card.dragging { opacity: 0.4; border: 2px dashed #3b82f6; }
@@ -29,10 +32,10 @@
     <!-- TELA DE LOGIN / REGISTRO -->
     <section id="screen-auth" class="fixed inset-0 z-50 auth-bg flex flex-col justify-between p-4 overflow-y-auto">
         <div class="my-auto flex justify-center w-full">
-            <div class="bg-white/95 backdrop-blur-md rounded-3xl w-full max-w-md p-8 shadow-2xl space-y-6 border border-white/20">
+            <div class="bg-white/95 backdrop-blur-md rounded-3xl w-full max-w-md p-6 sm:p-8 shadow-2xl space-y-6 border border-white/20">
                 
                 <div class="text-center flex flex-col items-center">
-                    <svg class="h-10 w-auto mb-2" viewBox="0 0 320 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <svg class="h-9 sm:h-10 w-auto mb-2" viewBox="0 0 320 80" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <rect x="0" y="55" width="14" height="15" rx="1.5" fill="#3eb049"/>
                         <rect x="22" y="30" width="14" height="40" rx="1.5" fill="#3eb049"/>
                         <rect x="44" y="42" width="14" height="28" rx="1.5" fill="#3eb049"/>
@@ -115,7 +118,7 @@
                         <input type="email" id="reg-email" required placeholder="nome@lifeapps.com.br" class="w-full p-2 border rounded-lg text-sm">
                     </div>
 
-                    <div class="grid grid-cols-2 gap-2">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                         <div>
                             <label class="block text-[11px] font-semibold text-gray-600 uppercase">Senha</label>
                             <input type="password" id="reg-senha" required placeholder="••••••••" class="w-full p-2 border rounded-lg text-sm">
@@ -150,10 +153,10 @@
 
     <!-- Header Navigation -->
     <header class="bg-white border-b border-gray-200 sticky top-0 z-40">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <div class="flex items-center space-x-4">
-                <div class="flex items-end">
-                    <svg class="h-8 w-auto" viewBox="0 0 320 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:h-16 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-0">
+            <div class="flex items-center justify-between w-full sm:w-auto">
+                <div class="flex items-center space-x-3">
+                    <svg class="h-7 sm:h-8 w-auto" viewBox="0 0 320 80" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <rect x="0" y="55" width="14" height="15" rx="1.5" fill="#3eb049"/>
                         <rect x="22" y="30" width="14" height="40" rx="1.5" fill="#3eb049"/>
                         <rect x="44" y="42" width="14" height="28" rx="1.5" fill="#3eb049"/>
@@ -163,60 +166,59 @@
                         <path d="M 185 48 C 185 36 175 27 163 27 C 151 27 141 36 141 49 C 141 62 151 71 163 71 C 172 71 180 66 183 58 L 172 54 C 170 58 167 60 163 60 C 157 60 153 56 153 51 L 185 51 Z M 153 43 C 154 39 158 36 163 36 C 168 36 172 39 173 43 Z" fill="#005691"/>
                         <text x="188" y="68" font-family="'Segoe UI', Roboto, Arial, sans-serif" font-size="34" font-weight="500" fill="#3eb049">apps</text>
                     </svg>
+                    <span class="text-[10px] sm:text-xs bg-blue-100 text-blue-800 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full font-bold">SGP Mobile</span>
                 </div>
-
-                <span class="text-xs bg-blue-100 text-blue-800 px-2.5 py-1 rounded-full font-bold">SGP v3.1</span>
             </div>
 
-            <nav class="flex items-center space-x-3">
-                <button onclick="switchTab('vendedor')" id="tab-vendedor" class="px-4 py-2 rounded-lg font-medium text-sm transition-all bg-blue-600 text-white shadow-sm">
-                    <i class="fa-solid fa-calculator mr-2"></i>Área do Vendedor
+            <nav class="flex items-center justify-center space-x-2 w-full sm:w-auto">
+                <button onclick="switchTab('vendedor')" id="tab-vendedor" class="flex-1 sm:flex-initial px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg font-medium text-xs sm:text-sm transition-all bg-blue-600 text-white shadow-sm">
+                    <i class="fa-solid fa-calculator mr-1 sm:mr-2"></i>Vendedor
                 </button>
-                <button onclick="switchTab('admin')" id="tab-admin" class="px-4 py-2 rounded-lg font-medium text-sm transition-all text-gray-600 hover:bg-gray-100">
-                    <i class="fa-solid fa-lock mr-2"></i>Painel Administrativo
+                <button onclick="switchTab('admin')" id="tab-admin" class="flex-1 sm:flex-initial px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg font-medium text-xs sm:text-sm transition-all text-gray-600 hover:bg-gray-100">
+                    <i class="fa-solid fa-lock mr-1 sm:mr-2"></i>Admin
                 </button>
             </nav>
             
-            <div class="flex items-center space-x-3">
-                <span id="header-user-display" class="text-xs font-bold text-gray-700 bg-gray-100 px-3 py-1.5 rounded-lg border">
-                    <i class="fa-solid fa-user text-blue-600 mr-1.5"></i> Vendedor
+            <div class="flex items-center justify-between w-full sm:w-auto space-x-3">
+                <span id="header-user-display" class="text-xs font-bold text-gray-700 bg-gray-100 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg border">
+                    <i class="fa-solid fa-user text-blue-600 mr-1"></i> Vendedor
                 </span>
-                <button onclick="logoutSystem()" class="px-3 py-1.5 bg-red-100 hover:bg-red-200 text-red-700 text-xs font-bold rounded-lg transition flex items-center">
-                    <i class="fa-solid fa-power-off mr-1.5"></i> Sair
+                <button onclick="logoutSystem()" class="px-2.5 py-1 sm:px-3 sm:py-1.5 bg-red-100 hover:bg-red-200 text-red-700 text-xs font-bold rounded-lg transition flex items-center">
+                    <i class="fa-solid fa-power-off mr-1"></i> Sair
                 </button>
             </div>
         </div>
     </header>
 
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 flex-grow w-full">
         
         <!-- TELA DO VENDEDOR -->
-        <section id="screen-vendedor" class="space-y-8">
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <section id="screen-vendedor" class="space-y-6 sm:space-y-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
                 
                 <!-- Formulário Vendedor -->
-                <div class="lg:col-span-5 bg-white p-6 rounded-2xl shadow-sm border border-gray-200 space-y-6">
-                    <div class="flex justify-between items-center border-b pb-3">
-                        <h2 class="text-xl font-bold text-gray-900">
+                <div class="lg:col-span-5 bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-gray-200 space-y-5 sm:space-y-6">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b pb-3 gap-2">
+                        <h2 class="text-lg sm:text-xl font-bold text-gray-900">
                             <i class="fa-solid fa-file-signature text-blue-600 mr-2"></i> Montar Proposta
                         </h2>
                         <!-- BOTOES NOVO ORÇAMENTO E MEUS ORÇAMENTOS -->
-                        <div class="flex space-x-2">
-                            <button onclick="createNewProposal()" class="px-2.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold transition flex items-center">
-                                <i class="fa-solid fa-plus mr-1"></i> Novo Orçamento
+                        <div class="flex space-x-2 w-full sm:w-auto">
+                            <button onclick="createNewProposal()" class="flex-1 sm:flex-none px-2.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold transition flex items-center justify-center">
+                                <i class="fa-solid fa-plus mr-1"></i> Novo
                             </button>
-                            <button onclick="openVendedorPropostasModal()" class="px-2.5 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg text-xs font-bold border border-blue-200 transition flex items-center">
-                                <i class="fa-solid fa-folder-open mr-1"></i> Meus Orçamentos
+                            <button onclick="openVendedorPropostasModal()" class="flex-1 sm:flex-none px-2.5 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg text-xs font-bold border border-blue-200 transition flex items-center justify-center">
+                                <i class="fa-solid fa-folder-open mr-1"></i> Salvos
                             </button>
                         </div>
                     </div>
 
                     <!-- Módulo de Adicionar Produtos -->
-                    <div class="border rounded-xl p-4 bg-gray-50 space-y-3">
+                    <div class="border rounded-xl p-3.5 sm:p-4 bg-gray-50 space-y-3">
                         <label class="block text-xs font-bold text-gray-700 uppercase">Adicionar Produto</label>
                         <div class="space-y-3">
                             <div class="relative">
-                                <input type="text" id="vendedor-search-input" placeholder="🔍 Digite para pesquisar o produto..." onfocus="openProductDropdown()" oninput="filterProductsList()" class="w-full p-2.5 pr-10 border rounded-lg text-sm bg-white font-medium focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                                <input type="text" id="vendedor-search-input" placeholder="🔍 Pesquisar produto..." onfocus="openProductDropdown()" oninput="filterProductsList()" class="w-full p-2.5 pr-10 border rounded-lg text-sm bg-white font-medium focus:ring-2 focus:ring-blue-500 focus:outline-none">
                                 <i class="fa-solid fa-chevron-down absolute right-3 top-3.5 text-gray-400 text-xs pointer-events-none"></i>
                                 <div id="custom-product-dropdown" class="absolute left-0 right-0 top-full mt-1 bg-white border border-gray-200 rounded-lg shadow-xl max-h-56 overflow-y-auto z-50 hidden divide-y divide-gray-100"></div>
                                 <input type="hidden" id="selected-product-id">
@@ -241,7 +243,7 @@
 
                                 <div class="border-t pt-2 space-y-1">
                                     <span class="text-[10px] uppercase font-bold text-gray-500">Bonificações:</span>
-                                    <div class="flex items-center space-x-4">
+                                    <div class="flex flex-col sm:flex-row gap-2 sm:gap-4">
                                         <label class="flex items-center text-gray-700 cursor-pointer">
                                             <input type="checkbox" id="vendedor-bonificar-setup" class="w-3.5 h-3.5 text-green-600 rounded mr-1.5">
                                             Bonificar Setup
@@ -254,7 +256,7 @@
                                 </div>
                             </div>
 
-                            <button onclick="addProductToProposal()" class="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold transition flex items-center justify-center">
+                            <button onclick="addProductToProposal()" class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold transition flex items-center justify-center">
                                 <i class="fa-solid fa-plus mr-1"></i> Adicionar à Proposta
                             </button>
                         </div>
@@ -306,7 +308,7 @@
                     <!-- Parcelamento e Datas -->
                     <div class="space-y-3 border-t pt-4">
                         <label class="block text-xs font-semibold text-gray-600 uppercase">Condições & Parcelamento</label>
-                        <div class="grid grid-cols-2 gap-3">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <div>
                                 <label class="text-xs text-gray-500">Parc. Setup</label>
                                 <select id="vendedor-parc-setup" onchange="calculateProposal()" class="w-full p-2 border rounded-lg text-sm">
@@ -336,11 +338,11 @@
                     <!-- BOTÕES DE SALVAR E PRINT -->
                     <div class="space-y-2 border-t pt-4">
                         <button onclick="saveProposalToDatabase()" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow transition flex items-center justify-center text-sm">
-                            <i class="fa-solid fa-floppy-disk mr-2 text-base"></i> Salvar Orçamento no Meu Perfil
+                            <i class="fa-solid fa-floppy-disk mr-2 text-base"></i> Salvar Orçamento
                         </button>
 
                         <button onclick="openPrintZoomModal()" class="w-full py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl shadow transition flex items-center justify-center text-sm">
-                            <i class="fa-solid fa-expand mr-2 text-base"></i> Visualizar Proposta em Tela Cheia (Modo Print)
+                            <i class="fa-solid fa-expand mr-2 text-base"></i> Tela Cheia / Baixar Imagem (Print)
                         </button>
                     </div>
                 </div>
@@ -348,21 +350,21 @@
                 <!-- Preview do Slide -->
                 <div class="lg:col-span-7 space-y-4">
                     <div class="flex items-center justify-between">
-                        <h3 class="text-base font-bold text-gray-700 uppercase tracking-wide">Pré-visualização da Tabela</h3>
-                        <span class="text-xs bg-green-100 text-green-800 font-medium px-2.5 py-1 rounded-full">Layout Oficial LifeApps</span>
+                        <h3 class="text-sm sm:text-base font-bold text-gray-700 uppercase tracking-wide">Pré-visualização da Tabela</h3>
+                        <span class="text-[10px] sm:text-xs bg-green-100 text-green-800 font-medium px-2.5 py-1 rounded-full">Layout Oficial</span>
                     </div>
 
-                    <div id="slide-container-target" class="slide-preview rounded-xl p-6 border border-gray-200 flex flex-col justify-between text-gray-800">
+                    <div id="slide-container-target" class="slide-preview rounded-xl p-4 sm:p-6 border border-gray-200 flex flex-col justify-between text-gray-800 overflow-hidden">
                         <div>
-                            <div class="flex justify-between items-start mb-4">
+                            <div class="flex justify-between items-start mb-4 gap-2">
                                 <div>
-                                    <h1 class="text-2xl font-black tracking-tight text-blue-900">
+                                    <h1 class="text-xl sm:text-2xl font-black tracking-tight text-blue-900">
                                         Investimento <span class="text-blue-600 font-normal">LifeApps</span>
                                     </h1>
                                 </div>
                                 
                                 <div class="text-right flex flex-col items-end">
-                                    <svg class="h-7 w-auto" viewBox="0 0 320 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <svg class="h-6 sm:h-7 w-auto" viewBox="0 0 320 80" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <rect x="0" y="55" width="14" height="15" rx="1.5" fill="#3eb049"/>
                                         <rect x="22" y="30" width="14" height="40" rx="1.5" fill="#3eb049"/>
                                         <rect x="44" y="42" width="14" height="28" rx="1.5" fill="#3eb049"/>
@@ -372,38 +374,38 @@
                                         <path d="M 185 48 C 185 36 175 27 163 27 C 151 27 141 36 141 49 C 141 62 151 71 163 71 C 172 71 180 66 183 58 L 172 54 C 170 58 167 60 163 60 C 157 60 153 56 153 51 L 185 51 Z M 153 43 C 154 39 158 36 163 36 C 168 36 172 39 173 43 Z" fill="#005691"/>
                                         <text x="188" y="68" font-family="'Segoe UI', Roboto, Arial, sans-serif" font-size="34" font-weight="500" fill="#3eb049">apps</text>
                                     </svg>
-                                    <p class="text-[9px] text-blue-500 font-medium mt-0.5">A plataforma escolhida pelo Atacado Distribuidor</p>
+                                    <p class="text-[8px] sm:text-[9px] text-blue-500 font-medium mt-0.5">A plataforma escolhida pelo Atacado Distribuidor</p>
                                 </div>
                             </div>
 
                             <div id="slide-section-setup" class="mb-5">
                                 <h4 class="text-xs font-bold text-blue-800 mb-1">Setup (Investimento Inicial)</h4>
-                                <div class="overflow-hidden rounded border border-gray-300 shadow-sm">
-                                    <table class="w-full text-left border-collapse text-[11px]" id="slide-table-setup"></table>
+                                <div class="overflow-x-auto rounded border border-gray-300 shadow-sm">
+                                    <table class="w-full text-left border-collapse text-[10px] sm:text-[11px] min-w-[500px]" id="slide-table-setup"></table>
                                 </div>
                                 <div class="mt-1.5 flex justify-end">
-                                    <div class="bg-gray-200 text-gray-800 text-xs font-bold px-4 py-1.5 rounded flex items-center space-x-6">
-                                        <span class="bg-green-600 text-white px-3 py-0.5 rounded text-[11px]">Total do investimento (Setup)</span>
-                                        <span id="slide-total-setup" class="text-sm font-extrabold text-gray-900">R$ 0,00</span>
+                                    <div class="bg-gray-200 text-gray-800 text-xs font-bold px-3 py-1 sm:px-4 sm:py-1.5 rounded flex items-center space-x-3 sm:space-x-6">
+                                        <span class="bg-green-600 text-white px-2 py-0.5 sm:px-3 rounded text-[10px] sm:text-[11px]">Total Setup</span>
+                                        <span id="slide-total-setup" class="text-xs sm:text-sm font-extrabold text-gray-900">R$ 0,00</span>
                                     </div>
                                 </div>
                             </div>
 
                             <div id="slide-section-mensal">
                                 <h4 class="text-xs font-bold text-blue-800 mb-1">Mensalidade</h4>
-                                <div class="overflow-hidden rounded border border-gray-300 shadow-sm">
-                                    <table class="w-full text-left border-collapse text-[11px]" id="slide-table-mensal"></table>
+                                <div class="overflow-x-auto rounded border border-gray-300 shadow-sm">
+                                    <table class="w-full text-left border-collapse text-[10px] sm:text-[11px] min-w-[500px]" id="slide-table-mensal"></table>
                                 </div>
                                 <div class="mt-1.5 flex justify-end">
-                                    <div class="bg-gray-200 text-gray-800 text-xs font-bold px-4 py-1.5 rounded flex items-center space-x-6">
-                                        <span class="bg-blue-600 text-white px-3 py-0.5 rounded text-[11px]">Total da Mensalidade</span>
-                                        <span id="slide-total-mensal" class="text-sm font-extrabold text-gray-900">R$ 0,00</span>
+                                    <div class="bg-gray-200 text-gray-800 text-xs font-bold px-3 py-1 sm:px-4 sm:py-1.5 rounded flex items-center space-x-3 sm:space-x-6">
+                                        <span class="bg-blue-600 text-white px-2 py-0.5 sm:px-3 rounded text-[10px] sm:text-[11px]">Total Mensal</span>
+                                        <span id="slide-total-mensal" class="text-xs sm:text-sm font-extrabold text-gray-900">R$ 0,00</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="h-3 bg-green-500 -mx-6 -mb-6 rounded-b-xl"></div>
+                        <div class="h-3 bg-green-500 -mx-4 -mb-4 sm:-mx-6 sm:-mb-6 rounded-b-xl mt-4"></div>
                     </div>
                 </div>
 
@@ -412,35 +414,35 @@
 
         <!-- PAINEL ADM -->
         <section id="screen-admin" class="hidden space-y-6">
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 space-y-6">
+            <div class="bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-gray-200 space-y-6">
                 
-                <div class="flex justify-between items-center border-b pb-4">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b pb-4 gap-2">
                     <div>
-                        <h2 class="text-xl font-bold text-gray-900">Painel Administrativo - Gestão Geral</h2>
+                        <h2 class="text-lg sm:text-xl font-bold text-gray-900">Painel Administrativo - Gestão Geral</h2>
                         <p class="text-xs text-gray-500">Gerencie usuários, produtos, orçamentos e segurança do SGP.</p>
                     </div>
                     <span class="bg-green-100 text-green-800 text-xs px-3 py-1 rounded-full font-medium">Admin Autenticado</span>
                 </div>
 
-                <div class="flex space-x-2 border-b">
-                    <button onclick="switchAdminSubTab('produtos')" id="adm-subtab-produtos" class="px-4 py-2 text-xs font-bold border-b-2 border-blue-600 text-blue-600">
-                        <i class="fa-solid fa-box mr-1"></i> Gestão de Produtos
+                <div class="flex space-x-2 border-b overflow-x-auto pb-1 text-xs">
+                    <button onclick="switchAdminSubTab('produtos')" id="adm-subtab-produtos" class="px-3 sm:px-4 py-2 font-bold whitespace-nowrap border-b-2 border-blue-600 text-blue-600">
+                        <i class="fa-solid fa-box mr-1"></i> Produtos
                     </button>
-                    <button onclick="switchAdminSubTab('orcamentos')" id="adm-subtab-orcamentos" class="px-4 py-2 text-xs font-bold text-gray-500 hover:text-gray-800">
-                        <i class="fa-solid fa-folder-tree mr-1"></i> Todos os Orçamentos
+                    <button onclick="switchAdminSubTab('orcamentos')" id="adm-subtab-orcamentos" class="px-3 sm:px-4 py-2 font-bold whitespace-nowrap text-gray-500 hover:text-gray-800">
+                        <i class="fa-solid fa-folder-tree mr-1"></i> Orçamentos
                     </button>
-                    <button onclick="switchAdminSubTab('usuarios')" id="adm-subtab-usuarios" class="px-4 py-2 text-xs font-bold text-gray-500 hover:text-gray-800">
-                        <i class="fa-solid fa-users mr-1"></i> Gestão de Vendedores
+                    <button onclick="switchAdminSubTab('usuarios')" id="adm-subtab-usuarios" class="px-3 sm:px-4 py-2 font-bold whitespace-nowrap text-gray-500 hover:text-gray-800">
+                        <i class="fa-solid fa-users mr-1"></i> Vendedores
                     </button>
-                    <button onclick="switchAdminSubTab('seguranca')" id="adm-subtab-seguranca" class="px-4 py-2 text-xs font-bold text-gray-500 hover:text-gray-800">
-                        <i class="fa-solid fa-key mr-1"></i> Alterar Senha Admin
+                    <button onclick="switchAdminSubTab('seguranca')" id="adm-subtab-seguranca" class="px-3 sm:px-4 py-2 font-bold whitespace-nowrap text-gray-500 hover:text-gray-800">
+                        <i class="fa-solid fa-key mr-1"></i> Senha Admin
                     </button>
                 </div>
 
                 <!-- SUB-ABA 1: GESTÃO DE PRODUTOS -->
                 <div id="adm-sec-produtos" class="space-y-4">
                     <h3 class="text-md font-bold text-gray-800">Cadastrar Novo Produto na Nuvem</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-3 bg-gray-50 p-4 rounded-xl border">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 bg-gray-50 p-4 rounded-xl border">
                         <div>
                             <label class="text-xs text-gray-600 font-medium">Nome do Produto</label>
                             <input type="text" id="new-prod-name" placeholder="Ex: LifeSales" class="w-full p-2 border rounded text-sm mt-1">
@@ -461,7 +463,7 @@
                     </div>
 
                     <div class="mt-6 space-y-3">
-                        <div class="flex justify-between items-center">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
                             <h4 class="text-xs font-bold text-gray-500 uppercase">Produtos Cadastrados (Arraste para mover)</h4>
                             <div class="flex space-x-2">
                                 <button onclick="deleteSelectedProducts()" class="px-3 py-1 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 text-xs font-semibold rounded-lg transition">
@@ -473,14 +475,14 @@
                             </div>
                         </div>
 
-                        <div id="admin-products-list" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
+                        <div id="admin-products-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
                     </div>
                 </div>
 
                 <!-- SUB-ABA 2: GESTÃO DE TODOS OS ORÇAMENTOS (ADMIN) -->
                 <div id="adm-sec-orcamentos" class="space-y-4 hidden">
-                    <div class="flex justify-between items-center">
-                        <h3 class="text-md font-bold text-gray-800">Visão Geral de Orçamentos Criados pelos Vendedores</h3>
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                        <h3 class="text-md font-bold text-gray-800">Orçamentos Criados pelos Vendedores</h3>
                         <div class="flex space-x-2">
                             <button onclick="deleteSelectedPropostasAdmin()" class="px-3 py-1 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 text-xs font-semibold rounded-lg transition">
                                 Excluir Selecionados
@@ -491,7 +493,7 @@
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 bg-gray-50 p-3 rounded-xl border">
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-gray-50 p-3 rounded-xl border">
                         <div>
                             <label class="text-[11px] font-bold text-gray-600 uppercase">Filtrar por Cliente</label>
                             <input type="text" id="admin-filter-cliente" oninput="renderAdminPropostasTable()" placeholder="Nome do cliente..." class="w-full p-2 border rounded-lg text-xs bg-white">
@@ -506,8 +508,8 @@
                         </div>
                     </div>
 
-                    <div class="bg-gray-50 p-4 rounded-xl border overflow-x-auto">
-                        <table class="w-full text-left text-xs border-collapse">
+                    <div class="bg-gray-50 p-3 rounded-xl border overflow-x-auto">
+                        <table class="w-full text-left text-xs border-collapse min-w-[600px]">
                             <thead>
                                 <tr class="bg-gray-200 text-gray-700 uppercase font-bold">
                                     <th class="p-2.5 w-8 text-center"><input type="checkbox" id="admin-select-all-prop" onchange="toggleSelectAllPropostas(this)"></th>
@@ -527,20 +529,18 @@
                 <!-- SUB-ABA 3: GESTÃO DE VENDEDORES -->
                 <div id="adm-sec-usuarios" class="space-y-4 hidden">
                     <h3 class="text-md font-bold text-gray-800">Aprovação e Controle de Vendedores</h3>
-                    <div class="bg-gray-50 p-4 rounded-xl border">
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left text-xs border-collapse">
-                                <thead>
-                                    <tr class="bg-gray-200 text-gray-700 uppercase font-bold">
-                                        <th class="p-2.5">Nome</th>
-                                        <th class="p-2.5">E-mail Corporativo</th>
-                                        <th class="p-2.5 text-center">Status</th>
-                                        <th class="p-2.5 text-center">Ações</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="admin-users-table-body" class="divide-y divide-gray-200"></tbody>
-                            </table>
-                        </div>
+                    <div class="bg-gray-50 p-3 rounded-xl border overflow-x-auto">
+                        <table class="w-full text-left text-xs border-collapse min-w-[500px]">
+                            <thead>
+                                <tr class="bg-gray-200 text-gray-700 uppercase font-bold">
+                                    <th class="p-2.5">Nome</th>
+                                    <th class="p-2.5">E-mail Corporativo</th>
+                                    <th class="p-2.5 text-center">Status</th>
+                                    <th class="p-2.5 text-center">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-users-table-body" class="divide-y divide-gray-200 bg-white"></tbody>
+                        </table>
                     </div>
                 </div>
 
@@ -570,7 +570,7 @@
     <!-- FOOTER INSTITUCIONAL FIXO -->
     <footer class="bg-white border-t border-gray-200 py-4 text-center text-xs text-gray-500 mt-auto">
         <div class="max-w-7xl mx-auto px-4">
-            Sistema de Geração de Proposta (SGP) - Nº v3.1 | Desenvolvido por 
+            Sistema de Geração de Proposta (SGP) - Nº v3.2 | Desenvolvido por 
             <a href="https://www.linkedin.com/in/rafaelrobertonascimento" target="_blank" rel="noopener noreferrer" class="text-blue-600 font-bold hover:underline">
                 Rafael Nascimento <i class="fa-brands fa-linkedin text-xs ml-0.5"></i>
             </a>
@@ -578,19 +578,19 @@
     </footer>
 
     <!-- MODAL MEUS ORÇAMENTOS SALVOS (VENDEDOR) -->
-    <div id="vendedor-propostas-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl w-full max-w-4xl p-6 relative shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+    <div id="vendedor-propostas-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3 sm:p-4">
+        <div class="bg-white rounded-2xl w-full max-w-4xl p-4 sm:p-6 relative shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center border-b pb-3">
                 <div>
-                    <h3 class="text-lg font-bold text-gray-800">Meus Orçamentos Salvos</h3>
-                    <p class="text-xs text-gray-500">Gerencie ou recarregue propostas salvas no seu perfil.</p>
+                    <h3 class="text-base sm:text-lg font-bold text-gray-800">Meus Orçamentos Salvos</h3>
+                    <p class="text-[11px] sm:text-xs text-gray-500">Gerencie ou recarregue propostas salvas no seu perfil.</p>
                 </div>
                 <button onclick="closeVendedorPropostasModal()" class="w-8 h-8 rounded-full bg-gray-100 hover:bg-red-100 hover:text-red-600 flex items-center justify-center font-bold text-gray-600 transition">
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 bg-gray-50 p-3 rounded-xl border">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-gray-50 p-3 rounded-xl border">
                 <div>
                     <label class="text-[11px] font-bold text-gray-600 uppercase">Pesquisar por Cliente</label>
                     <input type="text" id="vendedor-filter-cliente" oninput="renderVendedorPropostasList()" placeholder="Nome do cliente..." class="w-full p-2 border rounded-lg text-xs bg-white">
@@ -606,9 +606,9 @@
     </div>
 
     <!-- MODAL DE EDIÇÃO DE PRODUTO -->
-    <div id="edit-product-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl w-full max-w-md p-6 relative shadow-2xl space-y-4">
-            <h3 class="text-lg font-bold text-gray-900 border-b pb-2">Editar Produto</h3>
+    <div id="edit-product-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3 sm:p-4">
+        <div class="bg-white rounded-2xl w-full max-w-md p-5 sm:p-6 relative shadow-2xl space-y-4">
+            <h3 class="text-base sm:text-lg font-bold text-gray-900 border-b pb-2">Editar Produto</h3>
             <input type="hidden" id="edit-prod-id">
             
             <div>
@@ -632,16 +632,16 @@
     </div>
 
     <!-- MODAL DE ZOOM PARA PRINT -->
-    <div id="print-zoom-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl w-full max-w-6xl p-6 relative shadow-2xl flex flex-col space-y-4 max-h-[95vh] overflow-y-auto">
-            <div class="flex justify-between items-center border-b pb-3">
+    <div id="print-zoom-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3 sm:p-4">
+        <div class="bg-white rounded-2xl w-full max-w-6xl p-4 sm:p-6 relative shadow-2xl flex flex-col space-y-4 max-h-[95vh] overflow-y-auto">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b pb-3 gap-2">
                 <div class="flex items-center space-x-2">
-                    <span class="text-lg font-bold text-gray-800">Tabelas de Investimento Comercial</span>
-                    <span class="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded font-bold">Pronto para Captura</span>
+                    <span class="text-base sm:text-lg font-bold text-gray-800">Tabelas de Investimento</span>
+                    <span class="text-[10px] sm:text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded font-bold">Pronto para Captura</span>
                 </div>
-                <div class="flex items-center space-x-3">
-                    <button onclick="downloadTablesImageHD()" id="btn-download-img" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg text-xs transition flex items-center">
-                        <i class="fa-solid fa-download mr-1.5"></i> Baixar Imagem em Alta Qualidade (PNG)
+                <div class="flex items-center space-x-2 sm:space-x-3 w-full sm:w-auto justify-between sm:justify-end">
+                    <button onclick="downloadTablesImageHD()" id="btn-download-img" class="px-3 py-1.5 sm:px-4 sm:py-2 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg text-xs transition flex items-center">
+                        <i class="fa-solid fa-download mr-1.5"></i> Baixar PNG HD
                     </button>
                     <button onclick="closePrintZoomModal()" class="w-8 h-8 rounded-full bg-gray-100 hover:bg-red-100 hover:text-red-600 flex items-center justify-center font-bold text-gray-600 transition">
                         <i class="fa-solid fa-xmark text-lg"></i>
@@ -649,10 +649,10 @@
                 </div>
             </div>
 
-            <div id="zoom-content-box" class="p-6 bg-white rounded-xl shadow-sm overflow-x-auto flex flex-col justify-center"></div>
+            <div id="zoom-content-box" class="p-3 sm:p-6 bg-white rounded-xl shadow-sm overflow-x-auto flex flex-col justify-center"></div>
 
             <div class="text-center text-xs text-gray-500">
-                Pressione <strong>Windows + Shift + S</strong> (ou <strong>Cmd + Shift + 4</strong> no Mac) para capturar o print da área da tela.
+                Pressione <strong>Windows + Shift + S</strong> (ou <strong>Cmd + Shift + 4</strong> no Mac) para capturar o print.
             </div>
         </div>
     </div>
@@ -785,7 +785,6 @@
             calculateProposal();
         }
 
-        // NOVO ORÇAMENTO
         function createNewProposal() {
             if (proposalProducts.length > 0 && confirm("Deseja descartar a proposta atual e iniciar um Novo Orçamento em branco?")) {
                 clearProposalState();
@@ -942,12 +941,12 @@
             document.getElementById('screen-vendedor').classList.add('hidden');
             document.getElementById('screen-admin').classList.add('hidden');
 
-            document.getElementById('tab-vendedor').className = "px-4 py-2 rounded-lg font-medium text-sm transition-all text-gray-600 hover:bg-gray-100";
-            document.getElementById('tab-admin').className = "px-4 py-2 rounded-lg font-medium text-sm transition-all text-gray-600 hover:bg-gray-100";
+            document.getElementById('tab-vendedor').className = "px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg font-medium text-xs sm:text-sm transition-all text-gray-600 hover:bg-gray-100";
+            document.getElementById('tab-admin').className = "px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg font-medium text-xs sm:text-sm transition-all text-gray-600 hover:bg-gray-100";
 
             if(tab === 'vendedor') {
                 document.getElementById('screen-vendedor').classList.remove('hidden');
-                document.getElementById('tab-vendedor').className = "px-4 py-2 rounded-lg font-medium text-sm transition-all bg-blue-600 text-white shadow-sm";
+                document.getElementById('tab-vendedor').className = "px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg font-medium text-xs sm:text-sm transition-all bg-blue-600 text-white shadow-sm";
             } else {
                 if (!currentUser || currentUser.role !== 'admin') {
                     const pass = prompt('Digite a senha do Painel Administrativo:');
@@ -957,12 +956,12 @@
                     } else {
                         alert('Senha incorreta!');
                         document.getElementById('screen-vendedor').classList.remove('hidden');
-                        document.getElementById('tab-vendedor').className = "px-4 py-2 rounded-lg font-medium text-sm transition-all bg-blue-600 text-white shadow-sm";
+                        document.getElementById('tab-vendedor').className = "px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg font-medium text-xs sm:text-sm transition-all bg-blue-600 text-white shadow-sm";
                         return;
                     }
                 }
                 document.getElementById('screen-admin').classList.remove('hidden');
-                document.getElementById('tab-admin').className = "px-4 py-2 rounded-lg font-medium text-sm transition-all bg-blue-600 text-white shadow-sm";
+                document.getElementById('tab-admin').className = "px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg font-medium text-xs sm:text-sm transition-all bg-blue-600 text-white shadow-sm";
             }
         }
 
@@ -972,23 +971,23 @@
             document.getElementById('adm-sec-usuarios').classList.add('hidden');
             document.getElementById('adm-sec-seguranca').classList.add('hidden');
 
-            document.getElementById('adm-subtab-produtos').className = "px-4 py-2 text-xs font-bold text-gray-500 hover:text-gray-800";
-            document.getElementById('adm-subtab-orcamentos').className = "px-4 py-2 text-xs font-bold text-gray-500 hover:text-gray-800";
-            document.getElementById('adm-subtab-usuarios').className = "px-4 py-2 text-xs font-bold text-gray-500 hover:text-gray-800";
-            document.getElementById('adm-subtab-seguranca').className = "px-4 py-2 text-xs font-bold text-gray-500 hover:text-gray-800";
+            document.getElementById('adm-subtab-produtos').className = "px-3 sm:px-4 py-2 font-bold whitespace-nowrap text-gray-500 hover:text-gray-800";
+            document.getElementById('adm-subtab-orcamentos').className = "px-3 sm:px-4 py-2 font-bold whitespace-nowrap text-gray-500 hover:text-gray-800";
+            document.getElementById('adm-subtab-usuarios').className = "px-3 sm:px-4 py-2 font-bold whitespace-nowrap text-gray-500 hover:text-gray-800";
+            document.getElementById('adm-subtab-seguranca').className = "px-3 sm:px-4 py-2 font-bold whitespace-nowrap text-gray-500 hover:text-gray-800";
 
             if (sec === 'produtos') {
                 document.getElementById('adm-sec-produtos').classList.remove('hidden');
-                document.getElementById('adm-subtab-produtos').className = "px-4 py-2 text-xs font-bold border-b-2 border-blue-600 text-blue-600";
+                document.getElementById('adm-subtab-produtos').className = "px-3 sm:px-4 py-2 font-bold whitespace-nowrap border-b-2 border-blue-600 text-blue-600";
             } else if (sec === 'orcamentos') {
                 document.getElementById('adm-sec-orcamentos').classList.remove('hidden');
-                document.getElementById('adm-subtab-orcamentos').className = "px-4 py-2 text-xs font-bold border-b-2 border-blue-600 text-blue-600";
+                document.getElementById('adm-subtab-orcamentos').className = "px-3 sm:px-4 py-2 font-bold whitespace-nowrap border-b-2 border-blue-600 text-blue-600";
             } else if (sec === 'usuarios') {
                 document.getElementById('adm-sec-usuarios').classList.remove('hidden');
-                document.getElementById('adm-subtab-usuarios').className = "px-4 py-2 text-xs font-bold border-b-2 border-blue-600 text-blue-600";
+                document.getElementById('adm-subtab-usuarios').className = "px-3 sm:px-4 py-2 font-bold whitespace-nowrap border-b-2 border-blue-600 text-blue-600";
             } else {
                 document.getElementById('adm-sec-seguranca').classList.remove('hidden');
-                document.getElementById('adm-subtab-seguranca').className = "px-4 py-2 text-xs font-bold border-b-2 border-blue-600 text-blue-600";
+                document.getElementById('adm-subtab-seguranca').className = "px-3 sm:px-4 py-2 font-bold whitespace-nowrap border-b-2 border-blue-600 text-blue-600";
             }
         }
 
@@ -1144,18 +1143,18 @@
                 const dataFormatada = new Date(p.dataCriacao).toLocaleDateString('pt-BR');
 
                 html += `
-                    <div class="p-4 bg-gray-50 border rounded-xl flex items-center justify-between shadow-sm hover:shadow transition">
+                    <div class="p-3 sm:p-4 bg-gray-50 border rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-sm hover:shadow transition">
                         <div>
                             <h4 class="font-bold text-sm text-blue-900">${p.clienteNome}</h4>
-                            <div class="text-xs text-gray-500 mt-1 flex space-x-4">
+                            <div class="text-xs text-gray-500 mt-1 flex flex-wrap gap-2 sm:gap-4">
                                 <span><i class="fa-solid fa-calendar text-gray-400 mr-1"></i> ${dataFormatada}</span>
                                 <span>Setup: <strong class="text-gray-800">${p.totalSetup}</strong></span>
                                 <span>Mensal: <strong class="text-gray-800">${p.totalMensal}</strong></span>
                             </div>
                         </div>
-                        <div class="flex space-x-2">
+                        <div class="flex space-x-2 w-full sm:w-auto justify-end">
                             <button onclick='loadProposalToState(${JSON.stringify(p).replace(/'/g, "&apos;")})' class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold transition">
-                                <i class="fa-solid fa-pen-to-square mr-1"></i> Carregar / Editar
+                                <i class="fa-solid fa-pen-to-square mr-1"></i> Editar
                             </button>
                             <button onclick="deleteProposalFirebase('${p.id}')" class="px-3 py-1.5 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg text-xs font-bold transition">
                                 <i class="fa-solid fa-trash"></i>
@@ -1190,7 +1189,7 @@
             tbody.innerHTML = '';
 
             if (filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-gray-400 italic">Nenhum orçamento encontrado no banco de dados.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-gray-400 italic">Nenhum orçamento encontrado.</td></tr>`;
                 return;
             }
 
@@ -1473,7 +1472,6 @@
             document.getElementById('slide-total-mensal').innerText = formatBRL(totalMensal);
         }
 
-        // Tabela Setup com Regras de Exibição Limpa
         function renderSetupTable(tableId, items, showDiscount, parcNum, dataText) {
             const table = document.getElementById(tableId);
             const showMultipleUnitDiscount = items.some(i => i.qtd > 1);
@@ -1577,7 +1575,6 @@
             table.innerHTML = html;
         }
 
-        // VISUALIZAÇÃO APENAS DAS TABELAS EM TELA CHEIA (SEM CABEÇALHO/LOGO NO ZOOM)
         function openPrintZoomModal() {
             const container = document.getElementById('slide-container-target');
             const clone = container.cloneNode(true);
@@ -1601,7 +1598,6 @@
             document.getElementById('print-zoom-modal').classList.add('hidden');
         }
 
-        // DOWNLOAD DA IMAGEM EM ALTA QUALIDADE
         function downloadTablesImageHD() {
             const zoomBox = document.getElementById('zoom-content-box');
             const targetElement = zoomBox.firstElementChild || zoomBox;
