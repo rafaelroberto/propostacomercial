@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SGP - Feed Social Corporativo & Propostas v4.2</title>
+    <title>SGP - Feed Social Corporativo & Propostas v4.3</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -43,7 +43,7 @@
                             <rect x="70" y="5" width="14" height="65" rx="3" fill="#ffffff"/>
                             <rect x="94" y="28" width="14" height="42" rx="3" fill="#ffffff"/>
                         </svg>
-                        <span class="font-bold text-sm tracking-wider text-green-400 whitespace-nowrap">LifeApps</span>
+                        <span class="font-bold text-sm tracking-wider text-green-400 whitespace-nowrap sidebar-text">LifeApps</span>
                     </div>
                     <button onclick="toggleSidebar()" class="p-2 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition">
                         <i id="sidebar-toggle-icon" class="fa-solid fa-angles-left"></i>
@@ -81,7 +81,8 @@
                     </div>
                 </div>
 
-                <button onclick="logoutSystem()" class="w-full flex items-center space-x-3 px-3 py-2 text-red-400 hover:bg-red-500/10 rounded-xl font-bold text-xs transition">
+                <!-- CORREÇÃO: BOTÃO DE SAIR DO SISTEMA -->
+                <button type="button" onclick="logoutSystem()" class="w-full flex items-center space-x-3 px-3 py-2 text-red-400 hover:bg-red-500/10 rounded-xl font-bold text-xs transition cursor-pointer">
                     <i class="fa-solid fa-power-off text-base min-w-[24px]"></i>
                     <span class="sidebar-text whitespace-nowrap">Sair do Sistema</span>
                 </button>
@@ -105,7 +106,7 @@
                         </div>
 
                         <!-- CAIXA DE NOVA PUBLICAÇÃO -->
-                        <div class="bg-white p-4 sm:p-5 rounded-2xl border shadow-sm space-y-3">
+                        <div class="bg-white p-4 sm:p-5 rounded-2xl border shadow-sm space-y-3 relative">
                             <div class="w-full">
                                 <textarea id="post-input-text" rows="3" placeholder="Publique algo para seus colegas da LifeApps aqui..." class="w-full p-3 bg-gray-50 border rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none resize-none"></textarea>
                             </div>
@@ -116,11 +117,32 @@
                                 <i class="fa-solid fa-image absolute left-2.5 top-2.5 text-gray-400 text-xs"></i>
                             </div>
 
+                            <!-- Painel de Emojis Rápido -->
+                            <div id="emoji-picker-popover" class="hidden bg-white border border-gray-200 rounded-xl p-3 shadow-xl flex flex-wrap gap-2 text-lg z-30 max-w-xs">
+                                <button type="button" onclick="insertEmoji('👍')" class="hover:scale-125 transition">👍</button>
+                                <button type="button" onclick="insertEmoji('🔥')" class="hover:scale-125 transition">🔥</button>
+                                <button type="button" onclick="insertEmoji('👏')" class="hover:scale-125 transition">👏</button>
+                                <button type="button" onclick="insertEmoji('🎉')" class="hover:scale-125 transition">🎉</button>
+                                <button type="button" onclick="insertEmoji('🚀')" class="hover:scale-125 transition">🚀</button>
+                                <button type="button" onclick="insertEmoji('❤️')" class="hover:scale-125 transition">❤️</button>
+                                <button type="button" onclick="insertEmoji('💡')" class="hover:scale-125 transition">💡</button>
+                                <button type="button" onclick="insertEmoji('💼')" class="hover:scale-125 transition">💼</button>
+                                <button type="button" onclick="insertEmoji('😀')" class="hover:scale-125 transition">😀</button>
+                                <button type="button" onclick="insertEmoji('🎯')" class="hover:scale-125 transition">🎯</button>
+                                <button type="button" onclick="insertEmoji('💪')" class="hover:scale-125 transition">💪</button>
+                                <button type="button" onclick="insertEmoji('☕')" class="hover:scale-125 transition">☕</button>
+                            </div>
+
                             <div class="flex flex-wrap justify-between items-center border-t pt-3 gap-2">
-                                <div class="flex space-x-2 text-xs">
-                                    <label id="admin-pin-notice-option" class="hidden flex items-center space-x-1.5 text-amber-800 font-bold bg-amber-50 border border-amber-200 px-3 py-1 rounded-lg cursor-pointer">
+                                <div class="flex items-center space-x-2 text-xs">
+                                    <!-- Botão abrir Emojis -->
+                                    <button type="button" onclick="toggleEmojiPicker()" class="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-lg transition flex items-center">
+                                        <i class="fa-regular fa-face-smile text-yellow-500 mr-1.5 text-sm"></i> Emojis
+                                    </button>
+
+                                    <label id="admin-pin-notice-option" class="hidden flex items-center space-x-1.5 text-amber-800 font-bold bg-amber-50 border border-amber-200 px-3 py-1.5 rounded-lg cursor-pointer">
                                         <input type="checkbox" id="post-is-pinned" class="w-3.5 h-3.5 text-amber-600 rounded">
-                                        <span>📌 Fixar como Newsletter / Aviso da Gestão</span>
+                                        <span>📌 Fixar como Newsletter</span>
                                     </label>
                                 </div>
 
@@ -572,7 +594,7 @@
     <!-- FOOTER INSTITUCIONAL FIXO -->
     <footer class="bg-white border-t border-gray-200 py-4 text-center text-xs text-gray-500 mt-auto z-30">
         <div class="max-w-7xl mx-auto px-4">
-            Sistema de Geração de Proposta (SGP) - Nº v4.2 | Desenvolvido por 
+            Sistema de Geração de Proposta (SGP) - Nº v4.3 | Desenvolvido por 
             <a href="https://www.linkedin.com/in/rafaelrobertonascimento" target="_blank" rel="noopener noreferrer" class="text-blue-600 font-bold hover:underline">
                 Rafael Nascimento <i class="fa-brands fa-linkedin text-xs ml-0.5"></i>
             </a>
@@ -769,6 +791,23 @@
                 document.getElementById('main-sec-admin').classList.remove('hidden');
                 document.getElementById('nav-item-admin').className = "w-full flex items-center space-x-3 px-3 py-3 rounded-xl bg-blue-600 text-white font-bold text-xs sm:text-sm transition";
             }
+        }
+
+        // FUNÇÃO DE EMOJIS
+        function toggleEmojiPicker() {
+            const picker = document.getElementById('emoji-picker-popover');
+            picker.classList.toggle('hidden');
+        }
+
+        function insertEmoji(emoji) {
+            const input = document.getElementById('post-input-text');
+            const start = input.selectionStart;
+            const end = input.selectionEnd;
+            const text = input.value;
+            input.value = text.substring(0, start) + emoji + text.substring(end);
+            input.focus();
+            input.selectionStart = input.selectionEnd = start + emoji.length;
+            document.getElementById('emoji-picker-popover').classList.add('hidden');
         }
 
         function listenSystemSettings() {
