@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SGP - Portal Corporativo & Propostas LifeApps v4.6</title>
+    <title>SGP - Portal Corporativo & Propostas LifeApps v5.0</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -147,7 +147,7 @@
         </div>
 
         <footer class="text-center text-xs text-white/90 py-2">
-            Sistema de Geração de Proposta (SGP) - Nº v4.6 | Desenvolvido por 
+            Sistema de Geração de Proposta (SGP) - Nº v5.0 | Desenvolvido por 
             <a href="https://www.linkedin.com/in/rafaelrobertonascimento" target="_blank" rel="noopener noreferrer" class="text-white font-bold underline hover:text-green-300">
                 Rafael Nascimento <i class="fa-brands fa-linkedin text-xs ml-0.5"></i>
             </a>
@@ -220,18 +220,44 @@
             <!-- CONTEÚDO PRINCIPAL -->
             <main class="flex-1 p-4 sm:p-8 max-w-7xl mx-auto w-full">
 
+                <!-- TOP BAR DE NOTIFICAÇÕES -->
+                <div class="flex justify-end items-center mb-6">
+                    <div class="relative">
+                        <button onclick="toggleNotificationsMenu()" class="p-2.5 bg-white border rounded-xl text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition relative shadow-sm">
+                            <i class="fa-solid fa-bell text-lg"></i>
+                            <span id="notification-badge" class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-extrabold w-5 h-5 rounded-full flex items-center justify-center hidden">0</span>
+                        </button>
+
+                        <!-- DROPDOWN DE NOTIFICAÇÕES -->
+                        <div id="notification-dropdown" class="hidden absolute right-0 mt-2 w-80 bg-white border rounded-2xl shadow-2xl z-50 overflow-hidden divide-y">
+                            <div class="p-3 bg-gray-50 flex justify-between items-center border-b">
+                                <span class="font-bold text-xs text-gray-800">Notificações / Menções</span>
+                                <button onclick="markNotificationsAsRead()" class="text-[10px] font-bold text-blue-600 hover:underline">Marcar lidas</button>
+                            </div>
+                            <div id="notification-items-container" class="max-h-64 overflow-y-auto divide-y text-xs text-gray-700">
+                                <p class="p-4 text-center text-gray-400 italic text-xs">Nenhuma notificação por enquanto.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- 1. REDE SOCIAL / FEED -->
                 <section id="main-sec-social" class="space-y-6">
                     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
                         <div class="lg:col-span-8 space-y-6">
                             
+                            <!-- BANNER DO ADMINISTRADOR -->
                             <div id="feed-banner-container" class="hidden rounded-2xl overflow-hidden shadow-sm border border-gray-200">
                                 <img id="feed-banner-image" src="" alt="Banner Oficial LifeApps" class="w-full h-auto max-h-52 object-cover">
                             </div>
 
+                            <!-- CAIXA DE NOVA PUBLICAÇÃO COM AUTOCOMPLETE DE MENCÕES -->
                             <div class="bg-white p-4 sm:p-5 rounded-2xl border shadow-sm space-y-3 relative">
-                                <div class="w-full">
-                                    <textarea id="post-input-text" rows="3" placeholder="Publique algo para seus colegas da LifeApps aqui..." class="w-full p-3 bg-gray-50 border rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none resize-none"></textarea>
+                                <div class="w-full relative">
+                                    <textarea id="post-input-text" rows="3" oninput="handleMentionAutocomplete(this)" placeholder="Publique algo para seus colegas da LifeApps aqui... (Use @ para mencionar um colega)" class="w-full p-3 bg-gray-50 border rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none resize-none"></textarea>
+
+                                    <!-- AUTOCOMPLETE MENTIONS POPOVER -->
+                                    <div id="mention-autocomplete-popover" class="hidden absolute left-3 bottom-full mb-1 w-64 bg-white border border-gray-200 rounded-xl shadow-2xl z-50 max-h-48 overflow-y-auto divide-y"></div>
                                 </div>
 
                                 <div class="relative">
@@ -275,13 +301,16 @@
                             <div id="social-feed-container" class="space-y-4"></div>
                         </div>
 
+                        <!-- COLUNA DIREITA DADOS E CARDS -->
                         <div class="lg:col-span-4 space-y-6">
+                            
+                            <!-- CARD NEWSLETTER CUSTOMIZÁVEL -->
                             <div class="bg-gradient-to-br from-blue-900 to-slate-900 text-white p-5 rounded-2xl shadow-sm space-y-4">
                                 <div class="flex items-center space-x-2 text-green-400">
                                     <i class="fa-solid fa-bullhorn text-lg"></i>
-                                    <h3 class="font-bold text-sm uppercase tracking-wider">Newsletter Oficial</h3>
+                                    <h3 class="font-bold text-sm uppercase tracking-wider" id="sidebar-newsletter-title">Newsletter Oficial</h3>
                                 </div>
-                                <p class="text-xs text-slate-300 leading-relaxed">
+                                <p class="text-xs text-slate-300 leading-relaxed" id="sidebar-newsletter-subtitle">
                                     Acompanhe os avisos da gestão, lançamentos de novos produtos e metas do time comercial da LifeApps.
                                 </p>
                                 <div class="border-t border-slate-700/60 pt-3 space-y-2 text-xs" id="sidebar-newsletter-list">
@@ -289,14 +318,9 @@
                                 </div>
                             </div>
 
-                            <div class="bg-white p-5 rounded-2xl border shadow-sm space-y-3">
-                                <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider flex items-center">
-                                    <i class="fa-solid fa-lightbulb text-yellow-500 mr-2 text-sm"></i> Dica de Vendas
-                                </h4>
-                                <p class="text-xs text-gray-700 leading-relaxed">
-                                    Ao apresentar propostas de E-commerce, lembre-se de enfatizar o módulo <strong>LifeChat integrando com IA</strong> para atendimento 24/7.
-                                </p>
-                            </div>
+                            <!-- CARDS CUSTOMIZADOS DINÂMICOS DA COLUNA DIREITA -->
+                            <div id="sidebar-custom-cards-container" class="space-y-6"></div>
+
                         </div>
                     </div>
                 </section>
@@ -518,13 +542,16 @@
                         <div class="flex justify-between items-center border-b pb-4">
                             <div>
                                 <h2 class="text-xl font-bold text-gray-900">Painel Administrativo - Gestão Geral</h2>
-                                <p class="text-xs text-gray-500">Gerencie usuários, produtos, orçamentos, banner e segurança do SGP.</p>
+                                <p class="text-xs text-gray-500">Gerencie usuários, produtos, orçamentos, cards e segurança do SGP.</p>
                             </div>
                             <span class="bg-green-100 text-green-800 text-xs px-3 py-1 rounded-full font-medium">Admin Autenticado</span>
                         </div>
 
                         <div class="flex space-x-2 border-b overflow-x-auto pb-1">
-                            <button onclick="switchAdminSubTab('links')" id="adm-subtab-links" class="px-4 py-2 text-xs font-bold border-b-2 border-blue-600 text-blue-600 whitespace-nowrap">
+                            <button onclick="switchAdminSubTab('cards')" id="adm-subtab-cards" class="px-4 py-2 text-xs font-bold border-b-2 border-blue-600 text-blue-600 whitespace-nowrap">
+                                <i class="fa-solid fa-square-plus mr-1"></i> Cards da Coluna Direita
+                            </button>
+                            <button onclick="switchAdminSubTab('links')" id="adm-subtab-links" class="px-4 py-2 text-xs font-bold text-gray-500 hover:text-gray-800 whitespace-nowrap">
                                 <i class="fa-solid fa-link mr-1"></i> Sistemas & Links
                             </button>
                             <button onclick="switchAdminSubTab('banner')" id="adm-subtab-banner" class="px-4 py-2 text-xs font-bold text-gray-500 hover:text-gray-800 whitespace-nowrap">
@@ -544,8 +571,56 @@
                             </button>
                         </div>
 
+                        <!-- SUB-ABA GESTÃO DE CARDS DA COLUNA DIREITA -->
+                        <div id="adm-sec-cards" class="space-y-6">
+                            <!-- Personalizar Newsletter -->
+                            <div class="bg-gray-50 p-4 rounded-xl border space-y-3 max-w-2xl">
+                                <h3 class="text-sm font-bold text-gray-800">Personalizar Card da Newsletter</h3>
+                                <div>
+                                    <label class="text-xs text-gray-600 font-medium">Título do Card</label>
+                                    <input type="text" id="admin-newsletter-title" placeholder="Ex: Newsletter Oficial" class="w-full p-2 border rounded text-sm mt-1">
+                                </div>
+                                <div>
+                                    <label class="text-xs text-gray-600 font-medium">Subtítulo / Descrição</label>
+                                    <textarea id="admin-newsletter-subtitle" rows="2" placeholder="Ex: Acompanhe os avisos da gestão..." class="w-full p-2 border rounded text-sm mt-1 resize-none"></textarea>
+                                </div>
+                                <button onclick="saveAdminNewsletterSettings()" class="py-2 px-4 bg-blue-600 text-white rounded-lg text-xs font-bold hover:bg-blue-700">
+                                    Atualizar Textos da Newsletter
+                                </button>
+                            </div>
+
+                            <!-- Criar Novos Cards (Estilo Dica de Vendas) -->
+                            <div class="space-y-4">
+                                <h3 class="text-sm font-bold text-gray-800">Criar Novo Card Personalizado (Ex: Dica de Vendas)</h3>
+                                <div class="grid grid-cols-1 md:grid-cols-4 gap-3 bg-gray-50 p-4 rounded-xl border">
+                                    <div>
+                                        <label class="text-xs text-gray-600 font-medium">Título do Card</label>
+                                        <input type="text" id="new-card-title" placeholder="Ex: Dica do Dia" class="w-full p-2 border rounded text-sm mt-1">
+                                    </div>
+                                    <div>
+                                        <label class="text-xs text-gray-600 font-medium">Ícone (FontAwesome)</label>
+                                        <input type="text" id="new-card-icon" value="fa-solid fa-lightbulb" class="w-full p-2 border rounded text-sm mt-1">
+                                    </div>
+                                    <div class="md:col-span-2">
+                                        <label class="text-xs text-gray-600 font-medium">Conteúdo do Card</label>
+                                        <input type="text" id="new-card-content" placeholder="Texto com a dica ou aviso..." class="w-full p-2 border rounded text-sm mt-1">
+                                    </div>
+                                    <div class="md:col-span-4 flex justify-end">
+                                        <button onclick="addNewCustomCardFirebase()" class="px-5 py-2 bg-blue-600 text-white font-bold rounded-lg text-xs hover:bg-blue-700">
+                                            <i class="fa-solid fa-plus mr-1"></i> Publicar Card na Coluna Direita
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="mt-4 space-y-2">
+                                    <h4 class="text-xs font-bold text-gray-500 uppercase">Cards Customizados Ativos</h4>
+                                    <div id="admin-custom-cards-list" class="space-y-2"></div>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- SUB-ABA GESTÃO DE LINKS E SISTEMAS EXTERNOS -->
-                        <div id="adm-sec-links" class="space-y-4">
+                        <div id="adm-sec-links" class="space-y-4 hidden">
                             <h3 class="text-md font-bold text-gray-800">Cadastrar Novo Link no Menu Lateral</h3>
                             <div class="grid grid-cols-1 md:grid-cols-4 gap-3 bg-gray-50 p-4 rounded-xl border">
                                 <div>
@@ -748,7 +823,7 @@
 
         <footer class="bg-white border-t border-gray-200 py-4 text-center text-xs text-gray-500 mt-auto z-30">
             <div class="max-w-7xl mx-auto px-4">
-                Sistema de Geração de Proposta (SGP) - Nº v4.6 | Desenvolvido por 
+                Sistema de Geração de Proposta (SGP) - Nº v5.0 | Desenvolvido por 
                 <a href="https://www.linkedin.com/in/rafaelrobertonascimento" target="_blank" rel="noopener noreferrer" class="text-blue-600 font-bold hover:underline">
                     Rafael Nascimento <i class="fa-brands fa-linkedin text-xs ml-0.5"></i>
                 </a>
@@ -904,6 +979,8 @@
         let dbPropostas = [];
         let dbPosts = [];
         let dbLinks = [];
+        let dbCustomCards = [];
+        let dbNotifications = [];
         let proposalProducts = [];
         let draggedItemIndex = null;
         let activeSharePostId = null;
@@ -916,8 +993,24 @@
             if (savedSession) {
                 currentUser = JSON.parse(savedSession);
                 showMainApp();
+                requestNotificationPermission();
             } else {
                 showAuthScreen();
+            }
+        }
+
+        function requestNotificationPermission() {
+            if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") {
+                Notification.requestPermission();
+            }
+        }
+
+        function triggerWebPushNotification(title, body) {
+            if ("Notification" in window && Notification.permission === "granted") {
+                new Notification(title, {
+                    body: body,
+                    icon: 'https://lifeapps.com.br/favicon.ico'
+                });
             }
         }
 
@@ -937,7 +1030,6 @@
             document.getElementById('user-avatar-initials').innerText = initials;
             document.getElementById('post-avatar-initials').innerText = initials;
 
-            // EXIBE O PAINEL DE ADMIN SE O USUÁRIO FOR ADMIN
             if (currentUser.role === 'admin') {
                 document.getElementById('nav-item-admin').classList.remove('hidden');
                 document.getElementById('admin-pin-notice-option').classList.remove('hidden');
@@ -1048,6 +1140,7 @@
             currentUser = user;
             showMainApp();
             switchMainTab('social');
+            listenFirebaseNotifications();
         }
 
         function handleAdminLogin(e) {
@@ -1060,6 +1153,7 @@
                 currentUser = adminUser;
                 showMainApp();
                 switchMainTab('social');
+                listenFirebaseNotifications();
             } else {
                 alert('Senha de administrador incorreta!');
             }
@@ -1109,41 +1203,120 @@
             showAuthScreen();
         }
 
-        // EMOJIS & FEED
-        function toggleEmojiPicker() {
-            const picker = document.getElementById('emoji-picker-popover');
-            picker.classList.toggle('hidden');
+        // AUTOCOMPLETE DE MENÇÕES (@USUÁRIO)
+        function handleMentionAutocomplete(textarea) {
+            const val = textarea.value;
+            const cursor = textarea.selectionStart;
+            const textBeforeCursor = val.substring(0, cursor);
+            const lastAt = textBeforeCursor.lastIndexOf('@');
+
+            const popover = document.getElementById('mention-autocomplete-popover');
+
+            if (lastAt !== -1) {
+                const query = textBeforeCursor.substring(lastAt + 1).toLowerCase();
+                const matches = dbUsers.filter(u => u.nome.toLowerCase().includes(query) || (u.email && u.email.toLowerCase().includes(query)));
+
+                if (matches.length > 0 && !query.includes(' ')) {
+                    let html = '';
+                    matches.forEach(u => {
+                        html += `
+                            <div onclick="selectMentionUser('${u.nome}')" class="p-2 text-xs text-gray-700 hover:bg-blue-50 hover:text-blue-700 font-medium cursor-pointer transition flex items-center space-x-2">
+                                <div class="w-6 h-6 rounded-full bg-blue-600 text-white text-[10px] font-bold flex items-center justify-center">
+                                    ${u.nome.slice(0,2).toUpperCase()}
+                                </div>
+                                <span>${u.nome}</span>
+                            </div>
+                        `;
+                    });
+                    popover.innerHTML = html;
+                    popover.classList.remove('hidden');
+                    return;
+                }
+            }
+            popover.classList.add('hidden');
         }
 
-        function insertEmoji(emoji) {
-            const input = document.getElementById('post-input-text');
-            const start = input.selectionStart;
-            const end = input.selectionEnd;
-            const text = input.value;
-            input.value = text.substring(0, start) + emoji + text.substring(end);
-            input.focus();
-            input.selectionStart = input.selectionEnd = start + emoji.length;
-            document.getElementById('emoji-picker-popover').classList.add('hidden');
+        function selectMentionUser(userName) {
+            const textarea = document.getElementById('post-input-text');
+            const cursor = textarea.selectionStart;
+            const text = textarea.value;
+            const lastAt = text.substring(0, cursor).lastIndexOf('@');
+
+            const newText = text.substring(0, lastAt) + `@${userName} ` + text.substring(cursor);
+            textarea.value = newText;
+            document.getElementById('mention-autocomplete-popover').classList.add('hidden');
+            textarea.focus();
         }
 
-        function listenFirebasePosts() {
-            db.collection("posts").onSnapshot((snapshot) => {
-                dbPosts = [];
-                snapshot.forEach((doc) => {
-                    dbPosts.push({ id: doc.id, ...doc.data() });
-                });
+        // GERENCIADOR DE NOTIFICAÇÕES & PUSH
+        function listenFirebaseNotifications() {
+            if (!currentUser) return;
 
-                dbPosts.sort((a, b) => {
-                    if (a.isPinned && !b.isPinned) return -1;
-                    if (!a.isPinned && b.isPinned) return 1;
-                    return new Date(b.dataCriacao) - new Date(a.dataCriacao);
-                });
+            db.collection("notificacoes")
+              .where("destinatarioNome", "==", currentUser.nome)
+              .onSnapshot((snapshot) => {
+                  dbNotifications = [];
+                  snapshot.forEach((doc) => {
+                      dbNotifications.push({ id: doc.id, ...doc.data() });
+                  });
 
-                renderSocialFeed();
-                renderSidebarNewsletter();
+                  dbNotifications.sort((a, b) => new Date(b.data) - new Date(a.data));
+                  renderNotificationsUI();
+              });
+        }
+
+        function renderNotificationsUI() {
+            const container = document.getElementById('notification-items-container');
+            const badge = document.getElementById('notification-badge');
+
+            const unread = dbNotifications.filter(n => !n.lida);
+
+            if (unread.length > 0) {
+                badge.innerText = unread.length;
+                badge.classList.remove('hidden');
+
+                // Notificação Push no Navegador para a última menção
+                const lastUnread = unread[0];
+                if (!lastUnread.pushed) {
+                    triggerWebPushNotification("Você foi mencionado no SGP!", `${lastUnread.remetenteNome} mencionou você em uma publicação.`);
+                    db.collection("notificacoes").doc(lastUnread.id).update({ pushed: true });
+                }
+            } else {
+                badge.classList.add('hidden');
+            }
+
+            if (dbNotifications.length === 0) {
+                container.innerHTML = `<p class="p-4 text-center text-gray-400 italic text-xs">Nenhuma notificação por enquanto.</p>`;
+                return;
+            }
+
+            let html = '';
+            dbNotifications.forEach(n => {
+                html += `
+                    <div class="p-3 hover:bg-gray-50 transition ${!n.lida ? 'bg-blue-50/50' : ''}">
+                        <div class="flex justify-between items-start">
+                            <strong class="text-blue-900">${n.remetenteNome}</strong>
+                            <span class="text-[10px] text-gray-400">${new Date(n.data).toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'})}</span>
+                        </div>
+                        <p class="text-xs text-gray-700 mt-1">${n.mensagem}</p>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        function toggleNotificationsMenu() {
+            const dropdown = document.getElementById('notification-dropdown');
+            dropdown.classList.toggle('hidden');
+        }
+
+        function markNotificationsAsRead() {
+            dbNotifications.filter(n => !n.lida).forEach(n => {
+                db.collection("notificacoes").doc(n.id).update({ lida: true });
             });
         }
 
+        // PUBLICAR E MENCIONAR NO FEED
         function createNewPost() {
             const input = document.getElementById('post-input-text');
             const inputImage = document.getElementById('post-input-image');
@@ -1156,6 +1329,9 @@
                 alert('Digite uma mensagem ou adicione uma imagem para publicar!');
                 return;
             }
+
+            // Identifica menções com @ no texto
+            const mentions = text.match(/@([a-zA-A-zA-Z0-9À-ÿ\s]+)/g) || [];
 
             const newPost = {
                 autorId: currentUser.id || 'usr',
@@ -1173,6 +1349,23 @@
                 input.value = '';
                 inputImage.value = '';
                 document.getElementById('post-is-pinned').checked = false;
+
+                // Envia notificações para todos os mencionados
+                mentions.forEach(mention => {
+                    const cleanName = mention.replace('@', '').trim();
+                    const targetUser = dbUsers.find(u => u.nome.toLowerCase() === cleanName.toLowerCase());
+
+                    if (targetUser) {
+                        db.collection("notificacoes").add({
+                            destinatarioNome: targetUser.nome,
+                            remetenteNome: currentUser.nome,
+                            mensagem: `Mencionou você: "${text.substring(0, 60)}..."`,
+                            data: new Date().toISOString(),
+                            lida: false,
+                            pushed: false
+                        });
+                    }
+                });
             });
         }
 
@@ -1250,6 +1443,9 @@
 
                 const isOwner = currentUser && (post.autorId === currentUser.id || post.autorNome === currentUser.nome || currentUser.role === 'admin');
 
+                // Destaque visual para menções com @
+                let formattedText = post.texto ? post.texto.replace(/@([a-zA-A-zA-Z0-9À-ÿ\s]+)/g, '<span class="text-blue-600 font-bold bg-blue-50 px-1 py-0.5 rounded">@$1</span>') : '';
+
                 let pinnedBadge = post.isPinned ? `
                     <span class="bg-amber-100 text-amber-800 text-[10px] px-2.5 py-0.5 rounded-full font-bold flex items-center">
                         <i class="fa-solid fa-thumbtack mr-1"></i> Aviso da Gestão / Newsletter
@@ -1303,7 +1499,7 @@
                             </div>
                         </div>
 
-                        ${post.texto ? `<p class="text-xs sm:text-sm text-gray-800 leading-relaxed whitespace-pre-line">${post.texto}</p>` : ''}
+                        ${formattedText ? `<p class="text-xs sm:text-sm text-gray-800 leading-relaxed whitespace-pre-line">${formattedText}</p>` : ''}
                         ${imageHtml}
 
                         <div class="flex items-center justify-between border-t border-b py-2 text-xs text-gray-500">
@@ -1335,6 +1531,105 @@
                         </div>
                     </div>
                 `;
+            });
+        }
+
+        // NEWSLETTER & CARDS CUSTOMIZADOS
+        function listenFirebaseCustomCards() {
+            db.collection("cards_laterais").onSnapshot((snapshot) => {
+                dbCustomCards = [];
+                snapshot.forEach((doc) => {
+                    dbCustomCards.push({ id: doc.id, ...doc.data() });
+                });
+                renderSidebarCustomCards();
+                renderAdminCustomCardsList();
+            });
+        }
+
+        function renderSidebarCustomCards() {
+            const container = document.getElementById('sidebar-custom-cards-container');
+            if (!container) return;
+            container.innerHTML = '';
+
+            dbCustomCards.forEach(card => {
+                container.innerHTML += `
+                    <div class="bg-white p-5 rounded-2xl border shadow-sm space-y-3">
+                        <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider flex items-center">
+                            <i class="${card.icone || 'fa-solid fa-lightbulb'} text-yellow-500 mr-2 text-sm"></i> ${card.titulo}
+                        </h4>
+                        <p class="text-xs text-gray-700 leading-relaxed">${card.conteudo}</p>
+                    </div>
+                `;
+            });
+        }
+
+        function addNewCustomCardFirebase() {
+            const titulo = document.getElementById('new-card-title').value.trim();
+            const icone = document.getElementById('new-card-icon').value.trim() || 'fa-solid fa-lightbulb';
+            const conteudo = document.getElementById('new-card-content').value.trim();
+
+            if (!titulo || !conteudo) { alert('Título e Conteúdo do Card são obrigatórios!'); return; }
+
+            db.collection("cards_laterais").add({ titulo, icone, conteudo, data: new Date().toISOString() }).then(() => {
+                document.getElementById('new-card-title').value = '';
+                document.getElementById('new-card-content').value = '';
+                alert('Novo card publicado na coluna direita!');
+            });
+        }
+
+        function deleteCustomCardFirebase(id) {
+            if (confirm('Deseja excluir este card?')) {
+                db.collection("cards_laterais").doc(id).delete();
+            }
+        }
+
+        function renderAdminCustomCardsList() {
+            const list = document.getElementById('admin-custom-cards-list');
+            if (!list) return;
+            list.innerHTML = '';
+
+            if (dbCustomCards.length === 0) {
+                list.innerHTML = `<p class="text-xs text-gray-400 italic">Nenhum card customizado criado ainda.</p>`;
+                return;
+            }
+
+            dbCustomCards.forEach(card => {
+                list.innerHTML += `
+                    <div class="p-3 bg-white border rounded-xl flex items-center justify-between text-xs">
+                        <div>
+                            <strong class="text-gray-800"><i class="${card.icone} text-yellow-500 mr-1.5"></i> ${card.titulo}</strong>
+                            <p class="text-gray-500 text-[11px] mt-0.5 line-clamp-1">${card.conteudo}</p>
+                        </div>
+                        <button onclick="deleteCustomCardFirebase('${card.id}')" class="px-2 py-1 bg-red-100 hover:bg-red-200 text-red-700 font-bold rounded text-[10px]">
+                            Excluir
+                        </button>
+                    </div>
+                `;
+            });
+        }
+
+        function saveAdminNewsletterSettings() {
+            const title = document.getElementById('admin-newsletter-title').value.trim();
+            const subtitle = document.getElementById('admin-newsletter-subtitle').value.trim();
+
+            if (!title) { alert('Título da Newsletter é obrigatório!'); return; }
+
+            db.collection("settings").doc("newsletter").set({ title, subtitle }).then(() => {
+                alert('Textos da Newsletter atualizados com sucesso!');
+            });
+        }
+
+        function listenNewsletterSettings() {
+            db.collection("settings").doc("newsletter").onSnapshot((doc) => {
+                if (doc.exists) {
+                    const title = doc.data().title || 'Newsletter Oficial';
+                    const subtitle = doc.data().subtitle || 'Acompanhe os avisos da gestão...';
+
+                    document.getElementById('sidebar-newsletter-title').innerText = title;
+                    document.getElementById('sidebar-newsletter-subtitle').innerText = subtitle;
+                    document.getElementById('admin-newsletter-title').value = title;
+                    document.getElementById('admin-newsletter-subtitle').value = subtitle;
+                }
             });
         }
 
@@ -1507,7 +1802,7 @@
             });
         }
 
-        // PAINEL ADM & BANNER
+        // CONFIGS ADM & PRODUTOS
         function listenSystemSettings() {
             db.collection("settings").doc("config").onSnapshot((doc) => {
                 if (doc.exists) {
@@ -1546,6 +1841,7 @@
         }
 
         function switchAdminSubTab(sec) {
+            document.getElementById('adm-sec-cards').classList.add('hidden');
             document.getElementById('adm-sec-links').classList.add('hidden');
             document.getElementById('adm-sec-produtos').classList.add('hidden');
             document.getElementById('adm-sec-orcamentos').classList.add('hidden');
@@ -1553,7 +1849,7 @@
             document.getElementById('adm-sec-seguranca').classList.add('hidden');
             document.getElementById('adm-sec-banner').classList.add('hidden');
 
-            const tabIds = ['adm-subtab-links', 'adm-subtab-produtos', 'adm-subtab-orcamentos', 'adm-subtab-usuarios', 'adm-subtab-seguranca', 'adm-subtab-banner'];
+            const tabIds = ['adm-subtab-cards', 'adm-subtab-links', 'adm-subtab-produtos', 'adm-subtab-orcamentos', 'adm-subtab-usuarios', 'adm-subtab-seguranca', 'adm-subtab-banner'];
             tabIds.forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.className = "px-4 py-2 text-xs font-bold text-gray-500 hover:text-gray-800 whitespace-nowrap";
@@ -2445,14 +2741,16 @@
             });
         }
 
-        // EXECUÇÃO INICIAL
+        // INICIALIZAÇÃO
         checkUserSession();
         listenSystemSettings();
+        listenNewsletterSettings();
         listenFirebaseUsers();
         listenFirebaseProducts();
         listenFirebasePropostas();
         listenFirebasePosts();
         listenFirebaseLinks();
+        listenFirebaseCustomCards();
     </script>
 </body>
 </html>
