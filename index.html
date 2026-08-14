@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SGP - Portal Corporativo & Propostas LifeApps v5.7</title>
+    <title>SGP - Portal Corporativo & Propostas LifeApps v5.8</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -74,7 +74,7 @@
 
                 <div class="flex rounded-2xl bg-black/40 p-1 text-xs font-bold border border-white/10">
                     <button onclick="switchAuthTab('usuario')" id="auth-tab-usuario" class="flex-1 py-2.5 rounded-xl bg-blue-600 text-white shadow-lg transition">Usuário</button>
-                    <button onclick="switchAuthTab('admin')" id="auth-tab-admin" class="flex-1 py-2.5 rounded-xl text-gray-400 hover:text-white transition">Administrador</button>
+                    <button onclick="switchAuthTab('admin')" id="auth-tab-admin" class="flex-1 py-2.5 rounded-lg text-gray-400 hover:text-white transition">Administrador</button>
                 </div>
 
                 <!-- LOGIN USUÁRIO -->
@@ -168,7 +168,7 @@
         </div>
 
         <footer class="text-center text-xs text-white/90 py-2 z-10">
-            Sistema de Geração de Proposta (SGP) - Nº v5.7 | Desenvolvido por 
+            Sistema de Geração de Proposta (SGP) - Nº v5.8 | Desenvolvido por 
             <a href="https://www.linkedin.com/in/rafaelrobertonascimento" target="_blank" rel="noopener noreferrer" class="text-white font-bold underline hover:text-green-300">
                 Rafael Nascimento <i class="fa-brands fa-linkedin text-xs ml-0.5"></i>
             </a>
@@ -179,10 +179,9 @@
     <div id="screen-main-app" class="hidden flex-1 relative text-slate-800">
 
         <div class="flex flex-1 relative">
-            <!-- SIDEBAR RETRÁTIL (MENU ESQUERDO COM FIXAÇÃO DEFINITIVA DOS BOTÕES) -->
+            <!-- SIDEBAR RETRÁTIL -->
             <aside id="main-sidebar" class="sidebar-expanded bg-slate-900 text-white min-h-screen transition-all duration-300 flex flex-col justify-between sticky top-0 h-screen z-40 overflow-y-auto">
                 <div>
-                    <!-- Header do Logo -->
                     <div class="p-4 border-b border-slate-800 flex items-center justify-between">
                         <div class="flex items-center space-x-3 overflow-hidden logo-text">
                             <svg class="h-8 w-auto flex-shrink-0" viewBox="0 0 320 80" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -199,32 +198,30 @@
                         </button>
                     </div>
 
-                    <!-- NAVEGAÇÃO PRINCIPAL (OS DOIS BOTÕES MANTIDOS SEMPRE VISÍVEIS) -->
                     <nav class="p-3 space-y-2" id="sidebar-nav-container">
-                        <!-- BOTAO ADMIN (QUANDO LOGADO COMO ADMIN) -->
+                        <!-- PAINEL ADMIN (SÓ EXIBIDO PARA ADMIN) -->
                         <button onclick="switchMainTab('admin')" id="nav-item-admin" class="w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-white font-extrabold text-xs sm:text-sm shadow-md transition hidden mb-1">
                             <i class="fa-solid fa-user-shield text-lg min-w-[24px]"></i>
                             <span class="sidebar-text whitespace-nowrap">Painel Administrativo</span>
                         </button>
 
-                        <!-- REDE SOCIAL / FEED (SEMPRE VISÍVEL) -->
+                        <!-- REDE SOCIAL (SEMPRE VISÍVEL) -->
                         <button onclick="switchMainTab('social')" id="nav-item-social" class="w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl bg-blue-600 text-white font-bold text-xs sm:text-sm transition shadow-sm">
                             <i class="fa-solid fa-newspaper text-lg min-w-[24px]"></i>
                             <span class="sidebar-text whitespace-nowrap">Rede Social / Feed</span>
                         </button>
 
-                        <!-- GERADOR DE PROPOSTA (SEMPRE VISÍVEL) -->
+                        <!-- GERADOR DE PROPOSTA (SEMPRE VISÍVEL PARA USUÁRIOS) -->
                         <button onclick="switchMainTab('propostas')" id="nav-item-propostas" class="w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-slate-300 hover:bg-slate-800 hover:text-white font-medium text-xs sm:text-sm transition">
                             <i class="fa-solid fa-calculator text-lg min-w-[24px]"></i>
                             <span class="sidebar-text whitespace-nowrap">Gerador de Proposta</span>
                         </button>
                     </nav>
 
-                    <!-- SISTEMAS & LINKS ATALHOS -->
                     <div id="sidebar-dynamic-links"></div>
                 </div>
 
-                <!-- CARD DO PERFIL DO USUÁRIO & SAIR (NOVO VISUAL REESTILIZADO) -->
+                <!-- CARD DO PERFIL DO USUÁRIO & SAIR -->
                 <div class="p-3 border-t border-slate-800 bg-slate-900/90 sticky bottom-0">
                     <div class="flex items-center space-x-3 p-2.5 bg-slate-800/80 rounded-2xl border border-slate-700/50 overflow-hidden mb-2 shadow-sm">
                         <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 text-white font-black flex items-center justify-center text-xs flex-shrink-0 shadow-inner" id="user-avatar-initials">
@@ -244,7 +241,7 @@
                 </div>
             </aside>
 
-            <!-- CONTEÚDO PRINCIPAL (COM DESIGN REESTILIZADO) -->
+            <!-- CONTEÚDO PRINCIPAL -->
             <main class="flex-1 p-4 sm:p-8 max-w-7xl mx-auto w-full">
 
                 <!-- 1. REDE SOCIAL / FEED -->
@@ -252,15 +249,13 @@
                     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
                         <div class="lg:col-span-8 space-y-6">
                             
-                            <!-- BANNER COMERCIAL -->
                             <div id="feed-banner-container" class="hidden rounded-2xl overflow-hidden shadow-sm border border-gray-200">
                                 <img id="feed-banner-image" src="" alt="Banner Oficial LifeApps" class="w-full h-auto max-h-52 object-cover">
                             </div>
 
-                            <!-- CAIXA DE NOVA PUBLICAÇÃO -->
                             <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-3.5 relative">
                                 <div class="w-full relative">
-                                    <textarea id="post-input-text" rows="3" placeholder="Publique algo para seus colegas da LifeApps aqui..." class="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs sm:text-sm text-slate-800 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none transition resize-none"></textarea>
+                                    <textarea id="post-input-text" rows="3" placeholder="Publique algo para seus colegas da LifeApps aqui..." class="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs sm:text-sm text-slate-800 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none transition resize-none"></textarea>
                                 </div>
 
                                 <div class="relative">
@@ -268,7 +263,6 @@
                                     <i class="fa-solid fa-image absolute left-3 top-3 text-slate-400 text-xs"></i>
                                 </div>
 
-                                <!-- POPOVER DE EMOJIS -->
                                 <div id="emoji-picker-popover" class="hidden bg-white border border-slate-200 rounded-2xl p-3 shadow-xl flex flex-wrap gap-2 text-lg z-30 max-w-xs">
                                     <button type="button" onclick="insertEmoji('👍')" class="hover:scale-125 transition">👍</button>
                                     <button type="button" onclick="insertEmoji('🔥')" class="hover:scale-125 transition">🔥</button>
@@ -296,17 +290,15 @@
                                         </label>
                                     </div>
 
-                                    <button onclick="createNewPost()" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-extrabold rounded-xl text-xs shadow-md hover:shadow-lg transition flex items-center ml-auto">
+                                    <button onclick="createNewPost()" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-extrabold rounded-xl text-xs shadow-md transition flex items-center ml-auto">
                                         <i class="fa-solid fa-paper-plane mr-2"></i> Publicar
                                     </button>
                                 </div>
                             </div>
 
-                            <!-- TIMELINE DO FEED DE NOTÍCIAS -->
                             <div id="social-feed-container" class="space-y-4"></div>
                         </div>
 
-                        <!-- COLUNA DIREITA (NEWSLETTER & CARDS) -->
                         <div class="lg:col-span-4 space-y-6">
                             <div class="bg-gradient-to-br from-blue-900 via-slate-900 to-slate-950 text-white p-5 rounded-3xl shadow-md border border-slate-800 space-y-4">
                                 <div class="flex items-center space-x-2 text-green-400">
@@ -572,7 +564,7 @@
                             </button>
                         </div>
 
-                        <!-- SUB-ABAS MANTIDAS INTEGRAS -->
+                        <!-- SUB-ABAS MANTIDAS -->
                         <div id="adm-sec-usuarios" class="space-y-6">
                             <div class="bg-slate-50/80 p-4 rounded-2xl border border-slate-200 space-y-3">
                                 <h3 class="text-sm font-bold text-slate-800">Cadastrar Novo Usuário no Sistema</h3>
@@ -846,7 +838,7 @@
         </footer>
     </div>
 
-    <!-- MODAIS MANTIDOS E INTEGRADOS -->
+    <!-- MODAIS DO SISTEMA -->
     <div id="edit-link-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl w-full max-w-md p-6 relative shadow-2xl space-y-4 text-slate-800">
             <h3 class="text-lg font-bold text-slate-900 border-b pb-2">Editar Link / Atalho</h3>
@@ -1037,14 +1029,14 @@
             const adminBtn = document.getElementById('nav-item-admin');
             const propostasBtn = document.getElementById('nav-item-propostas');
 
-            // REGRA FIXA: ADMIN VÊ PAINEL ADM E FEED; USUÁRIO VÊ FEED E GERADOR PROPOSTAS
+            // REGRA FIXA MANTIDA: ADMIN VÊ Apenas FEED E ADMIN; USUÁRIO VÊ FEED E GERADOR PROPOSTAS
             if (currentUser.role === 'admin') {
                 adminBtn.classList.remove('hidden');
                 propostasBtn.classList.add('hidden');
                 document.getElementById('admin-pin-notice-option').classList.remove('hidden');
             } else {
                 adminBtn.classList.add('hidden');
-                propostasBtn.classList.remove('hidden'); // GARANTE QUE AMBOS FIQUEM FIXOS E VISÍVEIS
+                propostasBtn.classList.remove('hidden');
                 document.getElementById('admin-pin-notice-option').classList.add('hidden');
             }
         }
@@ -1361,6 +1353,8 @@
                 const comentarios = post.comentarios || [];
 
                 const canDeletePost = currentUser && (currentUser.role === 'admin' || post.autorId === currentUser.id || post.autorNome === currentUser.nome);
+
+                let formattedText = post.texto ? post.texto : '';
 
                 let pinnedBadge = post.isPinned ? `
                     <span class="bg-amber-100 text-amber-800 text-[10px] px-2.5 py-0.5 rounded-full font-bold flex items-center">
@@ -1899,7 +1893,7 @@
             });
         }
 
-        // CARREGAMENTO DE PRODUTOS
+        // CARREGAMENTO DE PRODUTOS DIRETO DO FIRESTORE (GARANTIDO)
         function listenFirebaseProducts() {
             db.collection("produtos").onSnapshot((snapshot) => {
                 dbProducts = [];
@@ -2174,6 +2168,7 @@
             }
         }
 
+        // RENDER DE PRODUTOS NO DROPDOWN (100% GARANTIDO)
         function renderCustomDropdownList(filterTerm = '') {
             const container = document.getElementById('custom-product-dropdown');
             if (!container) return;
