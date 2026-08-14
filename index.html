@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LifeSocial - A rede que conecta os Lifers v7.0</title>
+    <title>LifeSocial - A rede que conecta os Lifers v7.1</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -182,7 +182,7 @@
         </div>
 
         <footer class="text-center text-xs text-white/90 py-2 z-10">
-            LifeSocial v7.0 | Plataforma criada e desenvolvida por 
+            LifeSocial v7.1 | Plataforma criada e desenvolvida por 
             <a href="https://www.linkedin.com/in/rafaelrobertonascimento" target="_blank" rel="noopener noreferrer" class="text-white font-bold underline hover:text-green-300">
                 Rafael Roberto Nascimento <i class="fa-brands fa-linkedin text-xs ml-0.5"></i>
             </a>
@@ -226,8 +226,8 @@
                             <span class="sidebar-text whitespace-nowrap">LifeSocial Feed</span>
                         </button>
 
-                        <!-- METAS & OBJETIVOS (SÓ EXIBIDO PARA USUÁRIOS QUE TÊM META CADASTRADA) -->
-                        <button onclick="switchMainTab('metas')" id="nav-item-metas" class="w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-slate-300 hover:bg-slate-800 hover:text-white font-medium text-xs sm:text-sm transition hidden">
+                        <!-- METAS & OBJETIVOS (COMPLETO E PERMANENTE PARA USUÁRIOS) -->
+                        <button onclick="switchMainTab('metas')" id="nav-item-metas" class="w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-slate-300 hover:bg-slate-800 hover:text-white font-medium text-xs sm:text-sm transition">
                             <i class="fa-solid fa-chart-line text-lg min-w-[24px]"></i>
                             <span class="sidebar-text whitespace-nowrap">Metas & Objetivos</span>
                         </button>
@@ -276,7 +276,7 @@
                             <i class="fa-solid fa-code text-blue-600 mr-1.5"></i> Desenvolvido por Rafael Roberto Nascimento
                         </span>
                     </div>
-                    <span class="text-xs font-medium text-slate-400 mt-1 sm:mt-0">LifeSocial v7.0</span>
+                    <span class="text-xs font-medium text-slate-400 mt-1 sm:mt-0">LifeSocial v7.1</span>
                 </div>
 
                 <!-- 1. REDE SOCIAL / FEED -->
@@ -354,7 +354,7 @@
                     </div>
                 </section>
 
-                <!-- 2. METAS & OBJETIVOS (ADAPTÁVEL: VENDEDOR OU PRÉ-VENDA) -->
+                <!-- 2. METAS & OBJETIVOS -->
                 <section id="main-sec-metas" class="hidden space-y-6">
                     <div class="flex flex-col sm:flex-row justify-between sm:items-center bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm gap-4">
                         <div>
@@ -524,7 +524,7 @@
                                         </div>
                                     </div>
 
-                                    <button onclick="addProductToProposal()" class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition shadow-sm flex items-center justify-center">
+                                    <button onclick="addProductToProposal()" class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-extrabold rounded-xl text-xs shadow-sm flex items-center justify-center">
                                         <i class="fa-solid fa-plus mr-1.5"></i> Adicionar à Proposta
                                     </button>
                                 </div>
@@ -841,7 +841,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody id="admin-vendas-tbody" class="divide-y divide-slate-100 font-medium">
-                                                <tr><td colspan="5" class="p-3 text-center text-slate-400 italic">Nenhum faturamento/reunião lançado ainda.</td></tr>
+                                                <tr><td colspan="5" class="p-3 text-center text-slate-400 italic">Nenum faturamento/reunião lançado ainda.</td></tr>
                                             </tbody>
                                         </table>
                                     </div>
@@ -1135,7 +1135,7 @@
 
         <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-500 mt-auto z-30">
             <div class="max-w-7xl mx-auto px-4">
-                LifeSocial v7.0 | Plataforma desenvolvida por 
+                LifeSocial v7.1 | Plataforma desenvolvida por 
                 <a href="https://www.linkedin.com/in/rafaelrobertonascimento" target="_blank" rel="noopener noreferrer" class="text-blue-600 font-bold hover:underline">
                     Rafael Roberto Nascimento <i class="fa-brands fa-linkedin text-xs ml-0.5"></i>
                 </a>
@@ -1293,7 +1293,7 @@
         let dbCustomCards = [];
         let dbKpisMetas = [];
         let dbKpisVendas = [];
-        let currentAdminKpiView = 'vendedor'; // 'vendedor' ou 'prevenda'
+        let currentAdminKpiView = 'vendedor'; 
         let proposalProducts = [];
         let draggedItemIndex = null;
         let activeSharePostId = null;
@@ -1342,7 +1342,7 @@
             const metasBtn = document.getElementById('nav-item-metas');
             const propostasBtn = document.getElementById('nav-item-propostas');
 
-            // REGRA V7.0: OCULTA METAS DO ADMIN, EXIBE APENAS PARA VENDEDOR/PRÉ-VENDA QUE POSSUI META
+            // REGRA V7.1: MENU COMPLETO PERMANENTE PARA USUÁRIOS COMUNS | ADMIN MANTÉM VISÃO RESTRITA
             if (currentUser.role === 'admin') {
                 adminBtn.classList.remove('hidden');
                 metasBtn.classList.add('hidden');
@@ -1350,17 +1350,13 @@
                 document.getElementById('admin-pin-notice-option').classList.remove('hidden');
             } else {
                 adminBtn.classList.add('hidden');
+                metasBtn.classList.remove('hidden'); // METAS VISÍVEL PERMANENTEMENTE PARA USUÁRIOS
                 propostasBtn.classList.remove('hidden');
                 document.getElementById('admin-pin-notice-option').classList.add('hidden');
-                
-                const userHasMeta = dbKpisMetas.some(m => m.userNome && currentUser.nome && m.userNome.toLowerCase() === currentUser.nome.toLowerCase());
-                if (userHasMeta) {
-                    metasBtn.classList.remove('hidden');
-                } else {
-                    metasBtn.classList.add('hidden');
-                }
             }
 
+            // PRIORIZA A ABERTURA DA ABA LIFESOCIAL FEED NO LOGIN E NO REFRESH (F5)
+            switchMainTab('social');
             renderUserKpiDashboard();
         }
 
@@ -1389,10 +1385,7 @@
             document.getElementById('main-sec-perfil').classList.add('hidden');
 
             document.getElementById('nav-item-social').className = "w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white font-medium text-xs sm:text-sm transition";
-            
-            const userHasMeta = currentUser && currentUser.role !== 'admin' && dbKpisMetas.some(m => m.userNome && currentUser.nome && m.userNome.toLowerCase() === currentUser.nome.toLowerCase());
-            document.getElementById('nav-item-metas').className = "w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white font-medium text-xs sm:text-sm transition " + (userHasMeta ? '' : 'hidden');
-            
+            document.getElementById('nav-item-metas').className = "w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white font-medium text-xs sm:text-sm transition " + (currentUser && currentUser.role === 'admin' ? 'hidden' : '');
             document.getElementById('nav-item-propostas').className = "w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white font-medium text-xs sm:text-sm transition " + (currentUser && currentUser.role === 'admin' ? 'hidden' : '');
             document.getElementById('nav-item-admin').className = "w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-white font-extrabold text-xs sm:text-sm shadow-md transition " + (currentUser && currentUser.role === 'admin' ? '' : 'hidden');
             document.getElementById('nav-item-perfil').className = "w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white font-medium text-xs sm:text-sm transition";
@@ -1887,7 +1880,7 @@
             closeShareModal();
         }
 
-        // MÓDULO METAS & KPIS V7.0 (DUAL: VENDEDORES X PRÉ-VENDAS)
+        // MÓDULO METAS & KPIS V7.0
         function listenFirebaseKpis() {
             db.collection("kpis_metas").onSnapshot((snapshot) => {
                 dbKpisMetas = [];
@@ -2242,7 +2235,6 @@
             const userMetas = dbKpisMetas.filter(k => k.userNome && k.userNome.toLowerCase() === currentUser.nome.toLowerCase());
             const userVendas = dbKpisVendas.filter(k => k.userNome && k.userNome.toLowerCase() === currentUser.nome.toLowerCase());
 
-            // ADAPTA OS TÍTULOS CONFORME O CARGO
             if (isPreVenda) {
                 if (document.getElementById('user-kpi-title-header')) document.getElementById('user-kpi-title-header').innerHTML = `<i class="fa-solid fa-calendar-check text-blue-600 mr-2.5"></i> Metas & Reuniões Agendadas (Pré-venda)`;
                 if (document.getElementById('user-kpi-subtitle-header')) document.getElementById('user-kpi-subtitle-header').innerText = "Acompanhe seus KPIs de agendamentos, meta de reuniões e seu ranking no time de BDR/SDR.";
@@ -2326,7 +2318,7 @@
                 rankEl.innerText = userPosIndex !== -1 ? `#${userPosIndex + 1}º Lugar` : '# - Colocação';
             }
 
-            // TABELA MÊS A MÊS DO VENDEDOR/PRÉ-VENDA
+            // TABELA MÊS A MÊS
             const tbody = document.getElementById('user-kpi-months-tbody');
             if (tbody) {
                 tbody.innerHTML = '';
