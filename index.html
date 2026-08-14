@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SGP - Portal Corporativo & Propostas LifeApps v5.5</title>
+    <title>SGP - Portal Corporativo & Propostas LifeApps v5.6</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -168,7 +168,7 @@
         </div>
 
         <footer class="text-center text-xs text-white/90 py-2 z-10">
-            Sistema de Geração de Proposta (SGP) - Nº v5.5 | Desenvolvido por 
+            Sistema de Geração de Proposta (SGP) - Nº v5.6 | Desenvolvido por 
             <a href="https://www.linkedin.com/in/rafaelrobertonascimento" target="_blank" rel="noopener noreferrer" class="text-white font-bold underline hover:text-green-300">
                 Rafael Nascimento <i class="fa-brands fa-linkedin text-xs ml-0.5"></i>
             </a>
@@ -199,7 +199,7 @@
                     </div>
 
                     <nav class="p-3 space-y-1.5" id="sidebar-nav-container">
-                        <!-- PAINEL ADMIN NO TOPO DO MENU (EXCLUSIVO ADMIN) -->
+                        <!-- BOTÃO ADMIN (CORRIGIDO: SÓ APARECE PARA ADMIN) -->
                         <button onclick="switchMainTab('admin')" id="nav-item-admin" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-white font-extrabold text-xs sm:text-sm shadow-md transition hidden mb-2">
                             <i class="fa-solid fa-user-shield text-lg min-w-[24px]"></i>
                             <span class="sidebar-text whitespace-nowrap">Painel Administrativo</span>
@@ -210,7 +210,7 @@
                             <span class="sidebar-text whitespace-nowrap">Rede Social / Feed</span>
                         </button>
 
-                        <!-- GERADOR DE PROPOSTAS (EXCLUSIVO USUÁRIOS) -->
+                        <!-- GERADOR DE PROPOSTAS (SÓ APARECE PARA USUÁRIO COMUM) -->
                         <button onclick="switchMainTab('propostas')" id="nav-item-propostas" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white font-medium text-xs sm:text-sm transition">
                             <i class="fa-solid fa-calculator text-lg min-w-[24px]"></i>
                             <span class="sidebar-text whitespace-nowrap">Gerador de Proposta</span>
@@ -242,7 +242,7 @@
             <!-- CONTEÚDO PRINCIPAL -->
             <main class="flex-1 p-4 sm:p-8 max-w-7xl mx-auto w-full">
 
-                <!-- TOP BAR DE NOTIFICAÇÕES REALTIME CORRIGIDO -->
+                <!-- TOP BAR DE NOTIFICAÇÕES -->
                 <div class="flex justify-end items-center mb-6">
                     <div class="relative">
                         <button onclick="toggleNotificationsMenu()" class="p-2.5 bg-white border rounded-xl text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition relative shadow-sm">
@@ -857,7 +857,7 @@
 
         <footer class="bg-white border-t border-gray-200 py-4 text-center text-xs text-gray-500 mt-auto z-30">
             <div class="max-w-7xl mx-auto px-4">
-                Sistema de Geração de Proposta (SGP) - Nº v5.3.1 | Desenvolvido por 
+                Sistema de Geração de Proposta (SGP) - Nº v5.6 | Desenvolvido por 
                 <a href="https://www.linkedin.com/in/rafaelrobertonascimento" target="_blank" rel="noopener noreferrer" class="text-blue-600 font-bold hover:underline">
                     Rafael Nascimento <i class="fa-brands fa-linkedin text-xs ml-0.5"></i>
                 </a>
@@ -1021,13 +1021,14 @@
 
         const dbExtras = { extrator: 250.00 };
 
-        // INITIALIZATION
+        // SESSÃO E ROTEAMENTO
         function checkUserSession() {
             const savedSession = sessionStorage.getItem('sgp_session_user');
             if (savedSession) {
                 currentUser = JSON.parse(savedSession);
                 showMainApp();
                 requestNotificationPermission();
+                listenFirebaseNotifications();
             } else {
                 showAuthScreen();
             }
@@ -1042,10 +1043,10 @@
             document.getElementById('screen-auth').classList.add('hidden');
             document.getElementById('screen-main-app').classList.remove('hidden');
 
-            document.getElementById('user-display-name').innerText = currentUser.nome;
+            document.getElementById('user-display-name').innerText = currentUser.nome || 'Usuário';
             document.getElementById('user-display-email').innerText = currentUser.email || 'Corporativo';
 
-            const initials = currentUser.nome.split(' ').map(n => n[0]).slice(0,2).join('').toUpperCase();
+            const initials = (currentUser.nome || 'US').split(' ').map(n => n[0]).slice(0,2).join('').toUpperCase();
             document.getElementById('user-avatar-initials').innerText = initials;
             document.getElementById('post-avatar-initials').innerText = initials;
 
@@ -1100,7 +1101,7 @@
             }
         }
 
-        // LOGIN / REGISTRO USUÁRIO
+        // LOGIN / REGISTRO
         function switchAuthTab(type) {
             document.getElementById('form-login-usuario').classList.add('hidden');
             document.getElementById('form-login-admin').classList.add('hidden');
@@ -1217,14 +1218,13 @@
             });
         }
 
-        // LOGOFF LIMPO CORRIGIDO (ZERANDO A MEMÓRIA DO ADMIN)
+        // LOGOFF COMPLETO
         function logoutSystem() {
             currentUser = null;
             sessionStorage.removeItem('sgp_session_user');
             localStorage.removeItem('sgp_user_email');
             localStorage.removeItem('sgp_user_pass');
             
-            // Oculta os botões sensíveis do Admin
             document.getElementById('nav-item-admin').classList.add('hidden');
             document.getElementById('admin-pin-notice-option').classList.add('hidden');
             
@@ -1232,7 +1232,7 @@
             showAuthScreen();
         }
 
-        // AUTOCOMPLETE DE MENÇÕES (@USUÁRIO)
+        // AUTOCOMPLETE MENTIONS
         function handleMentionAutocomplete(textarea) {
             const val = textarea.value;
             const cursor = textarea.selectionStart;
@@ -1277,7 +1277,7 @@
             textarea.focus();
         }
 
-        // GERENCIADOR DE NOTIFICAÇÕES & PUSH
+        // NOTIFICAÇÕES REALTIME
         function requestNotificationPermission() {
             if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") {
                 Notification.requestPermission();
@@ -1469,7 +1469,6 @@
             db.collection("posts").doc(postId).update({ comentarios });
         }
 
-        // RENDER DO FEED (ADMIN PODE EXCLUIR QUALQUER POST OU COMENTÁRIO)
         function renderSocialFeed() {
             const container = document.getElementById('social-feed-container');
             if (!container) return;
@@ -1493,8 +1492,7 @@
                 const countLikes = (post.curtidas || []).length;
                 const comentarios = post.comentarios || [];
 
-                // ADMIN PODE EXCLUIR QUALQUER POST
-                const canDeletePost = currentUser && (currentUser.role === 'admin' || post.autorId === currentUser.id || post.autorNome === currentUser.nome);
+                const isOwner = currentUser && (post.autorId === currentUser.id || post.autorNome === currentUser.nome || currentUser.role === 'admin');
 
                 let formattedText = post.texto ? post.texto.replace(/@([a-zA-A-zA-Z0-9À-ÿ\s]+)/g, '<span class="text-blue-600 font-bold bg-blue-50 px-1 py-0.5 rounded">@$1</span>') : '';
 
@@ -1512,14 +1510,13 @@
 
                 let commentsHtml = '';
                 comentarios.forEach(c => {
-                    // ADMIN PODE EXCLUIR QUALQUER COMENTÁRIO
-                    const canDeleteComment = currentUser && (currentUser.role === 'admin' || c.autorId === currentUser.id || c.autorNome === currentUser.nome);
+                    const isCommentOwner = currentUser && (c.autorId === currentUser.id || c.autorNome === currentUser.nome || currentUser.role === 'admin');
 
                     commentsHtml += `
                         <div class="bg-gray-50 p-2.5 rounded-xl text-xs space-y-0.5 relative group">
                             <div class="flex justify-between items-center">
                                 <strong class="text-blue-900">${c.autorNome}</strong>
-                                ${canDeleteComment ? `<button onclick="deleteCommentFromPost('${post.id}', '${c.id}')" class="text-red-400 hover:text-red-600 text-[10px] font-bold">Excluir</button>` : ''}
+                                ${isCommentOwner ? `<button onclick="deleteCommentFromPost('${post.id}', '${c.id}')" class="text-red-400 hover:text-red-600 text-[10px] font-bold">Excluir</button>` : ''}
                             </div>
                             <p class="text-gray-700">${c.texto}</p>
                         </div>
@@ -1544,7 +1541,7 @@
 
                             <div class="flex items-center space-x-2">
                                 ${pinnedBadge}
-                                ${canDeletePost ? `
+                                ${isOwner ? `
                                     <button onclick="deletePostFirebase('${post.id}')" title="Excluir publicação" class="text-gray-400 hover:text-red-600 text-xs p-1">
                                         <i class="fa-solid fa-trash"></i>
                                     </button>
@@ -1633,7 +1630,7 @@
             closeShareModal();
         }
 
-        // LINKS & SISTEMAS EXTERNOS
+        // LINKS EXTERNOS
         function listenFirebaseLinks() {
             db.collection("atalhos").onSnapshot((snapshot) => {
                 dbLinks = [];
