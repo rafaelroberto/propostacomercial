@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SGP - Portal Corporativo & Propostas LifeApps v5.1</title>
+    <title>SGP - Portal Corporativo & Propostas LifeApps v5.1.1</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -16,7 +16,7 @@
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', system-ui, sans-serif; background-color: #090d16; }
+        body { font-family: 'Inter', system-ui, sans-serif; background-color: #f1f5f9; }
         .slide-preview { background-color: #ffffff; aspect-ratio: 16/9; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1); }
         .sidebar-expanded { width: 260px; }
         .sidebar-collapsed { width: 80px; }
@@ -57,15 +57,12 @@
 
     <!-- 1. TELA DE LOGIN / REGISTRO (DESIGN GEN Z) -->
     <section id="screen-auth" class="fixed inset-0 z-50 genz-bg flex flex-col justify-between p-4 overflow-y-auto">
-        
-        <!-- ELEMENTOS DE ILUMINAÇÃO DE FUNDO -->
         <div class="fixed top-1/4 left-1/4 w-96 h-96 bg-blue-600/20 rounded-full blur-3xl pointer-events-none animate-pulse"></div>
         <div class="fixed bottom-1/4 right-1/4 w-96 h-96 bg-emerald-500/15 rounded-full blur-3xl pointer-events-none"></div>
 
         <div class="my-auto flex justify-center w-full z-10">
             <div class="genz-card rounded-3xl w-full max-w-md p-6 sm:p-8 space-y-6">
                 
-                <!-- LOGO E HEADER -->
                 <div class="text-center flex flex-col items-center">
                     <div class="p-3 rounded-2xl bg-white/5 border border-white/10 mb-3 shadow-inner">
                         <svg class="h-9 w-auto" viewBox="0 0 320 80" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -83,13 +80,12 @@
                     <p class="text-[10px] text-gray-400 font-medium mt-1">A plataforma escolhida pelo Atacado Distribuidor</p>
                 </div>
 
-                <!-- SELECTOR DE TABS -->
                 <div class="flex rounded-2xl bg-black/40 p-1 text-xs font-bold border border-white/5">
                     <button onclick="switchAuthTab('usuario')" id="auth-tab-usuario" class="flex-1 py-2.5 rounded-xl bg-blue-600 text-white shadow-lg transition duration-200">Usuário</button>
                     <button onclick="switchAuthTab('admin')" id="auth-tab-admin" class="flex-1 py-2.5 rounded-xl text-gray-400 hover:text-white transition duration-200">Administrador</button>
                 </div>
 
-                <!-- LOGIN USUÁRIO (CAMPOS LIMPOS) -->
+                <!-- LOGIN USUÁRIO -->
                 <form id="form-login-usuario" onsubmit="handleUsuarioLogin(event)" class="space-y-4">
                     <div>
                         <label class="block text-[11px] font-bold text-gray-300 uppercase tracking-wider mb-1.5">E-mail Corporativo</label>
@@ -125,7 +121,7 @@
                     </div>
                 </form>
 
-                <!-- LOGIN ADMIN (CAMPOS LIMPOS) -->
+                <!-- LOGIN ADMIN -->
                 <form id="form-login-admin" onsubmit="handleAdminLogin(event)" class="space-y-4 hidden">
                     <div>
                         <label class="block text-[11px] font-bold text-gray-300 uppercase tracking-wider mb-1.5">Senha do Administrador</label>
@@ -140,7 +136,7 @@
                     </button>
                 </form>
 
-                <!-- REGISTRO USUÁRIO (CAMPOS LIMPOS) -->
+                <!-- REGISTRO USUÁRIO -->
                 <form id="form-register-usuario" onsubmit="handleUsuarioRegister(event)" class="space-y-3.5 hidden">
                     <h3 class="text-xs font-bold text-gray-300 uppercase border-b border-white/10 pb-2">Criar Conta de Usuário</h3>
 
@@ -180,18 +176,18 @@
         </div>
 
         <footer class="text-center text-xs text-gray-400/80 py-2 z-10">
-            Sistema de Geração de Proposta (SGP) - Nº v5.1 | Desenvolvido por 
+            Sistema de Geração de Proposta (SGP) - Nº v5.1.1 | Desenvolvido por 
             <a href="https://www.linkedin.com/in/rafaelrobertonascimento" target="_blank" rel="noopener noreferrer" class="text-white font-bold underline hover:text-blue-400">
                 Rafael Nascimento <i class="fa-brands fa-linkedin text-xs ml-0.5"></i>
             </a>
         </footer>
     </section>
 
-    <!-- 2. PAINEL PRINCIPAL (SGP + REDE SOCIAL) -->
+    <!-- 2. PAINEL PRINCIPAL -->
     <div id="screen-main-app" class="hidden flex-1 relative text-gray-800">
 
         <div class="flex flex-1 relative">
-            <!-- SIDEBAR RETRÁTIL (MENU ESQUERDO) -->
+            <!-- SIDEBAR RETRÁTIL -->
             <aside id="main-sidebar" class="sidebar-expanded bg-slate-900 text-white min-h-screen transition-all duration-300 flex flex-col justify-between sticky top-0 h-screen z-40 overflow-y-auto">
                 <div>
                     <div class="p-4 border-b border-slate-800 flex items-center justify-between">
@@ -211,7 +207,7 @@
                     </div>
 
                     <nav class="p-3 space-y-1.5" id="sidebar-nav-container">
-                        <!-- PAINEL ADMIN NO TOPO DA SIDEBAR SE LOGADO COMO ADMIN -->
+                        <!-- PAINEL ADMIN NO TOPO (CORRIGIDO PARA APARECER IMEDIATAMENTE AO LOGAR COMO ADMIN) -->
                         <button onclick="switchMainTab('admin')" id="nav-item-admin" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-white font-extrabold text-xs sm:text-sm shadow-md transition hidden mb-2">
                             <i class="fa-solid fa-user-shield text-lg min-w-[24px]"></i>
                             <span class="sidebar-text whitespace-nowrap">Painel Administrativo</span>
@@ -228,7 +224,6 @@
                         </button>
                     </nav>
 
-                    <!-- ATALHOS EXTERNOS DINÂMICOS -->
                     <div id="sidebar-dynamic-links"></div>
                 </div>
 
@@ -254,7 +249,7 @@
             <!-- CONTEÚDO PRINCIPAL -->
             <main class="flex-1 p-4 sm:p-8 max-w-7xl mx-auto w-full">
 
-                <!-- TOP BAR DE NOTIFICAÇÕES -->
+                <!-- TOP BAR DE NOTIFICAÇÕES DE MENÇÃO (@) -->
                 <div class="flex justify-end items-center mb-6">
                     <div class="relative">
                         <button onclick="toggleNotificationsMenu()" class="p-2.5 bg-white border rounded-xl text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition relative shadow-sm">
@@ -350,7 +345,7 @@
                     </div>
                 </section>
 
-                <!-- 2. GERADOR DE PROPOSTAS -->
+                <!-- 2. GERADOR DE PROPOSTA -->
                 <section id="main-sec-propostas" class="hidden space-y-8">
                     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
                         <div class="lg:col-span-5 bg-white p-6 rounded-2xl shadow-sm border border-gray-200 space-y-6">
@@ -869,7 +864,7 @@
 
         <footer class="bg-white border-t border-gray-200 py-4 text-center text-xs text-gray-500 mt-auto z-30">
             <div class="max-w-7xl mx-auto px-4">
-                Sistema de Geração de Proposta (SGP) - Nº v5.0.1 | Desenvolvido por 
+                Sistema de Geração de Proposta (SGP) - Nº v5.1.1 | Desenvolvido por 
                 <a href="https://www.linkedin.com/in/rafaelrobertonascimento" target="_blank" rel="noopener noreferrer" class="text-blue-600 font-bold hover:underline">
                     Rafael Nascimento <i class="fa-brands fa-linkedin text-xs ml-0.5"></i>
                 </a>
@@ -880,7 +875,7 @@
     <!-- MODAIS DO SISTEMA -->
 
     <div id="edit-link-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl w-full max-w-md p-6 relative shadow-2xl space-y-4">
+        <div class="bg-white rounded-2xl w-full max-w-md p-6 relative shadow-2xl space-y-4 text-gray-800">
             <h3 class="text-lg font-bold text-gray-900 border-b pb-2">Editar Link / Atalho</h3>
             <input type="hidden" id="edit-link-id">
             
@@ -905,7 +900,7 @@
     </div>
 
     <div id="edit-product-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl w-full max-w-md p-6 relative shadow-2xl space-y-4">
+        <div class="bg-white rounded-2xl w-full max-w-md p-6 relative shadow-2xl space-y-4 text-gray-800">
             <h3 class="text-lg font-bold text-gray-900 border-b pb-2">Editar Produto</h3>
             <input type="hidden" id="edit-prod-id">
             
@@ -929,7 +924,7 @@
         </div>
     </div>
 
-    <div id="vendedor-propostas-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div id="vendedor-propostas-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 text-gray-800">
         <div class="bg-white rounded-2xl w-full max-w-4xl p-6 relative shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center border-b pb-3">
                 <div>
@@ -956,7 +951,7 @@
         </div>
     </div>
 
-    <div id="share-post-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div id="share-post-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 text-gray-800">
         <div class="bg-white rounded-2xl w-full max-w-md p-6 relative shadow-2xl space-y-4 text-center">
             <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto text-xl">
                 <i class="fa-solid fa-share-nodes"></i>
@@ -979,7 +974,7 @@
         </div>
     </div>
 
-    <div id="print-zoom-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div id="print-zoom-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 text-gray-800">
         <div class="bg-white rounded-2xl w-full max-w-6xl p-6 relative shadow-2xl flex flex-col space-y-4 max-h-[95vh] overflow-y-auto">
             <div class="flex justify-between items-center border-b pb-3">
                 <div class="flex items-center space-x-2">
@@ -1033,7 +1028,7 @@
 
         const dbExtras = { extrator: 250.00 };
 
-        // INITIALIZATION
+        // SESSÃO E DESTAQUE ADMIN NO TOPO DO MENU (CORRIGIDO NA v5.1.1)
         function checkUserSession() {
             const savedSession = sessionStorage.getItem('sgp_session_user');
             if (savedSession) {
@@ -1061,11 +1056,13 @@
             document.getElementById('user-avatar-initials').innerText = initials;
             document.getElementById('post-avatar-initials').innerText = initials;
 
+            // EXIBE E POSICIONA O BOTAO DE PAINEL ADMIN SE LOGADO COMO ADMIN
+            const adminBtn = document.getElementById('nav-item-admin');
             if (currentUser.role === 'admin') {
-                document.getElementById('nav-item-admin').classList.remove('hidden');
+                adminBtn.classList.remove('hidden');
                 document.getElementById('admin-pin-notice-option').classList.remove('hidden');
             } else {
-                document.getElementById('nav-item-admin').classList.add('hidden');
+                adminBtn.classList.add('hidden');
                 document.getElementById('admin-pin-notice-option').classList.add('hidden');
             }
         }
@@ -1360,7 +1357,7 @@
             });
         }
 
-        // FEED SOCIAL
+        // PUBLICAR E MENCIONAR NO FEED (CORRIGIDO PARA SALVAR GATILHO DE MENSAGEM NO FIREBASE)
         function createNewPost() {
             const input = document.getElementById('post-input-text');
             const inputImage = document.getElementById('post-input-image');
@@ -1393,6 +1390,7 @@
                 inputImage.value = '';
                 document.getElementById('post-is-pinned').checked = false;
 
+                // Salva notificação no banco de dados para cada usuário @mencionado
                 mentions.forEach(mention => {
                     const cleanName = mention.replace('@', '').trim();
                     const targetUser = dbUsers.find(u => u.nome.toLowerCase() === cleanName.toLowerCase());
@@ -1575,7 +1573,7 @@
             });
         }
 
-        // LINKS COMPACTOS NO MENU LATERAL
+        // LINKS & SISTEMAS EXTERNOS
         function listenFirebaseLinks() {
             db.collection("atalhos").onSnapshot((snapshot) => {
                 dbLinks = [];
@@ -1797,7 +1795,7 @@
             });
         }
 
-        // GESTÃO DE USUÁRIOS NO PAINEL ADM (CADASTRAR E EDITAR SENHAS)
+        // GESTÃO DE USUÁRIOS NO PAINEL ADM
         function addNewUserByAdmin() {
             const nome = document.getElementById('admin-new-user-nome').value.trim();
             const email = document.getElementById('admin-new-user-email').value.trim().toLowerCase();
