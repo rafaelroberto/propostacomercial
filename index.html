@@ -1851,27 +1851,36 @@
         }
 
         // BANNER FEED (PROTEGIDO CONTRA FALHAS E VISÍVEL PARA TODOS)
-        function listenSystemSettings() {
-            db.collection("settings").doc("config").onSnapshot((doc) => {
-                if (doc.exists) {
-                    if (doc.data().adminPass) adminPassHash = doc.data().adminPass;
-                    
-                    const bannerUrl = doc.data().bannerUrl;
-                    const img = document.getElementById('feed-banner-image');
-                    const container = document.getElementById('feed-banner-container');
-                    const inputBanner = document.getElementById('admin-banner-url');
+    function listenSystemSettings() {
+    db.collection("settings").doc("config").onSnapshot((doc) => {
+        if (doc.exists) {
+            if (doc.data().adminPass) adminPassHash = doc.data().adminPass;
+            
+            const bannerUrl = doc.data().bannerUrl;
+            const img = document.getElementById('feed-banner-image');
+            const container = document.getElementById('feed-banner-container');
+            const inputBanner = document.getElementById('admin-banner-url');
 
-                    if (bannerUrl && bannerUrl.trim() !== '') {
-                        if (img) img.src = bannerUrl;
-                        if (container) container.classList.remove('hidden');
-                        if (inputBanner) inputBanner.value = bannerUrl;
-                    } else {
-                        if (container) container.classList.add('hidden');
-                        if (inputBanner) inputBanner.value = '';
-                    }
+            if (bannerUrl && bannerUrl.trim() !== '') {
+                if (img && container) {
+                    img.src = bannerUrl;
+                    // Oculta o banner se a imagem falhar em carregar (link quebrado)
+                    img.onerror = function() {
+                        container.classList.add('hidden');
+                    };
+                    // Exibe o banner se carregar com sucesso
+                    img.onload = function() {
+                        container.classList.remove('hidden');
+                    };
                 }
-            });
+                if (inputBanner) inputBanner.value = bannerUrl;
+            } else {
+                if (container) container.classList.add('hidden');
+                if (inputBanner) inputBanner.value = '';
+            }
         }
+    });
+}
 
         function saveAdminBanner() {
             const bannerUrl = document.getElementById('admin-banner-url').value.trim();
