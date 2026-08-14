@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LifeSocial - A rede que conecta os Lifers v6.4</title>
+    <title>LifeSocial - A rede que conecta os Lifers v6.5</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -174,7 +174,7 @@
         </div>
 
         <footer class="text-center text-xs text-white/90 py-2 z-10">
-            LifeSocial v6.4 | Plataforma criada e desenvolvida por 
+            LifeSocial v6.5 | Plataforma criada e desenvolvida por 
             <a href="https://www.linkedin.com/in/rafaelrobertonascimento" target="_blank" rel="noopener noreferrer" class="text-white font-bold underline hover:text-green-300">
                 Rafael Roberto Nascimento <i class="fa-brands fa-linkedin text-xs ml-0.5"></i>
             </a>
@@ -218,7 +218,6 @@
                             <span class="sidebar-text whitespace-nowrap">LifeSocial Feed</span>
                         </button>
 
-                        <!-- MANTIDO EXCLUSIVO PARA USUÁRIO COMUM (OCULTO PARA ADMIN) -->
                         <button onclick="switchMainTab('metas')" id="nav-item-metas" class="w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-slate-300 hover:bg-slate-800 hover:text-white font-medium text-xs sm:text-sm transition">
                             <i class="fa-solid fa-chart-line text-lg min-w-[24px]"></i>
                             <span class="sidebar-text whitespace-nowrap">Metas & Objetivos</span>
@@ -268,7 +267,7 @@
                             <i class="fa-solid fa-code text-blue-600 mr-1.5"></i> Desenvolvido por Rafael Roberto Nascimento
                         </span>
                     </div>
-                    <span class="text-xs font-medium text-slate-400 mt-1 sm:mt-0">LifeSocial v6.4</span>
+                    <span class="text-xs font-medium text-slate-400 mt-1 sm:mt-0">LifeSocial v6.5</span>
                 </div>
 
                 <!-- 1. REDE SOCIAL / FEED -->
@@ -346,7 +345,7 @@
                     </div>
                 </section>
 
-                <!-- 2. MÓDULO METAS & OBJETIVOS (INDIVIDUAL DO USUÁRIO VENDEDOR) -->
+                <!-- 2. METAS & OBJETIVOS (INDIVIDUAL DO VENDEDOR) -->
                 <section id="main-sec-metas" class="hidden space-y-6">
                     <div class="flex flex-col sm:flex-row justify-between sm:items-center bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm gap-4">
                         <div>
@@ -356,7 +355,6 @@
                             <p class="text-xs text-slate-500 mt-1">Acompanhe seus KPIs de vendas, atingimento mensal e seu posicionamento no ranking.</p>
                         </div>
                         
-                        <!-- RANKING BADGE -->
                         <div class="bg-gradient-to-r from-amber-500 to-amber-600 text-white px-5 py-3 rounded-2xl flex items-center space-x-3 shadow-md">
                             <i class="fa-solid fa-trophy text-2xl text-amber-100"></i>
                             <div>
@@ -366,7 +364,6 @@
                         </div>
                     </div>
 
-                    <!-- CARDS RESUMO DO ANO -->
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm space-y-2">
                             <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Meta Anual Acumulada</span>
@@ -387,7 +384,6 @@
                         </div>
                     </div>
 
-                    <!-- TABELA MÊS A MÊS -->
                     <div class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-4">
                         <h3 class="text-sm font-extrabold text-slate-900 uppercase tracking-wider">Acompanhamento Mês a Mês (Meta x Atingimento)</h3>
                         <div class="overflow-x-auto">
@@ -408,7 +404,6 @@
                         </div>
                     </div>
 
-                    <!-- KPI POR PRODUTO -->
                     <div class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-4">
                         <h3 class="text-sm font-extrabold text-slate-900 uppercase tracking-wider">Desempenho por Produto Vendido</h3>
                         <div id="user-kpi-products-container" class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -709,24 +704,30 @@
                             </button>
                         </div>
 
-                        <!-- SUB-ABA ADM KPIS REESTRUTURADA EM 2 ETAPAS (1º METAS | 2º VENDAS REALIZADAS) -->
+                        <!-- SUB-ABA ADM KPIS REESTRUTURADA EM 2 ETAPAS COM SELEÇÃO MÚLTIPLA E DUPLICAÇÃO DE MÊS -->
                         <div id="adm-sec-kpis" class="space-y-8">
                             
-                            <!-- 1º ETAPA: LANÇAMENTO / EDIÇÃO DE METAS MÊS A MÊS -->
+                            <!-- 1º ETAPA: LANÇAMENTO / EDIÇÃO DE METAS MÊS A MÊS COM SELEÇÃO MÚLTIPLA -->
                             <div class="bg-slate-50/80 p-5 rounded-2xl border border-slate-200 space-y-4">
                                 <div class="flex items-center justify-between border-b pb-2">
                                     <h3 class="text-sm font-extrabold text-slate-800 flex items-center">
                                         <span class="w-6 h-6 rounded-full bg-blue-600 text-white text-xs font-bold flex items-center justify-center mr-2">1</span>
-                                        Lançamento de Meta Mês a Mês
+                                        Lançamento de Meta Mês a Mês (Seleção Múltipla)
                                     </h3>
-                                    <span class="text-[11px] text-slate-400 font-medium">Defina o objetivo financeiro do vendedor</span>
+                                    <span class="text-[11px] text-slate-400 font-medium">Defina o objetivo financeiro de um ou mais vendedores</span>
                                 </div>
                                 
-                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                                    <div>
-                                        <label class="text-xs text-slate-600 font-bold">Vendedor</label>
-                                        <select id="admin-kpi-meta-user" class="w-full p-2.5 border rounded-xl text-xs bg-white mt-1 font-medium"></select>
+                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                    <div class="sm:col-span-1">
+                                        <div class="flex justify-between items-center mb-1">
+                                            <label class="text-xs text-slate-600 font-bold">Selecione o(s) Vendedor(es)</label>
+                                            <label class="text-[10px] text-blue-600 font-bold cursor-pointer hover:underline flex items-center">
+                                                <input type="checkbox" onchange="toggleSelectAllKpiUsers(this)" class="mr-1"> Marcar Todos
+                                            </label>
+                                        </div>
+                                        <div id="admin-kpi-meta-users-checkboxes" class="p-2.5 bg-white border border-slate-200 rounded-xl max-h-36 overflow-y-auto space-y-1.5 text-xs"></div>
                                     </div>
+
                                     <div>
                                         <label class="text-xs text-slate-600 font-bold">Ano e Mês</label>
                                         <input type="month" id="admin-kpi-meta-mes" class="w-full p-2.5 border rounded-xl text-xs bg-white mt-1 font-medium">
@@ -739,17 +740,29 @@
 
                                 <div class="flex justify-end">
                                     <button onclick="saveAdminMetaEntry()" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-extrabold rounded-xl text-xs shadow-md transition">
-                                        <i class="fa-solid fa-bullseye mr-1.5"></i> Salvar / Atualizar Meta
+                                        <i class="fa-solid fa-bullseye mr-1.5"></i> Salvar / Atualizar Metas
                                     </button>
                                 </div>
 
-                                <!-- TABELA DE METAS CADASTRADAS -->
+                                <!-- TABELA DE METAS CADASTRADAS COM EXCLUSÃO EM MASSA -->
                                 <div class="pt-2">
-                                    <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Metas Cadastradas</h4>
+                                    <div class="flex justify-between items-center mb-2">
+                                        <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider">Metas Cadastradas</h4>
+                                        <div class="flex space-x-2">
+                                            <button onclick="deleteSelectedMetas()" class="px-3 py-1 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 text-xs font-semibold rounded-lg transition">
+                                                Excluir Selecionadas
+                                            </button>
+                                            <button onclick="deleteAllMetas()" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white text-xs font-semibold rounded-lg transition">
+                                                Excluir Todas
+                                            </button>
+                                        </div>
+                                    </div>
+
                                     <div class="overflow-x-auto bg-white border border-slate-200 rounded-xl">
                                         <table class="w-full text-left text-xs border-collapse">
                                             <thead>
                                                 <tr class="bg-slate-100 text-slate-700 font-bold border-b border-slate-200">
+                                                    <th class="p-2.5 w-8 text-center"><input type="checkbox" onchange="toggleSelectAllMetaRows(this)"></th>
                                                     <th class="p-2.5">Vendedor</th>
                                                     <th class="p-2.5">Mês/Ano</th>
                                                     <th class="p-2.5 text-right">Valor da Meta (R$)</th>
@@ -757,14 +770,14 @@
                                                 </tr>
                                             </thead>
                                             <tbody id="admin-metas-tbody" class="divide-y divide-slate-100 font-medium">
-                                                <tr><td colspan="4" class="p-3 text-center text-slate-400 italic">Nenhuma meta lançada ainda.</td></tr>
+                                                <tr><td colspan="5" class="p-3 text-center text-slate-400 italic">Nenhuma meta lançada ainda.</td></tr>
                                             </tbody>
                                         </table>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- 2º ETAPA: LANÇAMENTO / EDIÇÃO DE VENDAS REALIZADAS MÊS A MÊS -->
+                            <!-- 2º ETAPA: LANÇAMENTO / EDIÇÃO DE VENDAS REALIZADAS MÊS A MÊS COM EXCLUSÃO EM MASSA -->
                             <div class="bg-slate-50/80 p-5 rounded-2xl border border-slate-200 space-y-4">
                                 <div class="flex items-center justify-between border-b pb-2">
                                     <h3 class="text-sm font-extrabold text-slate-800 flex items-center">
@@ -795,13 +808,25 @@
                                     </button>
                                 </div>
 
-                                <!-- TABELA DE VENDAS REALIZADAS CADASTRADAS -->
+                                <!-- TABELA DE VENDAS REALIZADAS CADASTRADAS COM EXCLUSÃO EM MASSA -->
                                 <div class="pt-2">
-                                    <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Vendas Realizadas Cadastradas</h4>
+                                    <div class="flex justify-between items-center mb-2">
+                                        <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider">Vendas Realizadas Cadastradas</h4>
+                                        <div class="flex space-x-2">
+                                            <button onclick="deleteSelectedVendas()" class="px-3 py-1 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 text-xs font-semibold rounded-lg transition">
+                                                Excluir Selecionadas
+                                            </button>
+                                            <button onclick="deleteAllVendas()" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white text-xs font-semibold rounded-lg transition">
+                                                Excluir Todas
+                                            </button>
+                                        </div>
+                                    </div>
+
                                     <div class="overflow-x-auto bg-white border border-slate-200 rounded-xl">
                                         <table class="w-full text-left text-xs border-collapse">
                                             <thead>
                                                 <tr class="bg-slate-100 text-slate-700 font-bold border-b border-slate-200">
+                                                    <th class="p-2.5 w-8 text-center"><input type="checkbox" onchange="toggleSelectAllVendaRows(this)"></th>
                                                     <th class="p-2.5">Vendedor</th>
                                                     <th class="p-2.5">Mês/Ano</th>
                                                     <th class="p-2.5 text-right">Venda Realizada (R$)</th>
@@ -809,7 +834,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody id="admin-vendas-tbody" class="divide-y divide-slate-100 font-medium">
-                                                <tr><td colspan="4" class="p-3 text-center text-slate-400 italic">Nenhuma venda realizada lançada ainda.</td></tr>
+                                                <tr><td colspan="5" class="p-3 text-center text-slate-400 italic">Nenhuma venda realizada lançada ainda.</td></tr>
                                             </tbody>
                                         </table>
                                     </div>
@@ -1309,15 +1334,14 @@
             const metasBtn = document.getElementById('nav-item-metas');
             const propostasBtn = document.getElementById('nav-item-propostas');
 
-            // REGRAS ADAPTADAS: ADMIN VÊ PAINEL ADM E FEED; USUÁRIO VÊ FEED, METAS E GERADOR DE PROPOSTAS
             if (currentUser.role === 'admin') {
                 adminBtn.classList.remove('hidden');
-                metasBtn.classList.add('hidden'); // OCULTA MENU METAS DO SIDEBAR DO ADMIN
+                metasBtn.classList.add('hidden');
                 propostasBtn.classList.add('hidden');
                 document.getElementById('admin-pin-notice-option').classList.remove('hidden');
             } else {
                 adminBtn.classList.add('hidden');
-                metasBtn.classList.remove('hidden'); // METAS VISÍVEL PARA O VENDEDOR
+                metasBtn.classList.remove('hidden');
                 propostasBtn.classList.remove('hidden');
                 document.getElementById('admin-pin-notice-option').classList.add('hidden');
             }
@@ -1842,9 +1866,8 @@
             closeShareModal();
         }
 
-        // MÓDULO REESTRUTURADO: METAS & KPIS (1º METAS | 2º VENDAS REALIZADAS)
+        // NOVO MÓDULO METAS & KPIS V6.4 (2 ETAPAS: METAS E VENDAS REALIZADAS)
         function listenFirebaseKpis() {
-            // Escuta coleção de Metas
             db.collection("kpis_metas").onSnapshot((snapshot) => {
                 dbKpisMetas = [];
                 snapshot.forEach((doc) => {
@@ -1855,7 +1878,6 @@
                 renderAdminConsolidatedKpis();
             });
 
-            // Escuta coleção de Vendas Realizadas
             db.collection("kpis_vendas").onSnapshot((snapshot) => {
                 dbKpisVendas = [];
                 snapshot.forEach((doc) => {
@@ -1867,27 +1889,38 @@
             });
         }
 
-        // 1º ETAPA - SALVAR / EDITAR META
+        // SELEÇÃO MÚLTIPLA DE VENDEDORES PARA METAS
+        function toggleSelectAllKpiUsers(master) {
+            const cbs = document.querySelectorAll('.kpi-user-checkbox');
+            cbs.forEach(c => c.checked = master.checked);
+        }
+
+        // 1º ETAPA: LANÇAR / EDITAR METAS (COM SELEÇÃO MÚLTIPLA)
         function saveAdminMetaEntry() {
-            const userSelect = document.getElementById('admin-kpi-meta-user');
-            const userNome = userSelect.value;
+            const checkedUsers = Array.from(document.querySelectorAll('.kpi-user-checkbox:checked')).map(c => c.value);
             const mesAno = document.getElementById('admin-kpi-meta-mes').value;
             const valorMeta = parseFloat(document.getElementById('admin-kpi-meta-valor').value || 0);
 
-            if (!userNome || !mesAno) {
-                alert('Selecione um Vendedor e o Mês/Ano para lançar a Meta!');
+            if (checkedUsers.length === 0 || !mesAno) {
+                alert('Selecione ao menos um Vendedor e o Mês/Ano para lançar a Meta!');
                 return;
             }
 
-            const docId = `meta_${userNome.replace(/\s+/g, '_').toLowerCase()}_${mesAno}`;
+            const batch = db.batch();
 
-            db.collection("kpis_metas").doc(docId).set({
-                userNome,
-                mesAno,
-                meta: valorMeta,
-                dataAtualizacao: new Date().toISOString()
-            }).then(() => {
-                alert(`Meta de ${userNome} para ${mesAno} salva com sucesso!`);
+            checkedUsers.forEach(userNome => {
+                const docId = `meta_${userNome.replace(/\s+/g, '_').toLowerCase()}_${mesAno}`;
+                const ref = db.collection("kpis_metas").doc(docId);
+                batch.set(ref, {
+                    userNome,
+                    mesAno,
+                    meta: valorMeta,
+                    dataAtualizacao: new Date().toISOString()
+                });
+            });
+
+            batch.commit().then(() => {
+                alert(`Meta de ${formatBRL(valorMeta)} gravada com sucesso para ${checkedUsers.length} vendedor(es)!`);
                 document.getElementById('admin-kpi-meta-valor').value = '';
             });
         }
@@ -1902,9 +1935,53 @@
             }
         }
 
+        function duplicateMetaNextMonth(userNome, mesAnoAtual, valorMeta) {
+            if (!mesAnoAtual) return;
+            const [ano, mes] = mesAnoAtual.split('-').map(Number);
+            let proxAno = ano;
+            let proxMes = mes + 1;
+            if (proxMes > 12) {
+                proxMes = 1;
+                proxAno += 1;
+            }
+            const proxMesStr = `${proxAno}-${String(proxMes).padStart(2, '0')}`;
+            const newDocId = `meta_${userNome.replace(/\s+/g, '_').toLowerCase()}_${proxMesStr}`;
+
+            db.collection("kpis_metas").doc(newDocId).set({
+                userNome,
+                mesAno: proxMesStr,
+                meta: valorMeta,
+                dataAtualizacao: new Date().toISOString()
+            }).then(() => {
+                alert(`Meta duplicada com sucesso para ${userNome} no mês de ${proxMesStr}!`);
+            });
+        }
+
         function deleteMetaEntry(id) {
             if (confirm('Deseja excluir este lançamento de meta?')) {
                 db.collection("kpis_metas").doc(id).delete();
+            }
+        }
+
+        function toggleSelectAllMetaRows(master) {
+            const cbs = document.querySelectorAll('.admin-meta-row-cb');
+            cbs.forEach(c => c.checked = master.checked);
+        }
+
+        function deleteSelectedMetas() {
+            const selected = Array.from(document.querySelectorAll('.admin-meta-row-cb:checked')).map(c => c.value);
+            if (selected.length === 0) {
+                alert('Selecione ao menos uma meta para excluir!');
+                return;
+            }
+            if (confirm(`Deseja excluir as ${selected.length} metas selecionadas?`)) {
+                selected.forEach(id => db.collection("kpis_metas").doc(id).delete());
+            }
+        }
+
+        function deleteAllMetas() {
+            if (confirm('ATENÇÃO: Deseja realmente excluir TODAS as metas lançadas?')) {
+                dbKpisMetas.forEach(m => db.collection("kpis_metas").doc(m.id).delete());
             }
         }
 
@@ -1914,17 +1991,19 @@
             tbody.innerHTML = '';
 
             if (dbKpisMetas.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" class="p-3 text-center text-slate-400 italic">Nenhuma meta lançada ainda.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="5" class="p-3 text-center text-slate-400 italic">Nenhuma meta lançada ainda.</td></tr>`;
                 return;
             }
 
             dbKpisMetas.forEach(m => {
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-50">
+                        <td class="p-2.5 text-center"><input type="checkbox" value="${m.id}" class="admin-meta-row-cb w-4 h-4 text-blue-600 rounded"></td>
                         <td class="p-2.5 font-bold text-slate-800">${m.userNome}</td>
                         <td class="p-2.5 text-slate-600">${m.mesAno}</td>
                         <td class="p-2.5 text-right font-bold text-slate-800">${formatBRL(m.meta)}</td>
                         <td class="p-2.5 text-center space-x-1">
+                            <button onclick="duplicateMetaNextMonth('${m.userNome}', '${m.mesAno}', ${m.meta})" class="px-2 py-1 bg-emerald-100 hover:bg-emerald-200 text-emerald-800 font-bold rounded text-[10px]">Duplicar p/ Próx. Mês</button>
                             <button onclick="editMetaEntry('${m.id}', '${m.userNome}', '${m.mesAno}', ${m.meta})" class="px-2 py-1 bg-blue-100 hover:bg-blue-200 text-blue-700 font-bold rounded text-[10px]">Editar</button>
                             <button onclick="deleteMetaEntry('${m.id}')" class="px-2 py-1 bg-red-100 hover:bg-red-200 text-red-700 font-bold rounded text-[10px]">Excluir</button>
                         </td>
@@ -1933,7 +2012,7 @@
             });
         }
 
-        // 2º ETAPA - SALVAR / EDITAR VENDA REALIZADA
+        // 2º ETAPA: LANÇAR / EDITAR VENDAS REALIZADAS
         function saveAdminVendaEntry() {
             const userSelect = document.getElementById('admin-kpi-venda-user');
             const userNome = userSelect.value;
@@ -1974,19 +2053,42 @@
             }
         }
 
+        function toggleSelectAllVendaRows(master) {
+            const cbs = document.querySelectorAll('.admin-venda-row-cb');
+            cbs.forEach(c => c.checked = master.checked);
+        }
+
+        function deleteSelectedVendas() {
+            const selected = Array.from(document.querySelectorAll('.admin-venda-row-cb:checked')).map(c => c.value);
+            if (selected.length === 0) {
+                alert('Selecione ao menos uma venda realizada para excluir!');
+                return;
+            }
+            if (confirm(`Deseja excluir as ${selected.length} vendas selecionadas?`)) {
+                selected.forEach(id => db.collection("kpis_vendas").doc(id).delete());
+            }
+        }
+
+        function deleteAllVendas() {
+            if (confirm('ATENÇÃO: Deseja realmente excluir TODAS as vendas realizadas lançadas?')) {
+                dbKpisVendas.forEach(v => db.collection("kpis_vendas").doc(v.id).delete());
+            }
+        }
+
         function renderAdminVendasTable() {
             const tbody = document.getElementById('admin-vendas-tbody');
             if (!tbody) return;
             tbody.innerHTML = '';
 
             if (dbKpisVendas.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" class="p-3 text-center text-slate-400 italic">Nenhuma venda realizada lançada ainda.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="5" class="p-3 text-center text-slate-400 italic">Nenhuma venda realizada lançada ainda.</td></tr>`;
                 return;
             }
 
             dbKpisVendas.forEach(v => {
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-50">
+                        <td class="p-2.5 text-center"><input type="checkbox" value="${v.id}" class="admin-venda-row-cb w-4 h-4 text-blue-600 rounded"></td>
                         <td class="p-2.5 font-bold text-slate-800">${v.userNome}</td>
                         <td class="p-2.5 text-slate-600">${v.mesAno}</td>
                         <td class="p-2.5 text-right font-bold text-emerald-600">${formatBRL(v.realizado)}</td>
@@ -2007,13 +2109,11 @@
 
             const vendorMap = {};
 
-            // Soma Metas
             dbKpisMetas.forEach(m => {
                 if (!vendorMap[m.userNome]) vendorMap[m.userNome] = { meta: 0, realizado: 0 };
                 vendorMap[m.userNome].meta += m.meta || 0;
             });
 
-            // Soma Vendas
             dbKpisVendas.forEach(v => {
                 if (!vendorMap[v.userNome]) vendorMap[v.userNome] = { meta: 0, realizado: 0 };
                 vendorMap[v.userNome].realizado += v.realizado || 0;
@@ -2098,7 +2198,6 @@
             if (tbody) {
                 tbody.innerHTML = '';
                 
-                // Mapeia meses únicos
                 const allMonths = Array.from(new Set([...userMetas.map(m => m.mesAno), ...userVendas.map(v => v.mesAno)])).sort();
 
                 if (allMonths.length === 0) {
@@ -2436,7 +2535,7 @@
             });
         }
 
-        // GESTÃO DE USUÁRIOS NO PAINEL ADM (SUBSTITUÍDA E SEM O GATILHO RECORRENTE)
+        // GESTÃO DE USUÁRIOS NO PAINEL ADM (FUNÇÃO MANTIDA SEM O GATILHO RECORRENTE)
         function listenFirebaseUsers() {
             db.collection("usuarios").onSnapshot((snapshot) => {
                 dbUsers = [];
@@ -2447,22 +2546,40 @@
                 // O trecho que recriava 'vendedor@lifeapps.com.br' foi removido daqui!
 
                 renderAdminUsers();
-                populateAdminKpiUserSelects();
+                populateAdminKpiUserCheckboxes();
+                populateAdminKpiVendaUserSelect();
             });
         }
 
-        function populateAdminKpiUserSelects() {
-            const selectMeta = document.getElementById('admin-kpi-meta-user');
+        function populateAdminKpiUserCheckboxes() {
+            const container = document.getElementById('admin-kpi-meta-users-checkboxes');
+            if (!container) return;
+            container.innerHTML = '';
+
+            if (dbUsers.length === 0) {
+                container.innerHTML = `<p class="text-gray-400 italic text-[11px]">Nenhum usuário cadastrado.</p>`;
+                return;
+            }
+
+            dbUsers.forEach(u => {
+                container.innerHTML += `
+                    <label class="flex items-center space-x-2 text-slate-700 cursor-pointer hover:text-blue-600 font-medium">
+                        <input type="checkbox" value="${u.nome}" class="kpi-user-checkbox w-3.5 h-3.5 text-blue-600 rounded">
+                        <span>${u.nome}</span>
+                    </label>
+                `;
+            });
+        }
+
+        function populateAdminKpiVendaUserSelect() {
             const selectVenda = document.getElementById('admin-kpi-venda-user');
-            
-            if (!selectMeta || !selectVenda) return;
+            if (!selectVenda) return;
 
             let html = '<option value="">-- Selecione o Vendedor --</option>';
             dbUsers.forEach(u => {
                 html += `<option value="${u.nome}">${u.nome} (${u.email})</option>`;
             });
 
-            selectMeta.innerHTML = html;
             selectVenda.innerHTML = html;
         }
 
