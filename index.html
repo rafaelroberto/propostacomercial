@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SGP - Portal Corporativo & Propostas LifeApps v5.2</title>
+    <title>SGP - Portal Corporativo & Propostas LifeApps v5.3</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -24,7 +24,6 @@
         .draggable-card:active { cursor: grabbing; }
         .draggable-card.dragging { opacity: 0.4; border: 2px dashed #3b82f6; }
         
-        /* EXCLUSIVO PARA TELA DE LOGIN: Colaboradores Jovens com Uniforme / Conceito LifeApps */
         .genz-auth-bg {
             background: linear-gradient(135deg, rgba(15, 23, 42, 0.90) 0%, rgba(0, 86, 145, 0.85) 50%, rgba(62, 176, 73, 0.80) 100%), 
                         url('https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
@@ -51,12 +50,11 @@
 </head>
 <body class="min-h-screen flex flex-col justify-between text-gray-800">
 
-    <!-- 1. TELA DE LOGIN / REGISTRO (APENAS AQUI O FUNDO E CARDS DESTAQUE) -->
+    <!-- 1. TELA DE LOGIN / REGISTRO -->
     <section id="screen-auth" class="fixed inset-0 z-50 genz-auth-bg flex flex-col justify-between p-4 overflow-y-auto">
         <div class="my-auto flex justify-center w-full z-10">
             <div class="genz-card rounded-3xl w-full max-w-md p-6 sm:p-8 space-y-6 text-gray-100">
                 
-                <!-- LOGO E HEADER -->
                 <div class="text-center flex flex-col items-center">
                     <div class="p-3 rounded-2xl bg-white/10 border border-white/10 mb-3 shadow-inner">
                         <svg class="h-9 w-auto" viewBox="0 0 320 80" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -74,13 +72,12 @@
                     <p class="text-[10px] text-gray-300 font-medium mt-1">A plataforma escolhida pelo Atacado Distribuidor</p>
                 </div>
 
-                <!-- SELECTOR DE TABS -->
                 <div class="flex rounded-2xl bg-black/40 p-1 text-xs font-bold border border-white/10">
                     <button onclick="switchAuthTab('usuario')" id="auth-tab-usuario" class="flex-1 py-2.5 rounded-xl bg-blue-600 text-white shadow-lg transition">Usuário</button>
-                    <button onclick="switchAuthTab('admin')" id="auth-tab-admin" class="flex-1 py-2.5 rounded-xl text-gray-400 hover:text-white transition">Administrador</button>
+                    <button onclick="switchAuthTab('admin')" id="auth-tab-admin" class="flex-1 py-2.5 rounded-lg text-gray-400 hover:text-white transition">Administrador</button>
                 </div>
 
-                <!-- LOGIN USUÁRIO (CAMPOS TOTALMENTE LIMPOS) -->
+                <!-- LOGIN USUÁRIO -->
                 <form id="form-login-usuario" onsubmit="handleUsuarioLogin(event)" class="space-y-4">
                     <div>
                         <label class="block text-[11px] font-bold text-gray-300 uppercase tracking-wider mb-1.5">E-mail Corporativo</label>
@@ -116,7 +113,7 @@
                     </div>
                 </form>
 
-                <!-- LOGIN ADMIN (CAMPOS TOTALMENTE LIMPOS) -->
+                <!-- LOGIN ADMIN -->
                 <form id="form-login-admin" onsubmit="handleAdminLogin(event)" class="space-y-4 hidden">
                     <div>
                         <label class="block text-[11px] font-bold text-gray-300 uppercase tracking-wider mb-1.5">Senha do Administrador</label>
@@ -171,14 +168,14 @@
         </div>
 
         <footer class="text-center text-xs text-white/90 py-2 z-10">
-            Sistema de Geração de Proposta (SGP) - Nº v5.2 | Desenvolvido por 
+            Sistema de Geração de Proposta (SGP) - Nº v5.3 | Desenvolvido por 
             <a href="https://www.linkedin.com/in/rafaelrobertonascimento" target="_blank" rel="noopener noreferrer" class="text-white font-bold underline hover:text-green-300">
                 Rafael Nascimento <i class="fa-brands fa-linkedin text-xs ml-0.5"></i>
             </a>
         </footer>
     </section>
 
-    <!-- 2. PAINEL PRINCIPAL (LAYOUT CLEAN INSTITUCIONAL MANTIDO) -->
+    <!-- 2. PAINEL PRINCIPAL -->
     <div id="screen-main-app" class="hidden flex-1 relative text-gray-800">
 
         <div class="flex flex-1 relative">
@@ -202,7 +199,7 @@
                     </div>
 
                     <nav class="p-3 space-y-1.5" id="sidebar-nav-container">
-                        <!-- PAINEL ADMIN NO TOPO DA SIDEBAR SE LOGADO COMO ADMIN -->
+                        <!-- PAINEL ADMIN NO TOPO DA SIDEBAR (VISÍVEL APENAS PARA ADMIN) -->
                         <button onclick="switchMainTab('admin')" id="nav-item-admin" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-white font-extrabold text-xs sm:text-sm shadow-md transition hidden mb-2">
                             <i class="fa-solid fa-user-shield text-lg min-w-[24px]"></i>
                             <span class="sidebar-text whitespace-nowrap">Painel Administrativo</span>
@@ -213,6 +210,7 @@
                             <span class="sidebar-text whitespace-nowrap">Rede Social / Feed</span>
                         </button>
 
+                        <!-- GERADOR DE PROPOSTAS (VISÍVEL APENAS PARA USUÁRIOS/VENDEDORES) -->
                         <button onclick="switchMainTab('propostas')" id="nav-item-propostas" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white font-medium text-xs sm:text-sm transition">
                             <i class="fa-solid fa-calculator text-lg min-w-[24px]"></i>
                             <span class="sidebar-text whitespace-nowrap">Gerador de Proposta</span>
@@ -859,7 +857,7 @@
 
         <footer class="bg-white border-t border-gray-200 py-4 text-center text-xs text-gray-500 mt-auto z-30">
             <div class="max-w-7xl mx-auto px-4">
-                Sistema de Geração de Proposta (SGP) - Nº v5.2 | Desenvolvido por 
+                Sistema de Geração de Proposta (SGP) - Nº v5.1.1 | Desenvolvido por 
                 <a href="https://www.linkedin.com/in/rafaelrobertonascimento" target="_blank" rel="noopener noreferrer" class="text-blue-600 font-bold hover:underline">
                     Rafael Nascimento <i class="fa-brands fa-linkedin text-xs ml-0.5"></i>
                 </a>
@@ -1052,11 +1050,15 @@
             document.getElementById('post-avatar-initials').innerText = initials;
 
             const adminBtn = document.getElementById('nav-item-admin');
+            const propostasBtn = document.getElementById('nav-item-propostas');
+
             if (currentUser.role === 'admin') {
                 adminBtn.classList.remove('hidden');
+                propostasBtn.classList.add('hidden'); // OCULTA GERADOR DE PROPOSTAS DO ADMIN
                 document.getElementById('admin-pin-notice-option').classList.remove('hidden');
             } else {
                 adminBtn.classList.add('hidden');
+                propostasBtn.classList.remove('hidden');
                 document.getElementById('admin-pin-notice-option').classList.add('hidden');
             }
         }
@@ -1084,7 +1086,7 @@
             document.getElementById('main-sec-admin').classList.add('hidden');
 
             document.getElementById('nav-item-social').className = "w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white font-medium text-xs sm:text-sm transition";
-            document.getElementById('nav-item-propostas').className = "w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white font-medium text-xs sm:text-sm transition";
+            document.getElementById('nav-item-propostas').className = "w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white font-medium text-xs sm:text-sm transition " + (currentUser && currentUser.role === 'admin' ? 'hidden' : '');
             document.getElementById('nav-item-admin').className = "w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-white font-extrabold text-xs sm:text-sm shadow-md transition " + (currentUser && currentUser.role === 'admin' ? '' : 'hidden');
 
             if (tab === 'social') {
@@ -1098,7 +1100,7 @@
             }
         }
 
-        // LOGIN / REGISTRO
+        // LOGIN / REGISTRO USUÁRIO
         function switchAuthTab(type) {
             document.getElementById('form-login-usuario').classList.add('hidden');
             document.getElementById('form-login-admin').classList.add('hidden');
@@ -1384,6 +1386,7 @@
                 inputImage.value = '';
                 document.getElementById('post-is-pinned').checked = false;
 
+                // SALVA NOTIFICAÇÃO NO FIREBASE DE FORMA SEGURA COM TIMESTAMP
                 mentions.forEach(mention => {
                     const cleanName = mention.replace('@', '').trim();
                     const targetUser = dbUsers.find(u => u.nome.toLowerCase() === cleanName.toLowerCase());
@@ -1457,6 +1460,7 @@
             db.collection("posts").doc(postId).update({ comentarios });
         }
 
+        // RENDER DO FEED SOCIAL COM TRATAMENTO DE ERROS DE DATA
         function renderSocialFeed() {
             const container = document.getElementById('social-feed-container');
             if (!container) return;
@@ -1468,7 +1472,13 @@
             }
 
             dbPosts.forEach(post => {
-                const dataFormatada = new Date(post.dataCriacao).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
+                let dataFormatada = 'Recente';
+                try {
+                    if (post.dataCriacao) {
+                        dataFormatada = new Date(post.dataCriacao).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
+                    }
+                } catch(e) {}
+
                 const userKey = currentUser ? (currentUser.id || currentUser.nome) : '';
                 const isLiked = (post.curtidas || []).includes(userKey);
                 const countLikes = (post.curtidas || []).length;
@@ -1510,11 +1520,11 @@
                         <div class="flex items-center justify-between">
                             <div class="flex items-center space-x-3">
                                 <div class="w-9 h-9 rounded-full ${post.autorRole === 'admin' ? 'bg-amber-600' : 'bg-blue-600'} text-white font-bold flex items-center justify-center text-xs">
-                                    ${post.autorNome.slice(0,2).toUpperCase()}
+                                    ${(post.autorNome || 'US').slice(0,2).toUpperCase()}
                                 </div>
                                 <div>
                                     <h4 class="font-bold text-xs sm:text-sm text-gray-900 flex items-center">
-                                        ${post.autorNome}
+                                        ${post.autorNome || 'Usuário'}
                                         ${post.autorRole === 'admin' ? '<i class="fa-solid fa-circle-check text-blue-500 text-xs ml-1.5" title="Administrador"></i>' : ''}
                                     </h4>
                                     <span class="text-[10px] text-gray-400">${dataFormatada}</span>
@@ -2819,7 +2829,7 @@
             });
         }
 
-        // INICIALIZAÇÃO
+        // INICIALIZAÇÃO DO PORTAL
         checkUserSession();
         listenSystemSettings();
         listenNewsletterSettings();
