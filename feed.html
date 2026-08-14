@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SGP - Feed Social Corporativo & Propostas v4.1</title>
+    <title>SGP - Feed Social Corporativo & Propostas v4.2</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -99,16 +99,18 @@
                     <!-- FEED PRINCIPAL -->
                     <div class="lg:col-span-8 space-y-6">
                         
-                        <!-- Caixa de Nova Publicação com opção de imagem -->
+                        <!-- BANNER DO ADMINISTRADOR -->
+                        <div id="feed-banner-container" class="hidden rounded-2xl overflow-hidden shadow-sm border border-gray-200">
+                            <img id="feed-banner-image" src="" alt="Banner Oficial LifeApps" class="w-full h-auto max-h-52 object-cover">
+                        </div>
+
+                        <!-- CAIXA DE NOVA PUBLICAÇÃO -->
                         <div class="bg-white p-4 sm:p-5 rounded-2xl border shadow-sm space-y-3">
-                            <div class="flex items-center space-x-3">
-                                <div class="w-9 h-9 rounded-full bg-blue-600 text-white font-bold flex items-center justify-center text-xs flex-shrink-0" id="post-avatar-initials">
-                                    U
-                                </div>
-                                <input type="text" id="post-input-text" placeholder="No que você está pensando ou negociando hoje?" class="w-full p-2.5 bg-gray-50 border rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                            <div class="w-full">
+                                <textarea id="post-input-text" rows="3" placeholder="Publique algo para seus colegas da LifeApps aqui..." class="w-full p-3 bg-gray-50 border rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none resize-none"></textarea>
                             </div>
 
-                            <!-- Campo de URL de Imagem da Publicação -->
+                            <!-- Anexar Imagem -->
                             <div class="relative">
                                 <input type="text" id="post-input-image" placeholder="📷 Cole o link de uma imagem/foto para anexar (opcional)..." class="w-full pl-8 pr-3 py-1.5 bg-gray-50 border rounded-lg text-xs focus:ring-1 focus:ring-blue-500 focus:outline-none">
                                 <i class="fa-solid fa-image absolute left-2.5 top-2.5 text-gray-400 text-xs"></i>
@@ -383,28 +385,61 @@
                     <div class="flex justify-between items-center border-b pb-4">
                         <div>
                             <h2 class="text-xl font-bold text-gray-900">Painel Administrativo - Gestão Geral</h2>
-                            <p class="text-xs text-gray-500">Gerencie usuários, produtos, orçamentos e segurança do SGP.</p>
+                            <p class="text-xs text-gray-500">Gerencie usuários, produtos, orçamentos, banner e segurança do SGP.</p>
                         </div>
                         <span class="bg-green-100 text-green-800 text-xs px-3 py-1 rounded-full font-medium">Admin Autenticado</span>
                     </div>
 
-                    <div class="flex space-x-2 border-b">
-                        <button onclick="switchAdminSubTab('produtos')" id="adm-subtab-produtos" class="px-4 py-2 text-xs font-bold border-b-2 border-blue-600 text-blue-600">
+                    <div class="flex space-x-2 border-b overflow-x-auto pb-1">
+                        <button onclick="switchAdminSubTab('banner')" id="adm-subtab-banner" class="px-4 py-2 text-xs font-bold border-b-2 border-blue-600 text-blue-600 whitespace-nowrap">
+                            <i class="fa-solid fa-image mr-1"></i> Banner do Feed
+                        </button>
+                        <button onclick="switchAdminSubTab('produtos')" id="adm-subtab-produtos" class="px-4 py-2 text-xs font-bold text-gray-500 hover:text-gray-800 whitespace-nowrap">
                             <i class="fa-solid fa-box mr-1"></i> Gestão de Produtos
                         </button>
-                        <button onclick="switchAdminSubTab('orcamentos')" id="adm-subtab-orcamentos" class="px-4 py-2 text-xs font-bold text-gray-500 hover:text-gray-800">
+                        <button onclick="switchAdminSubTab('orcamentos')" id="adm-subtab-orcamentos" class="px-4 py-2 text-xs font-bold text-gray-500 hover:text-gray-800 whitespace-nowrap">
                             <i class="fa-solid fa-folder-tree mr-1"></i> Todos os Orçamentos
                         </button>
-                        <button onclick="switchAdminSubTab('usuarios')" id="adm-subtab-usuarios" class="px-4 py-2 text-xs font-bold text-gray-500 hover:text-gray-800">
+                        <button onclick="switchAdminSubTab('usuarios')" id="adm-subtab-usuarios" class="px-4 py-2 text-xs font-bold text-gray-500 hover:text-gray-800 whitespace-nowrap">
                             <i class="fa-solid fa-users mr-1"></i> Gestão de Vendedores
                         </button>
-                        <button onclick="switchAdminSubTab('seguranca')" id="adm-subtab-seguranca" class="px-4 py-2 text-xs font-bold text-gray-500 hover:text-gray-800">
+                        <button onclick="switchAdminSubTab('seguranca')" id="adm-subtab-seguranca" class="px-4 py-2 text-xs font-bold text-gray-500 hover:text-gray-800 whitespace-nowrap">
                             <i class="fa-solid fa-key mr-1"></i> Alterar Senha Admin
                         </button>
                     </div>
 
+                    <!-- SUB-ABA BANNER DO FEED -->
+                    <div id="adm-sec-banner" class="space-y-4 max-w-2xl">
+                        <h3 class="text-md font-bold text-gray-800">Gerenciar Banner Comercial do Feed</h3>
+                        
+                        <div class="bg-blue-50 border border-blue-200 p-4 rounded-xl text-xs space-y-2 text-blue-900">
+                            <strong><i class="fa-solid fa-circle-info mr-1"></i> Especificações do Banner:</strong>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li><strong>Dimensão Recomendada:</strong> 1200 x 300 pixels (Proporção 4:1)</li>
+                                <li><strong>Formatos Permitidos:</strong> JPG, PNG ou GIF animado</li>
+                                <li>O banner aparecerá no topo do Feed de Notícias de todos os vendedores.</li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-gray-50 p-4 rounded-xl border space-y-3">
+                            <div>
+                                <label class="text-xs text-gray-600 font-medium">URL do Banner (Link da Imagem)</label>
+                                <input type="text" id="admin-banner-url" placeholder="https://exemplo.com/banner-promocional.png" class="w-full p-2.5 border rounded-lg text-sm mt-1">
+                            </div>
+
+                            <div class="flex space-x-2 pt-2">
+                                <button onclick="saveAdminBanner()" class="flex-1 py-2.5 bg-blue-600 text-white rounded-lg text-xs font-bold hover:bg-blue-700 shadow">
+                                    <i class="fa-solid fa-cloud-arrow-up mr-1"></i> Salvar e Publicar Banner
+                                </button>
+                                <button onclick="removeAdminBanner()" class="px-4 py-2.5 bg-red-100 text-red-700 hover:bg-red-200 rounded-lg text-xs font-bold">
+                                    Remover Banner
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- SUB-ABA 1: GESTÃO DE PRODUTOS -->
-                    <div id="adm-sec-produtos" class="space-y-4">
+                    <div id="adm-sec-produtos" class="space-y-4 hidden">
                         <h3 class="text-md font-bold text-gray-800">Cadastrar Novo Produto na Nuvem</h3>
                         <div class="grid grid-cols-1 md:grid-cols-4 gap-3 bg-gray-50 p-4 rounded-xl border">
                             <div>
@@ -537,7 +572,7 @@
     <!-- FOOTER INSTITUCIONAL FIXO -->
     <footer class="bg-white border-t border-gray-200 py-4 text-center text-xs text-gray-500 mt-auto z-30">
         <div class="max-w-7xl mx-auto px-4">
-            Sistema de Geração de Proposta (SGP) - Nº v4.1 | Desenvolvido por 
+            Sistema de Geração de Proposta (SGP) - Nº v4.2 | Desenvolvido por 
             <a href="https://www.linkedin.com/in/rafaelrobertonascimento" target="_blank" rel="noopener noreferrer" class="text-blue-600 font-bold hover:underline">
                 Rafael Nascimento <i class="fa-brands fa-linkedin text-xs ml-0.5"></i>
             </a>
@@ -687,7 +722,6 @@
 
             const initials = currentUser.nome.split(' ').map(n => n[0]).slice(0,2).join('').toUpperCase();
             document.getElementById('user-avatar-initials').innerText = initials;
-            document.getElementById('post-avatar-initials').innerText = initials;
 
             if (currentUser.role === 'admin') {
                 document.getElementById('nav-item-admin').classList.remove('hidden');
@@ -737,7 +771,37 @@
             }
         }
 
-        // LÓGICA DA REDE SOCIAL DA v4.1
+        function listenSystemSettings() {
+            db.collection("settings").doc("config").onSnapshot((doc) => {
+                if (doc.exists) {
+                    if (doc.data().adminPass) adminPassHash = doc.data().adminPass;
+                    if (doc.data().bannerUrl) {
+                        document.getElementById('feed-banner-image').src = doc.data().bannerUrl;
+                        document.getElementById('feed-banner-container').classList.remove('hidden');
+                        document.getElementById('admin-banner-url').value = doc.data().bannerUrl;
+                    } else {
+                        document.getElementById('feed-banner-container').classList.add('hidden');
+                    }
+                }
+            });
+        }
+
+        function saveAdminBanner() {
+            const bannerUrl = document.getElementById('admin-banner-url').value.trim();
+            if (!bannerUrl) { alert('Digite a URL da imagem do banner!'); return; }
+
+            db.collection("settings").doc("config").set({ bannerUrl }, { merge: true }).then(() => {
+                alert('Banner do Feed atualizado com sucesso!');
+            });
+        }
+
+        function removeAdminBanner() {
+            db.collection("settings").doc("config").set({ bannerUrl: "" }, { merge: true }).then(() => {
+                document.getElementById('admin-banner-url').value = "";
+                alert('Banner removido!');
+            });
+        }
+
         function listenFirebasePosts() {
             db.collection("posts").onSnapshot((snapshot) => {
                 dbPosts = [];
@@ -859,7 +923,6 @@
                 const countLikes = (post.curtidas || []).length;
                 const comentarios = post.comentarios || [];
 
-                // Permissão para excluir: autor ou admin
                 const isOwner = (post.autorId === currentUser.id || post.autorNome === currentUser.nome || currentUser.role === 'admin');
 
                 let pinnedBadge = post.isPinned ? `
@@ -993,14 +1056,6 @@
             navigator.clipboard.writeText(window.location.href);
             alert('Link interno da plataforma copiado!');
             closeShareModal();
-        }
-
-        function listenSystemSettings() {
-            db.collection("settings").doc("config").onSnapshot((doc) => {
-                if (doc.exists && doc.data().adminPass) {
-                    adminPassHash = doc.data().adminPass;
-                }
-            });
         }
 
         function listenFirebaseUsers() {
