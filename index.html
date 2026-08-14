@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LifeSocial - A rede que conecta os Lifers v7.1</title>
+    <title>LifeSocial - A rede que conecta os Lifers v7.2</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -182,7 +182,7 @@
         </div>
 
         <footer class="text-center text-xs text-white/90 py-2 z-10">
-            LifeSocial v7.1 | Plataforma criada e desenvolvida por 
+            LifeSocial v7.2 | Plataforma criada e desenvolvida por 
             <a href="https://www.linkedin.com/in/rafaelrobertonascimento" target="_blank" rel="noopener noreferrer" class="text-white font-bold underline hover:text-green-300">
                 Rafael Roberto Nascimento <i class="fa-brands fa-linkedin text-xs ml-0.5"></i>
             </a>
@@ -226,7 +226,7 @@
                             <span class="sidebar-text whitespace-nowrap">LifeSocial Feed</span>
                         </button>
 
-                        <!-- METAS & OBJETIVOS (COMPLETO E PERMANENTE PARA USUÁRIOS) -->
+                        <!-- METAS & OBJETIVOS (Sempre visível para não-admin) -->
                         <button onclick="switchMainTab('metas')" id="nav-item-metas" class="w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-slate-300 hover:bg-slate-800 hover:text-white font-medium text-xs sm:text-sm transition">
                             <i class="fa-solid fa-chart-line text-lg min-w-[24px]"></i>
                             <span class="sidebar-text whitespace-nowrap">Metas & Objetivos</span>
@@ -276,7 +276,7 @@
                             <i class="fa-solid fa-code text-blue-600 mr-1.5"></i> Desenvolvido por Rafael Roberto Nascimento
                         </span>
                     </div>
-                    <span class="text-xs font-medium text-slate-400 mt-1 sm:mt-0">LifeSocial v7.1</span>
+                    <span class="text-xs font-medium text-slate-400 mt-1 sm:mt-0">LifeSocial v7.2</span>
                 </div>
 
                 <!-- 1. REDE SOCIAL / FEED -->
@@ -713,16 +713,14 @@
                             </button>
                         </div>
 
-                        <!-- SUB-ABA ADM KPIS REESTRUTURADA PARA SUPORTAR VENDEDORES (R$) E PRÉ-VENDAS (REUNIÕES) -->
+                        <!-- SUB-ABA ADM KPIS REESTRUTURADA -->
                         <div id="adm-sec-kpis" class="space-y-8">
                             
-                            <!-- SELETOR DE VISÃO (VENDEDORES X PRÉ-VENDAS) -->
                             <div class="flex rounded-2xl bg-slate-100 p-1.5 text-xs font-bold max-w-md">
                                 <button onclick="switchAdminKpiView('vendedor')" id="admin-kpi-view-vendedor" class="flex-1 py-2 rounded-xl bg-blue-600 text-white shadow transition">Visão Vendedores (R$)</button>
                                 <button onclick="switchAdminKpiView('prevenda')" id="admin-kpi-view-prevenda" class="flex-1 py-2 rounded-xl text-slate-600 hover:text-slate-900 transition">Visão Pré-Vendas (Reuniões)</button>
                             </div>
 
-                            <!-- 1º ETAPA: LANÇAMENTO / EDIÇÃO DE METAS MÊS A MÊS -->
                             <div class="bg-slate-50/80 p-5 rounded-2xl border border-slate-200 space-y-4">
                                 <div class="flex items-center justify-between border-b pb-2">
                                     <h3 class="text-sm font-extrabold text-slate-800 flex items-center">
@@ -759,7 +757,6 @@
                                     </button>
                                 </div>
 
-                                <!-- TABELA DE METAS CADASTRADAS -->
                                 <div class="pt-2">
                                     <div class="flex justify-between items-center mb-2">
                                         <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider">Metas Cadastradas</h4>
@@ -788,7 +785,6 @@
                                 </div>
                             </div>
 
-                            <!-- 2º ETAPA: LANÇAMENTO / EDIÇÃO DE REALIZADOS MÊS A MÊS -->
                             <div class="bg-slate-50/80 p-5 rounded-2xl border border-slate-200 space-y-4">
                                 <div class="flex items-center justify-between border-b pb-2">
                                     <h3 class="text-sm font-extrabold text-slate-800 flex items-center">
@@ -819,7 +815,6 @@
                                     </button>
                                 </div>
 
-                                <!-- TABELA DE VENDAS / REUNIÕES REALIZADAS -->
                                 <div class="pt-2">
                                     <div class="flex justify-between items-center mb-2">
                                         <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider">Atingimentos Cadastrados</h4>
@@ -841,14 +836,13 @@
                                                 </tr>
                                             </thead>
                                             <tbody id="admin-vendas-tbody" class="divide-y divide-slate-100 font-medium">
-                                                <tr><td colspan="5" class="p-3 text-center text-slate-400 italic">Nenum faturamento/reunião lançado ainda.</td></tr>
+                                                <tr><td colspan="5" class="p-3 text-center text-slate-400 italic">Nenhum faturamento/reunião lançado ainda.</td></tr>
                                             </tbody>
                                         </table>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- DASHBOARD DE VISÃO GERAL DO ADMIN -->
                             <div class="space-y-3">
                                 <h3 class="text-sm font-extrabold text-slate-900 uppercase tracking-wider" id="admin-dashboard-consolidated-title">Dashboard do Admin (Colaboradores com Meta Cadastrada)</h3>
                                 <div class="overflow-x-auto bg-slate-50/80 border border-slate-200 rounded-2xl p-3">
@@ -1342,7 +1336,7 @@
             const metasBtn = document.getElementById('nav-item-metas');
             const propostasBtn = document.getElementById('nav-item-propostas');
 
-            // REGRA V7.1: MENU COMPLETO PERMANENTE PARA USUÁRIOS COMUNS | ADMIN MANTÉM VISÃO RESTRITA
+            // REGRA V7.1: MENU COMPLETO PERMANENTE PARA USUÁRIOS COMUNS
             if (currentUser.role === 'admin') {
                 adminBtn.classList.remove('hidden');
                 metasBtn.classList.add('hidden');
@@ -1350,12 +1344,12 @@
                 document.getElementById('admin-pin-notice-option').classList.remove('hidden');
             } else {
                 adminBtn.classList.add('hidden');
-                metasBtn.classList.remove('hidden'); // METAS VISÍVEL PERMANENTEMENTE PARA USUÁRIOS
+                metasBtn.classList.remove('hidden');
                 propostasBtn.classList.remove('hidden');
                 document.getElementById('admin-pin-notice-option').classList.add('hidden');
             }
 
-            // PRIORIZA A ABERTURA DA ABA LIFESOCIAL FEED NO LOGIN E NO REFRESH (F5)
+            // PRIORIZA A ABERTURA NA TELA LIFESOCIAL FEED NO LOGIN OU REFRESH
             switchMainTab('social');
             renderUserKpiDashboard();
         }
@@ -1529,7 +1523,6 @@
             sessionStorage.setItem('sgp_session_user', JSON.stringify(user));
             currentUser = user;
             showMainApp();
-            switchMainTab('social');
         }
 
         function handleAdminLogin(e) {
@@ -1541,7 +1534,6 @@
                 sessionStorage.setItem('sgp_session_user', JSON.stringify(adminUser));
                 currentUser = adminUser;
                 showMainApp();
-                switchMainTab('social');
             } else {
                 alert('Senha de administrador incorreta!');
             }
@@ -1592,7 +1584,6 @@
             localStorage.removeItem('sgp_user_pass');
             
             document.getElementById('nav-item-admin').classList.add('hidden');
-            document.getElementById('nav-item-metas').classList.add('hidden');
             document.getElementById('admin-pin-notice-option').classList.add('hidden');
             
             clearProposalState();
@@ -1880,7 +1871,7 @@
             closeShareModal();
         }
 
-        // MÓDULO METAS & KPIS V7.0
+        // MÓDULO METAS & KPIS
         function listenFirebaseKpis() {
             db.collection("kpis_metas").onSnapshot((snapshot) => {
                 dbKpisMetas = [];
@@ -2318,7 +2309,7 @@
                 rankEl.innerText = userPosIndex !== -1 ? `#${userPosIndex + 1}º Lugar` : '# - Colocação';
             }
 
-            // TABELA MÊS A MÊS
+            // TABELA MÊS A MÊS DO VENDEDOR/PRÉ-VENDA
             const tbody = document.getElementById('user-kpi-months-tbody');
             if (tbody) {
                 tbody.innerHTML = '';
@@ -2666,7 +2657,7 @@
             });
         }
 
-        // GESTÃO DE USUÁRIOS NO PAINEL ADM (COM SUPORTE AO CARGO)
+        // GESTÃO DE USUÁRIOS NO PAINEL ADM
         function listenFirebaseUsers() {
             db.collection("usuarios").onSnapshot((snapshot) => {
                 dbUsers = [];
