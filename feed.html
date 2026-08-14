@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SGP - Feed Social Corporativo & Propostas v4.3</title>
+    <title>SGP - Feed Social Corporativo & Propostas v4.4</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -31,7 +31,7 @@
     <div class="flex flex-1 relative">
 
         <!-- SIDEBAR RETRÁTIL (MENU ESQUERDO) -->
-        <aside id="main-sidebar" class="sidebar-expanded bg-slate-900 text-white min-h-screen transition-all duration-300 flex flex-col justify-between sticky top-0 h-screen z-40">
+        <aside id="main-sidebar" class="sidebar-expanded bg-slate-900 text-white min-h-screen transition-all duration-300 flex flex-col justify-between sticky top-0 h-screen z-40 overflow-y-auto">
             <div>
                 <!-- Header do Sidebar -->
                 <div class="p-4 border-b border-slate-800 flex items-center justify-between">
@@ -50,7 +50,7 @@
                     </button>
                 </div>
 
-                <!-- Menu de Navegação -->
+                <!-- Menu Principal -->
                 <nav class="p-3 space-y-2">
                     <button onclick="switchMainTab('social')" id="nav-item-social" class="w-full flex items-center space-x-3 px-3 py-3 rounded-xl bg-blue-600 text-white font-bold text-xs sm:text-sm transition">
                         <i class="fa-solid fa-newspaper text-lg min-w-[24px]"></i>
@@ -67,10 +67,15 @@
                         <span class="sidebar-text whitespace-nowrap">Painel Administrativo</span>
                     </button>
                 </nav>
+
+                <!-- Container Dinâmico de Links Úteis -->
+                <div id="sidebar-dynamic-links">
+                    <!-- Preenchido via JS do Firebase -->
+                </div>
             </div>
 
             <!-- Perfil do Usuário e Sair -->
-            <div class="p-3 border-t border-slate-800">
+            <div class="p-3 border-t border-slate-800 bg-slate-900 sticky bottom-0">
                 <div class="flex items-center space-x-3 p-2 bg-slate-800/60 rounded-xl overflow-hidden mb-2">
                     <div class="w-8 h-8 rounded-full bg-blue-600 text-white font-bold flex items-center justify-center text-xs flex-shrink-0" id="user-avatar-initials">
                         V
@@ -81,7 +86,6 @@
                     </div>
                 </div>
 
-                <!-- CORREÇÃO: BOTÃO DE SAIR DO SISTEMA -->
                 <button type="button" onclick="logoutSystem()" class="w-full flex items-center space-x-3 px-3 py-2 text-red-400 hover:bg-red-500/10 rounded-xl font-bold text-xs transition cursor-pointer">
                     <i class="fa-solid fa-power-off text-base min-w-[24px]"></i>
                     <span class="sidebar-text whitespace-nowrap">Sair do Sistema</span>
@@ -94,9 +98,7 @@
 
             <!-- TELA 1: MINI REDE SOCIAL CORPORATIVA / FEED DE NOTÍCIAS -->
             <section id="main-sec-social" class="space-y-6">
-                
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                    
                     <!-- FEED PRINCIPAL -->
                     <div class="lg:col-span-8 space-y-6">
                         
@@ -111,13 +113,11 @@
                                 <textarea id="post-input-text" rows="3" placeholder="Publique algo para seus colegas da LifeApps aqui..." class="w-full p-3 bg-gray-50 border rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none resize-none"></textarea>
                             </div>
 
-                            <!-- Anexar Imagem -->
                             <div class="relative">
                                 <input type="text" id="post-input-image" placeholder="📷 Cole o link de uma imagem/foto para anexar (opcional)..." class="w-full pl-8 pr-3 py-1.5 bg-gray-50 border rounded-lg text-xs focus:ring-1 focus:ring-blue-500 focus:outline-none">
                                 <i class="fa-solid fa-image absolute left-2.5 top-2.5 text-gray-400 text-xs"></i>
                             </div>
 
-                            <!-- Painel de Emojis Rápido -->
                             <div id="emoji-picker-popover" class="hidden bg-white border border-gray-200 rounded-xl p-3 shadow-xl flex flex-wrap gap-2 text-lg z-30 max-w-xs">
                                 <button type="button" onclick="insertEmoji('👍')" class="hover:scale-125 transition">👍</button>
                                 <button type="button" onclick="insertEmoji('🔥')" class="hover:scale-125 transition">🔥</button>
@@ -135,7 +135,6 @@
 
                             <div class="flex flex-wrap justify-between items-center border-t pt-3 gap-2">
                                 <div class="flex items-center space-x-2 text-xs">
-                                    <!-- Botão abrir Emojis -->
                                     <button type="button" onclick="toggleEmojiPicker()" class="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-lg transition flex items-center">
                                         <i class="fa-regular fa-face-smile text-yellow-500 mr-1.5 text-sm"></i> Emojis
                                     </button>
@@ -153,14 +152,11 @@
                         </div>
 
                         <!-- LISTA DE POSTAGENS DA REDE SOCIAL -->
-                        <div id="social-feed-container" class="space-y-4">
-                            <!-- Injetado via JS -->
-                        </div>
+                        <div id="social-feed-container" class="space-y-4"></div>
                     </div>
 
-                    <!-- BARRA LATERAL DIREITA: NEWSLETTER & DESTAQUES -->
+                    <!-- BARRA LATERAL DIREITA -->
                     <div class="lg:col-span-4 space-y-6">
-                        
                         <div class="bg-gradient-to-br from-blue-900 to-slate-900 text-white p-5 rounded-2xl shadow-sm space-y-4">
                             <div class="flex items-center space-x-2 text-green-400">
                                 <i class="fa-solid fa-bullhorn text-lg"></i>
@@ -185,7 +181,6 @@
                     </div>
 
                 </div>
-
             </section>
 
             <!-- TELA 2: GERADOR DE PROPOSTAS SGP -->
@@ -413,7 +408,10 @@
                     </div>
 
                     <div class="flex space-x-2 border-b overflow-x-auto pb-1">
-                        <button onclick="switchAdminSubTab('banner')" id="adm-subtab-banner" class="px-4 py-2 text-xs font-bold border-b-2 border-blue-600 text-blue-600 whitespace-nowrap">
+                        <button onclick="switchAdminSubTab('links')" id="adm-subtab-links" class="px-4 py-2 text-xs font-bold border-b-2 border-blue-600 text-blue-600 whitespace-nowrap">
+                            <i class="fa-solid fa-link mr-1"></i> Sistemas & Links
+                        </button>
+                        <button onclick="switchAdminSubTab('banner')" id="adm-subtab-banner" class="px-4 py-2 text-xs font-bold text-gray-500 hover:text-gray-800 whitespace-nowrap">
                             <i class="fa-solid fa-image mr-1"></i> Banner do Feed
                         </button>
                         <button onclick="switchAdminSubTab('produtos')" id="adm-subtab-produtos" class="px-4 py-2 text-xs font-bold text-gray-500 hover:text-gray-800 whitespace-nowrap">
@@ -430,8 +428,51 @@
                         </button>
                     </div>
 
+                    <!-- SUB-ABA GESTÃO DE LINKS E SISTEMAS EXTERNOS -->
+                    <div id="adm-sec-links" class="space-y-4">
+                        <h3 class="text-md font-bold text-gray-800">Cadastrar Novo Link no Menu Lateral</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-3 bg-gray-50 p-4 rounded-xl border">
+                            <div>
+                                <label class="text-xs text-gray-600 font-medium">Nome do Menu</label>
+                                <input type="text" id="new-link-name" placeholder="Ex: PucaCRM" class="w-full p-2 border rounded text-sm mt-1">
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="text-xs text-gray-600 font-medium">URL de Acesso (Link)</label>
+                                <input type="url" id="new-link-url" placeholder="https://..." class="w-full p-2 border rounded text-sm mt-1">
+                            </div>
+                            <div class="flex items-end space-x-2">
+                                <div class="flex-1">
+                                    <label class="text-xs text-gray-600 font-medium">Ícone</label>
+                                    <input type="text" id="new-link-icon" value="fa-solid fa-link" class="w-full p-2 border rounded text-sm mt-1">
+                                </div>
+                                <button onclick="addNewLinkFirebase()" class="px-4 py-2 h-[38px] bg-blue-600 text-white font-bold rounded text-sm hover:bg-blue-700">
+                                    <i class="fa-solid fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 space-y-3">
+                            <h4 class="text-xs font-bold text-gray-500 uppercase">Links Cadastrados</h4>
+                            <div class="overflow-x-auto bg-gray-50 border rounded-xl p-3">
+                                <table class="w-full text-left text-xs border-collapse">
+                                    <thead>
+                                        <tr class="text-gray-700 font-bold border-b border-gray-200">
+                                            <th class="p-2">Ícone</th>
+                                            <th class="p-2">Nome do Menu</th>
+                                            <th class="p-2">URL</th>
+                                            <th class="p-2 text-center">Ações</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="admin-links-list" class="divide-y divide-gray-200 bg-white">
+                                        <!-- Injetado via JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- SUB-ABA BANNER DO FEED -->
-                    <div id="adm-sec-banner" class="space-y-4 max-w-2xl">
+                    <div id="adm-sec-banner" class="space-y-4 max-w-2xl hidden">
                         <h3 class="text-md font-bold text-gray-800">Gerenciar Banner Comercial do Feed</h3>
                         
                         <div class="bg-blue-50 border border-blue-200 p-4 rounded-xl text-xs space-y-2 text-blue-900">
@@ -460,7 +501,7 @@
                         </div>
                     </div>
 
-                    <!-- SUB-ABA 1: GESTÃO DE PRODUTOS -->
+                    <!-- SUB-ABA GESTÃO DE PRODUTOS -->
                     <div id="adm-sec-produtos" class="space-y-4 hidden">
                         <h3 class="text-md font-bold text-gray-800">Cadastrar Novo Produto na Nuvem</h3>
                         <div class="grid grid-cols-1 md:grid-cols-4 gap-3 bg-gray-50 p-4 rounded-xl border">
@@ -500,7 +541,7 @@
                         </div>
                     </div>
 
-                    <!-- SUB-ABA 2: GESTÃO DE TODOS OS ORÇAMENTOS -->
+                    <!-- SUB-ABA GESTÃO DE TODOS OS ORÇAMENTOS -->
                     <div id="adm-sec-orcamentos" class="space-y-4 hidden">
                         <div class="flex justify-between items-center">
                             <h3 class="text-md font-bold text-gray-800">Orçamentos Criados pelos Vendedores</h3>
@@ -547,7 +588,7 @@
                         </div>
                     </div>
 
-                    <!-- SUB-ABA 3: GESTÃO DE VENDEDORES -->
+                    <!-- SUB-ABA GESTÃO DE VENDEDORES -->
                     <div id="adm-sec-usuarios" class="space-y-4 hidden">
                         <h3 class="text-md font-bold text-gray-800">Aprovação e Controle de Vendedores</h3>
                         <div class="bg-gray-50 p-4 rounded-xl border">
@@ -567,7 +608,7 @@
                         </div>
                     </div>
 
-                    <!-- SUB-ABA 4: ALTERAR SENHA ADMIN -->
+                    <!-- SUB-ABA ALTERAR SENHA ADMIN -->
                     <div id="adm-sec-seguranca" class="space-y-4 hidden max-w-md">
                         <h3 class="text-md font-bold text-gray-800">Alterar Senha do Administrador</h3>
                         <div class="bg-gray-50 p-4 rounded-xl border space-y-3">
@@ -591,65 +632,31 @@
         </main>
     </div>
 
-    <!-- FOOTER INSTITUCIONAL FIXO -->
-    <footer class="bg-white border-t border-gray-200 py-4 text-center text-xs text-gray-500 mt-auto z-30">
-        <div class="max-w-7xl mx-auto px-4">
-            Sistema de Geração de Proposta (SGP) - Nº v4.3 | Desenvolvido por 
-            <a href="https://www.linkedin.com/in/rafaelrobertonascimento" target="_blank" rel="noopener noreferrer" class="text-blue-600 font-bold hover:underline">
-                Rafael Nascimento <i class="fa-brands fa-linkedin text-xs ml-0.5"></i>
-            </a>
-        </div>
-    </footer>
+    <!-- MODAIS DO SISTEMA -->
 
-    <!-- MODAL MEUS ORÇAMENTOS SALVOS (VENDEDOR) -->
-    <div id="vendedor-propostas-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl w-full max-w-4xl p-6 relative shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
-            <div class="flex justify-between items-center border-b pb-3">
-                <div>
-                    <h3 class="text-lg font-bold text-gray-800">Meus Orçamentos Salvos</h3>
-                    <p class="text-xs text-gray-500">Gerencie ou recarregue propostas salvas no seu perfil.</p>
-                </div>
-                <button onclick="closeVendedorPropostasModal()" class="w-8 h-8 rounded-full bg-gray-100 hover:bg-red-100 hover:text-red-600 flex items-center justify-center font-bold text-gray-600 transition">
-                    <i class="fa-solid fa-xmark text-lg"></i>
-                </button>
+    <!-- MODAL DE EDIÇÃO DE LINK -->
+    <div id="edit-link-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl w-full max-w-md p-6 relative shadow-2xl space-y-4">
+            <h3 class="text-lg font-bold text-gray-900 border-b pb-2">Editar Link / Atalho</h3>
+            <input type="hidden" id="edit-link-id">
+            
+            <div>
+                <label class="text-xs text-gray-600 font-medium">Nome do Menu</label>
+                <input type="text" id="edit-link-name" class="w-full p-2 border rounded text-sm mt-1">
+            </div>
+            <div>
+                <label class="text-xs text-gray-600 font-medium">URL do Sistema</label>
+                <input type="url" id="edit-link-url" class="w-full p-2 border rounded text-sm mt-1">
+            </div>
+            <div>
+                <label class="text-xs text-gray-600 font-medium">Ícone (FontAwesome)</label>
+                <input type="text" id="edit-link-icon" class="w-full p-2 border rounded text-sm mt-1">
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 bg-gray-50 p-3 rounded-xl border">
-                <div>
-                    <label class="text-[11px] font-bold text-gray-600 uppercase">Pesquisar por Cliente</label>
-                    <input type="text" id="vendedor-filter-cliente" oninput="renderVendedorPropostasList()" placeholder="Nome do cliente..." class="w-full p-2 border rounded-lg text-xs bg-white">
-                </div>
-                <div>
-                    <label class="text-[11px] font-bold text-gray-600 uppercase">Pesquisar por Data</label>
-                    <input type="date" id="vendedor-filter-data" onchange="renderVendedorPropostasList()" class="w-full p-2 border rounded-lg text-xs bg-white">
-                </div>
+            <div class="flex justify-end space-x-2 pt-2">
+                <button onclick="closeEditLinkModal()" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg text-xs font-bold">Cancelar</button>
+                <button onclick="saveLinkEdit()" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-xs font-bold hover:bg-blue-700">Salvar Alterações</button>
             </div>
-
-            <div id="vendedor-propostas-list-container" class="space-y-3 pt-2"></div>
-        </div>
-    </div>
-
-    <!-- MODAL DE COMPARTILHAMENTO -->
-    <div id="share-post-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl w-full max-w-md p-6 relative shadow-2xl space-y-4 text-center">
-            <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto text-xl">
-                <i class="fa-solid fa-share-nodes"></i>
-            </div>
-            <h3 class="text-base font-bold text-gray-800">Compartilhar Publicação</h3>
-            <p class="text-xs text-gray-500">Envie esta publicação para a equipe ou copie o link direto.</p>
-
-            <div class="grid grid-cols-2 gap-3 pt-2">
-                <button onclick="sharePostWhatsApp()" class="p-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition flex items-center justify-center">
-                    <i class="fa-brands fa-whatsapp text-lg mr-2"></i> WhatsApp
-                </button>
-                <button onclick="copyPostLink()" class="p-3 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-xs font-bold transition flex items-center justify-center">
-                    <i class="fa-solid fa-link mr-2"></i> Copiar Link
-                </button>
-            </div>
-
-            <button onclick="closeShareModal()" class="w-full py-2 bg-gray-100 text-gray-600 font-bold rounded-xl text-xs hover:bg-gray-200">
-                Fechar
-            </button>
         </div>
     </div>
 
@@ -679,7 +686,59 @@
         </div>
     </div>
 
-    <!-- MODAL DE ZOOM PARA PRINT -->
+    <!-- MODAL MEUS ORÇAMENTOS SALVOS (VENDEDOR) -->
+    <div id="vendedor-propostas-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl w-full max-w-4xl p-6 relative shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center border-b pb-3">
+                <div>
+                    <h3 class="text-lg font-bold text-gray-800">Meus Orçamentos Salvos</h3>
+                    <p class="text-xs text-gray-500">Gerencie ou recarregue propostas salvas no seu perfil.</p>
+                </div>
+                <button onclick="closeVendedorPropostasModal()" class="w-8 h-8 rounded-full bg-gray-100 hover:bg-red-100 hover:text-red-600 flex items-center justify-center font-bold text-gray-600 transition">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 bg-gray-50 p-3 rounded-xl border">
+                <div>
+                    <label class="text-[11px] font-bold text-gray-600 uppercase">Pesquisar por Cliente</label>
+                    <input type="text" id="vendedor-filter-cliente" oninput="renderVendedorPropostasList()" placeholder="Nome do cliente..." class="w-full p-2 border rounded-lg text-xs bg-white">
+                </div>
+                <div>
+                    <label class="text-[11px] font-bold text-gray-600 uppercase">Pesquisar por Data</label>
+                    <input type="date" id="vendedor-filter-data" onchange="renderVendedorPropostasList()" class="w-full p-2 border rounded-lg text-xs bg-white">
+                </div>
+            </div>
+
+            <div id="vendedor-propostas-list-container" class="space-y-3 pt-2"></div>
+        </div>
+    </div>
+
+    <!-- MODAL DE COMPARTILHAMENTO DA REDE SOCIAL -->
+    <div id="share-post-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl w-full max-w-md p-6 relative shadow-2xl space-y-4 text-center">
+            <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto text-xl">
+                <i class="fa-solid fa-share-nodes"></i>
+            </div>
+            <h3 class="text-base font-bold text-gray-800">Compartilhar Publicação</h3>
+            <p class="text-xs text-gray-500">Envie esta publicação para a equipe ou copie o link direto.</p>
+
+            <div class="grid grid-cols-2 gap-3 pt-2">
+                <button onclick="sharePostWhatsApp()" class="p-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition flex items-center justify-center">
+                    <i class="fa-brands fa-whatsapp text-lg mr-2"></i> WhatsApp
+                </button>
+                <button onclick="copyPostLink()" class="p-3 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-xs font-bold transition flex items-center justify-center">
+                    <i class="fa-solid fa-link mr-2"></i> Copiar Link
+                </button>
+            </div>
+
+            <button onclick="closeShareModal()" class="w-full py-2 bg-gray-100 text-gray-600 font-bold rounded-xl text-xs hover:bg-gray-200">
+                Fechar
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL DE ZOOM PARA PRINT DA PROPOSTA -->
     <div id="print-zoom-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl w-full max-w-6xl p-6 relative shadow-2xl flex flex-col space-y-4 max-h-[95vh] overflow-y-auto">
             <div class="flex justify-between items-center border-b pb-3">
@@ -725,12 +784,16 @@
         let dbUsers = [];
         let dbPropostas = [];
         let dbPosts = [];
+        let dbLinks = [];
         let proposalProducts = [];
         let draggedItemIndex = null;
         let activeSharePostId = null;
 
         const dbExtras = { extrator: 250.00 };
 
+        // ==========================
+        // GESTÃO DE SESSÃO E TABS
+        // ==========================
         function checkUserSession() {
             const savedSession = sessionStorage.getItem('sgp_session_user');
             if (!savedSession) {
@@ -744,6 +807,7 @@
 
             const initials = currentUser.nome.split(' ').map(n => n[0]).slice(0,2).join('').toUpperCase();
             document.getElementById('user-avatar-initials').innerText = initials;
+            document.getElementById('post-avatar-initials').innerText = initials;
 
             if (currentUser.role === 'admin') {
                 document.getElementById('nav-item-admin').classList.remove('hidden');
@@ -793,21 +857,11 @@
             }
         }
 
-        // FUNÇÃO DE EMOJIS
-        function toggleEmojiPicker() {
-            const picker = document.getElementById('emoji-picker-popover');
-            picker.classList.toggle('hidden');
-        }
-
-        function insertEmoji(emoji) {
-            const input = document.getElementById('post-input-text');
-            const start = input.selectionStart;
-            const end = input.selectionEnd;
-            const text = input.value;
-            input.value = text.substring(0, start) + emoji + text.substring(end);
-            input.focus();
-            input.selectionStart = input.selectionEnd = start + emoji.length;
-            document.getElementById('emoji-picker-popover').classList.add('hidden');
+        function logoutSystem() {
+            sessionStorage.removeItem('sgp_session_user');
+            localStorage.removeItem('sgp_user_email');
+            localStorage.removeItem('sgp_user_pass');
+            window.location.href = 'index.html';
         }
 
         function listenSystemSettings() {
@@ -825,20 +879,150 @@
             });
         }
 
-        function saveAdminBanner() {
-            const bannerUrl = document.getElementById('admin-banner-url').value.trim();
-            if (!bannerUrl) { alert('Digite a URL da imagem do banner!'); return; }
+        // ==========================
+        // GESTÃO DE LINKS/ATALHOS
+        // ==========================
+        function listenFirebaseLinks() {
+            db.collection("atalhos").onSnapshot((snapshot) => {
+                dbLinks = [];
+                snapshot.forEach((doc) => {
+                    dbLinks.push({ id: doc.id, ...doc.data() });
+                });
 
-            db.collection("settings").doc("config").set({ bannerUrl }, { merge: true }).then(() => {
-                alert('Banner do Feed atualizado com sucesso!');
+                dbLinks.sort((a, b) => (a.order || 0) - (b.order || 0));
+
+                if (dbLinks.length === 0) {
+                    seedDefaultLinks();
+                } else {
+                    renderSidebarLinks();
+                    renderAdminLinks();
+                }
             });
         }
 
-        function removeAdminBanner() {
-            db.collection("settings").doc("config").set({ bannerUrl: "" }, { merge: true }).then(() => {
-                document.getElementById('admin-banner-url').value = "";
-                alert('Banner removido!');
+        function seedDefaultLinks() {
+            const defaults = [
+                { nome: 'PucaCRM', url: 'https://lifeapps.puca.app/puca-base-front/3.6.2/#/module/0=puca-recurring-sales-front%2Fhome', icone: 'fa-solid fa-handshake', order: 1 },
+                { nome: 'Drive LifeApps', url: 'https://drive.google.com/drive/u/0/folders/16CaqMJORaKGopd4M1AL_EhK03tSJuB0s', icone: 'fa-brands fa-google-drive', order: 2 },
+                { nome: 'LifeApps Academy v4.4 Cloud', url: '#', icone: 'fa-solid fa-graduation-cap', order: 3 }
+            ];
+            defaults.forEach(link => db.collection("atalhos").add(link));
+        }
+
+        function renderSidebarLinks() {
+            const container = document.getElementById('sidebar-dynamic-links');
+            let html = '<div class="pt-4 mt-2 border-t border-slate-800 space-y-2"><p class="px-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider sidebar-text">Sistemas & Links</p>';
+            
+            dbLinks.forEach(link => {
+                html += `
+                    <a href="${link.url}" target="_blank" rel="noopener noreferrer" class="w-full flex items-center space-x-3 px-3 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white font-medium text-xs sm:text-sm transition">
+                        <i class="${link.icone || 'fa-solid fa-link'} text-lg min-w-[24px]"></i>
+                        <span class="sidebar-text whitespace-nowrap truncate">${link.nome}</span>
+                    </a>
+                `;
             });
+            html += '</div>';
+            container.innerHTML = html;
+
+            // Garante que o estado colapsado seja respeitado se a barra estiver minimizada
+            const sidebar = document.getElementById('main-sidebar');
+            if (sidebar.classList.contains('sidebar-collapsed')) {
+                document.querySelectorAll('#sidebar-dynamic-links .sidebar-text').forEach(el => el.classList.add('hidden'));
+            }
+        }
+
+        function renderAdminLinks() {
+            const list = document.getElementById('admin-links-list');
+            list.innerHTML = '';
+            
+            if (dbLinks.length === 0) {
+                list.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-gray-400 italic">Nenhum link cadastrado.</td></tr>`;
+                return;
+            }
+
+            dbLinks.forEach(link => {
+                list.innerHTML += `
+                    <tr class="hover:bg-gray-50">
+                        <td class="p-2 text-center text-blue-600"><i class="${link.icone}"></i></td>
+                        <td class="p-2 font-bold text-gray-800">${link.nome}</td>
+                        <td class="p-2 text-blue-500 truncate max-w-[200px]"><a href="${link.url}" target="_blank">${link.url}</a></td>
+                        <td class="p-2 text-center space-x-1">
+                            <button onclick="openEditLinkModal('${link.id}', '${link.nome}', '${link.url}', '${link.icone}')" class="px-2 py-1 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded text-[10px] font-bold">Editar</button>
+                            <button onclick="deleteLinkFirebase('${link.id}')" class="px-2 py-1 bg-red-100 hover:bg-red-200 text-red-700 rounded text-[10px] font-bold">Excluir</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function addNewLinkFirebase() {
+            const nome = document.getElementById('new-link-name').value.trim();
+            const url = document.getElementById('new-link-url').value.trim();
+            const icone = document.getElementById('new-link-icon').value.trim() || 'fa-solid fa-link';
+
+            if (!nome || !url) {
+                alert('Nome e URL são obrigatórios!');
+                return;
+            }
+
+            const newOrder = dbLinks.length + 1;
+            db.collection("atalhos").add({ nome, url, icone, order: newOrder }).then(() => {
+                document.getElementById('new-link-name').value = '';
+                document.getElementById('new-link-url').value = '';
+                document.getElementById('new-link-icon').value = 'fa-solid fa-link';
+                alert('Atalho criado com sucesso!');
+            });
+        }
+
+        function deleteLinkFirebase(id) {
+            if (confirm('Deseja excluir este atalho do menu?')) {
+                db.collection("atalhos").doc(id).delete();
+            }
+        }
+
+        function openEditLinkModal(id, nome, url, icone) {
+            document.getElementById('edit-link-id').value = id;
+            document.getElementById('edit-link-name').value = nome;
+            document.getElementById('edit-link-url').value = url;
+            document.getElementById('edit-link-icon').value = icone;
+            document.getElementById('edit-link-modal').classList.remove('hidden');
+        }
+
+        function closeEditLinkModal() {
+            document.getElementById('edit-link-modal').classList.add('hidden');
+        }
+
+        function saveLinkEdit() {
+            const id = document.getElementById('edit-link-id').value;
+            const nome = document.getElementById('edit-link-name').value.trim();
+            const url = document.getElementById('edit-link-url').value.trim();
+            const icone = document.getElementById('edit-link-icon').value.trim();
+
+            if (!nome || !url) { alert('Nome e URL são obrigatórios!'); return; }
+
+            db.collection("atalhos").doc(id).update({ nome, url, icone }).then(() => {
+                alert('Atalho atualizado com sucesso!');
+                closeEditLinkModal();
+            });
+        }
+
+        // ==========================
+        // GESTÃO DO FEED SOCIAL
+        // ==========================
+        function toggleEmojiPicker() {
+            const picker = document.getElementById('emoji-picker-popover');
+            picker.classList.toggle('hidden');
+        }
+
+        function insertEmoji(emoji) {
+            const input = document.getElementById('post-input-text');
+            const start = input.selectionStart;
+            const end = input.selectionEnd;
+            const text = input.value;
+            input.value = text.substring(0, start) + emoji + text.substring(end);
+            input.focus();
+            input.selectionStart = input.selectionEnd = start + emoji.length;
+            document.getElementById('emoji-picker-popover').classList.add('hidden');
         }
 
         function listenFirebasePosts() {
@@ -1097,6 +1281,58 @@
             closeShareModal();
         }
 
+        // ==========================
+        // GESTÃO DE DADOS (ADMIN/VENDEDOR)
+        // ==========================
+        function saveAdminBanner() {
+            const bannerUrl = document.getElementById('admin-banner-url').value.trim();
+            if (!bannerUrl) { alert('Digite a URL da imagem do banner!'); return; }
+
+            db.collection("settings").doc("config").set({ bannerUrl }, { merge: true }).then(() => {
+                alert('Banner do Feed atualizado com sucesso!');
+            });
+        }
+
+        function removeAdminBanner() {
+            db.collection("settings").doc("config").set({ bannerUrl: "" }, { merge: true }).then(() => {
+                document.getElementById('admin-banner-url').value = "";
+                alert('Banner removido!');
+            });
+        }
+
+        function switchAdminSubTab(sec) {
+            document.getElementById('adm-sec-links').classList.add('hidden');
+            document.getElementById('adm-sec-produtos').classList.add('hidden');
+            document.getElementById('adm-sec-orcamentos').classList.add('hidden');
+            document.getElementById('adm-sec-usuarios').classList.add('hidden');
+            document.getElementById('adm-sec-seguranca').classList.add('hidden');
+            document.getElementById('adm-sec-banner').classList.add('hidden');
+
+            const tabIds = ['adm-subtab-links', 'adm-subtab-produtos', 'adm-subtab-orcamentos', 'adm-subtab-usuarios', 'adm-subtab-seguranca', 'adm-subtab-banner'];
+            tabIds.forEach(id => {
+                document.getElementById(id).className = "px-4 py-2 text-xs font-bold text-gray-500 hover:text-gray-800 whitespace-nowrap";
+            });
+
+            document.getElementById(`adm-sec-${sec}`).classList.remove('hidden');
+            document.getElementById(`adm-subtab-${sec}`).className = "px-4 py-2 text-xs font-bold border-b-2 border-blue-600 text-blue-600 whitespace-nowrap";
+        }
+
+        function saveAdminPassword() {
+            const newPass = document.getElementById('admin-new-pass').value;
+            const confirmPass = document.getElementById('admin-confirm-pass').value;
+
+            if (!newPass || newPass !== confirmPass) {
+                alert('Senhas inválidas ou divergentes!');
+                return;
+            }
+
+            db.collection("settings").doc("config").update({ adminPass: newPass }).then(() => {
+                alert('Senha do Administrador atualizada com sucesso!');
+                document.getElementById('admin-new-pass').value = '';
+                document.getElementById('admin-confirm-pass').value = '';
+            });
+        }
+
         function listenFirebaseUsers() {
             db.collection("usuarios").onSnapshot((snapshot) => {
                 dbUsers = [];
@@ -1161,6 +1397,65 @@
                     </tr>
                 `;
             });
+        }
+
+        function setUserStatus(userId, status) {
+            db.collection("usuarios").doc(userId).update({ status }).then(() => {
+                alert(`Status do usuário atualizado para: ${status.toUpperCase()}`);
+            });
+        }
+
+        function deleteUser(userId) {
+            if (confirm('Deseja excluir este vendedor do sistema?')) {
+                db.collection("usuarios").doc(userId).delete();
+            }
+        }
+
+        // ==========================
+        // GESTÃO DE PROPOSTAS
+        // ==========================
+        function clearProposalState() {
+            proposalProducts = [];
+            const searchInput = document.getElementById('vendedor-search-input');
+            const selectedProdId = document.getElementById('selected-product-id');
+            const qtdSetup = document.getElementById('vendedor-qtd-setup');
+            const qtdMensal = document.getElementById('vendedor-qtd-mensal');
+            const semSetup = document.getElementById('vendedor-sem-setup');
+            const bonifSetup = document.getElementById('vendedor-bonificar-setup');
+            const bonifMensal = document.getElementById('vendedor-bonificar-mensal');
+            const ocultarSetup = document.getElementById('vendedor-ocultar-setup');
+            const descSetup = document.getElementById('desc-setup');
+            const descMensal = document.getElementById('desc-mensal');
+            const extrator = document.getElementById('vendedor-extrator');
+            const parcSetup = document.getElementById('vendedor-parc-setup');
+            const dataSetup = document.getElementById('vendedor-data-setup');
+            const dataMensal = document.getElementById('vendedor-data-mensal');
+
+            if (searchInput) searchInput.value = '';
+            if (selectedProdId) selectedProdId.value = '';
+            if (qtdSetup) qtdSetup.value = 1;
+            if (qtdMensal) qtdMensal.value = 1;
+            if (semSetup) semSetup.checked = false;
+            if (bonifSetup) bonifSetup.checked = false;
+            if (bonifMensal) bonifMensal.checked = false;
+            if (ocultarSetup) ocultarSetup.checked = false;
+            if (descSetup) descSetup.value = 0;
+            if (descMensal) descMensal.value = 0;
+            if (extrator) extrator.value = 'nao';
+            if (parcSetup) parcSetup.value = '3';
+            if (dataSetup) dataSetup.value = '';
+            if (dataMensal) dataMensal.value = '';
+            
+            renderProposalItemsList();
+            calculateProposal();
+        }
+
+        function createNewProposal() {
+            if (proposalProducts.length > 0 && confirm("Deseja descartar a proposta atual e iniciar um Novo Orçamento em branco?")) {
+                clearProposalState();
+            } else if (proposalProducts.length === 0) {
+                clearProposalState();
+            }
         }
 
         function saveProposalToDatabase() {
@@ -1304,7 +1599,7 @@
             tbody.innerHTML = '';
 
             if (filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-gray-400 italic">Nenhum orçamento encontrado.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-gray-400 italic">Nenhum orçamento encontrado no banco de dados.</td></tr>`;
                 return;
             }
 
@@ -1354,6 +1649,9 @@
             }
         }
 
+        // ==========================
+        // GESTÃO DO CALCULADOR
+        // ==========================
         function renderCustomDropdownList(filterTerm = '') {
             const container = document.getElementById('custom-product-dropdown');
             const activeProducts = dbProducts.filter(p => p.active !== false);
@@ -1900,6 +2198,7 @@
         listenFirebaseProducts();
         listenFirebasePropostas();
         listenFirebasePosts();
+        listenFirebaseLinks();
     </script>
 </body>
 </html>
