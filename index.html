@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LifeSocial - A rede que conecta os Lifers v6.8</title>
+    <title>LifeSocial - A rede que conecta os Lifers v7.0</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -148,6 +148,14 @@
                         <input type="email" id="reg-email" required placeholder="nome@lifeapps.com.br" value="" class="w-full p-2.5 genz-input rounded-xl text-sm mt-1">
                     </div>
 
+                    <div>
+                        <label class="block text-[11px] font-bold text-gray-400 uppercase">Cargo / Função</label>
+                        <select id="reg-cargo" class="w-full p-2.5 genz-input rounded-xl text-sm mt-1 bg-slate-900">
+                            <option value="vendedor">Vendedor (Closer)</option>
+                            <option value="prevenda">Pré-venda (BDR / SDR)</option>
+                        </select>
+                    </div>
+
                     <div class="grid grid-cols-2 gap-2">
                         <div>
                             <label class="block text-[11px] font-bold text-gray-400 uppercase">Senha</label>
@@ -174,7 +182,7 @@
         </div>
 
         <footer class="text-center text-xs text-white/90 py-2 z-10">
-            LifeSocial v6.8 | Plataforma criada e desenvolvida por 
+            LifeSocial v7.0 | Plataforma criada e desenvolvida por 
             <a href="https://www.linkedin.com/in/rafaelrobertonascimento" target="_blank" rel="noopener noreferrer" class="text-white font-bold underline hover:text-green-300">
                 Rafael Roberto Nascimento <i class="fa-brands fa-linkedin text-xs ml-0.5"></i>
             </a>
@@ -268,7 +276,7 @@
                             <i class="fa-solid fa-code text-blue-600 mr-1.5"></i> Desenvolvido por Rafael Roberto Nascimento
                         </span>
                     </div>
-                    <span class="text-xs font-medium text-slate-400 mt-1 sm:mt-0">LifeSocial v6.8</span>
+                    <span class="text-xs font-medium text-slate-400 mt-1 sm:mt-0">LifeSocial v7.0</span>
                 </div>
 
                 <!-- 1. REDE SOCIAL / FEED -->
@@ -346,20 +354,20 @@
                     </div>
                 </section>
 
-                <!-- 2. METAS & OBJETIVOS (SÓ EXIBIDO SE O VENDEDOR TEM META CADASTRADA) -->
+                <!-- 2. METAS & OBJETIVOS (ADAPTÁVEL: VENDEDOR OU PRÉ-VENDA) -->
                 <section id="main-sec-metas" class="hidden space-y-6">
                     <div class="flex flex-col sm:flex-row justify-between sm:items-center bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm gap-4">
                         <div>
-                            <h2 class="text-xl font-extrabold text-slate-900 flex items-center">
+                            <h2 class="text-xl font-extrabold text-slate-900 flex items-center" id="user-kpi-title-header">
                                 <i class="fa-solid fa-chart-line text-blue-600 mr-2.5"></i> Metas & Objetivos Comerciais
                             </h2>
-                            <p class="text-xs text-slate-500 mt-1">Acompanhe seus KPIs de vendas, atingimento mensal e seu posicionamento no ranking.</p>
+                            <p class="text-xs text-slate-500 mt-1" id="user-kpi-subtitle-header">Acompanhe seus KPIs de vendas, atingimento mensal e seu posicionamento no ranking.</p>
                         </div>
                         
                         <div class="bg-gradient-to-r from-amber-500 to-amber-600 text-white px-5 py-3 rounded-2xl flex items-center space-x-3 shadow-md">
                             <i class="fa-solid fa-trophy text-2xl text-amber-100"></i>
                             <div>
-                                <span class="text-[10px] font-extrabold uppercase tracking-wider block opacity-90">Sua Posição no Ranking</span>
+                                <span class="text-[10px] font-extrabold uppercase tracking-wider block opacity-90" id="user-kpi-rank-label">Sua Posição no Ranking</span>
                                 <strong id="user-kpi-ranking" class="text-lg font-black"># - Colocação</strong>
                             </div>
                         </div>
@@ -367,30 +375,30 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm space-y-2">
-                            <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Meta Anual Acumulada</span>
+                            <span class="text-xs font-bold text-slate-500 uppercase tracking-wider" id="user-card1-title">Meta Anual Acumulada</span>
                             <h3 id="user-kpi-meta-ano" class="text-2xl font-black text-slate-800">R$ 0,00</h3>
-                            <p class="text-[10px] text-slate-400">Soma das metas cadastradas pela gestão para o ano</p>
+                            <p class="text-[10px] text-slate-400" id="user-card1-sub">Soma das metas cadastradas pela gestão para o ano</p>
                         </div>
 
                         <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm space-y-2">
-                            <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Vendas Realizadas (Ano)</span>
+                            <span class="text-xs font-bold text-slate-500 uppercase tracking-wider" id="user-card2-title">Vendas Realizadas (Ano)</span>
                             <h3 id="user-kpi-venda-ano" class="text-2xl font-black text-blue-600">R$ 0,00</h3>
-                            <p class="text-[10px] text-slate-400">Total de faturamento atingido no ano</p>
+                            <p class="text-[10px] text-slate-400" id="user-card2-sub">Total de faturamento atingido no ano</p>
                         </div>
 
                         <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm space-y-2">
-                            <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Falta para Atingir / Superávit</span>
+                            <span class="text-xs font-bold text-slate-500 uppercase tracking-wider" id="user-card3-title">Falta para Atingir / Superávit</span>
                             <h3 id="user-kpi-falta-ano" class="text-2xl font-black text-amber-600">R$ 0,00</h3>
                             <p id="user-kpi-percent-ano" class="text-[10px] text-emerald-600 font-bold">0% Atingido</p>
                         </div>
                     </div>
 
                     <div class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-4">
-                        <h3 class="text-sm font-extrabold text-slate-900 uppercase tracking-wider">Acompanhamento Mês a Mês (Meta x Atingimento)</h3>
+                        <h3 class="text-sm font-extrabold text-slate-900 uppercase tracking-wider" id="user-kpi-table-title">Acompanhamento Mês a Mês (Meta x Atingimento)</h3>
                         <div class="overflow-x-auto">
                             <table class="w-full text-left text-xs border-collapse">
                                 <thead>
-                                    <tr class="bg-slate-100 text-slate-700 uppercase font-bold border-b border-slate-200">
+                                    <tr class="bg-slate-100 text-slate-700 uppercase font-bold border-b border-slate-200" id="user-kpi-table-head">
                                         <th class="p-3">Mês/Ano</th>
                                         <th class="p-3 text-right">Meta (R$)</th>
                                         <th class="p-3 text-right">Realizado (R$)</th>
@@ -405,7 +413,7 @@
                         </div>
                     </div>
 
-                    <div class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-4">
+                    <div class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-4" id="user-kpi-products-sec">
                         <h3 class="text-sm font-extrabold text-slate-900 uppercase tracking-wider">Desempenho por Produto Vendido</h3>
                         <div id="user-kpi-products-container" class="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <p class="text-xs text-slate-400 italic col-span-3">Nenhum detalhamento por produto registrado.</p>
@@ -673,7 +681,7 @@
                         <div class="flex justify-between items-center border-b pb-4">
                             <div>
                                 <h2 class="text-xl font-extrabold text-slate-900">Painel Administrativo - Gestão Geral</h2>
-                                <p class="text-xs text-slate-500">Gerencie usuários, senhas, metas de vendas (KPIs), produtos, orçamentos e segurança do LifeSocial.</p>
+                                <p class="text-xs text-slate-500">Gerencie usuários, senhas, metas de vendas e pré-vendas (KPIs), produtos, orçamentos e segurança.</p>
                             </div>
                             <span class="bg-amber-100 text-amber-800 text-xs px-3 py-1 rounded-full font-bold">Admin Autenticado</span>
                         </div>
@@ -705,23 +713,29 @@
                             </button>
                         </div>
 
-                        <!-- SUB-ABA ADM KPIS COM SELEÇÃO MÚLTIPLA E DUPLICAÇÃO DE MÊS -->
+                        <!-- SUB-ABA ADM KPIS REESTRUTURADA PARA SUPORTAR VENDEDORES (R$) E PRÉ-VENDAS (REUNIÕES) -->
                         <div id="adm-sec-kpis" class="space-y-8">
                             
-                            <!-- 1º ETAPA: LANÇAMENTO / EDIÇÃO DE METAS MÊS A MÊS COM SELEÇÃO MÚLTIPLA -->
+                            <!-- SELETOR DE VISÃO (VENDEDORES X PRÉ-VENDAS) -->
+                            <div class="flex rounded-2xl bg-slate-100 p-1.5 text-xs font-bold max-w-md">
+                                <button onclick="switchAdminKpiView('vendedor')" id="admin-kpi-view-vendedor" class="flex-1 py-2 rounded-xl bg-blue-600 text-white shadow transition">Visão Vendedores (R$)</button>
+                                <button onclick="switchAdminKpiView('prevenda')" id="admin-kpi-view-prevenda" class="flex-1 py-2 rounded-xl text-slate-600 hover:text-slate-900 transition">Visão Pré-Vendas (Reuniões)</button>
+                            </div>
+
+                            <!-- 1º ETAPA: LANÇAMENTO / EDIÇÃO DE METAS MÊS A MÊS -->
                             <div class="bg-slate-50/80 p-5 rounded-2xl border border-slate-200 space-y-4">
                                 <div class="flex items-center justify-between border-b pb-2">
                                     <h3 class="text-sm font-extrabold text-slate-800 flex items-center">
                                         <span class="w-6 h-6 rounded-full bg-blue-600 text-white text-xs font-bold flex items-center justify-center mr-2">1</span>
-                                        Lançamento de Meta Mês a Mês (Seleção Múltipla)
+                                        <span id="admin-kpi-form1-title">Lançamento de Meta de Vendas (R$)</span>
                                     </h3>
-                                    <span class="text-[11px] text-slate-400 font-medium">Defina o objetivo financeiro de um ou mais vendedores</span>
+                                    <span class="text-[11px] text-slate-400 font-medium">Defina os objetivos de um ou mais colaboradores</span>
                                 </div>
                                 
                                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                                     <div class="sm:col-span-1">
                                         <div class="flex justify-between items-center mb-1">
-                                            <label class="text-xs text-slate-600 font-bold">Selecione o(s) Vendedor(es)</label>
+                                            <label class="text-xs text-slate-600 font-bold">Selecione o(s) Colaborador(es)</label>
                                             <label class="text-[10px] text-blue-600 font-bold cursor-pointer hover:underline flex items-center">
                                                 <input type="checkbox" onchange="toggleSelectAllKpiUsers(this)" class="mr-1"> Marcar Todos
                                             </label>
@@ -734,8 +748,8 @@
                                         <input type="month" id="admin-kpi-meta-mes" class="w-full p-2.5 border rounded-xl text-xs bg-white mt-1 font-medium">
                                     </div>
                                     <div>
-                                        <label class="text-xs text-slate-600 font-bold">Valor da Meta (R$)</label>
-                                        <input type="number" id="admin-kpi-meta-valor" placeholder="0.00" class="w-full p-2.5 border rounded-xl text-xs bg-white mt-1 font-medium">
+                                        <label class="text-xs text-slate-600 font-bold" id="admin-kpi-meta-label">Valor da Meta (R$)</label>
+                                        <input type="number" id="admin-kpi-meta-valor" placeholder="0" class="w-full p-2.5 border rounded-xl text-xs bg-white mt-1 font-medium">
                                     </div>
                                 </div>
 
@@ -750,12 +764,8 @@
                                     <div class="flex justify-between items-center mb-2">
                                         <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider">Metas Cadastradas</h4>
                                         <div class="flex space-x-2">
-                                            <button onclick="deleteSelectedMetas()" class="px-3 py-1 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 text-xs font-semibold rounded-lg transition">
-                                                Excluir Selecionadas
-                                            </button>
-                                            <button onclick="deleteAllMetas()" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white text-xs font-semibold rounded-lg transition">
-                                                Excluir Todas
-                                            </button>
+                                            <button onclick="deleteSelectedMetas()" class="px-3 py-1 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 text-xs font-semibold rounded-lg transition">Excluir Selecionadas</button>
+                                            <button onclick="deleteAllMetas()" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white text-xs font-semibold rounded-lg transition">Excluir Todas</button>
                                         </div>
                                     </div>
 
@@ -764,9 +774,9 @@
                                             <thead>
                                                 <tr class="bg-slate-100 text-slate-700 font-bold border-b border-slate-200">
                                                     <th class="p-2.5 w-8 text-center"><input type="checkbox" onchange="toggleSelectAllMetaRows(this)"></th>
-                                                    <th class="p-2.5">Vendedor</th>
+                                                    <th class="p-2.5">Colaborador</th>
                                                     <th class="p-2.5">Mês/Ano</th>
-                                                    <th class="p-2.5 text-right">Valor da Meta (R$)</th>
+                                                    <th class="p-2.5 text-right" id="admin-meta-th-val">Meta (R$)</th>
                                                     <th class="p-2.5 text-center">Ações</th>
                                                 </tr>
                                             </thead>
@@ -778,19 +788,19 @@
                                 </div>
                             </div>
 
-                            <!-- 2º ETAPA: LANÇAMENTO / EDIÇÃO DE VENDAS REALIZADAS MÊS A MÊS -->
+                            <!-- 2º ETAPA: LANÇAMENTO / EDIÇÃO DE REALIZADOS MÊS A MÊS -->
                             <div class="bg-slate-50/80 p-5 rounded-2xl border border-slate-200 space-y-4">
                                 <div class="flex items-center justify-between border-b pb-2">
                                     <h3 class="text-sm font-extrabold text-slate-800 flex items-center">
                                         <span class="w-6 h-6 rounded-full bg-emerald-600 text-white text-xs font-bold flex items-center justify-center mr-2">2</span>
-                                        Lançamento de Venda Realizada Mês a Mês
+                                        <span id="admin-kpi-form2-title">Lançamento de Venda Realizada (R$)</span>
                                     </h3>
-                                    <span class="text-[11px] text-slate-400 font-medium">Registre o atingimento real faturado</span>
+                                    <span class="text-[11px] text-slate-400 font-medium">Registre o atingimento real da equipe</span>
                                 </div>
                                 
                                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                                     <div>
-                                        <label class="text-xs text-slate-600 font-bold">Vendedor</label>
+                                        <label class="text-xs text-slate-600 font-bold">Colaborador</label>
                                         <select id="admin-kpi-venda-user" class="w-full p-2.5 border rounded-xl text-xs bg-white mt-1 font-medium"></select>
                                     </div>
                                     <div>
@@ -798,28 +808,24 @@
                                         <input type="month" id="admin-kpi-venda-mes" class="w-full p-2.5 border rounded-xl text-xs bg-white mt-1 font-medium">
                                     </div>
                                     <div>
-                                        <label class="text-xs text-slate-600 font-bold">Venda Realizada (R$)</label>
-                                        <input type="number" id="admin-kpi-venda-valor" placeholder="0.00" class="w-full p-2.5 border rounded-xl text-xs bg-white mt-1 font-medium">
+                                        <label class="text-xs text-slate-600 font-bold" id="admin-kpi-venda-label">Venda Realizada (R$)</label>
+                                        <input type="number" id="admin-kpi-venda-valor" placeholder="0" class="w-full p-2.5 border rounded-xl text-xs bg-white mt-1 font-medium">
                                     </div>
                                 </div>
 
                                 <div class="flex justify-end">
                                     <button onclick="saveAdminVendaEntry()" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold rounded-xl text-xs shadow-md transition">
-                                        <i class="fa-solid fa-chart-line mr-1.5"></i> Salvar / Atualizar Venda
+                                        <i class="fa-solid fa-chart-line mr-1.5"></i> Salvar / Atualizar Realizado
                                     </button>
                                 </div>
 
-                                <!-- TABELA DE VENDAS REALIZADAS CADASTRADAS -->
+                                <!-- TABELA DE VENDAS / REUNIÕES REALIZADAS -->
                                 <div class="pt-2">
                                     <div class="flex justify-between items-center mb-2">
-                                        <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider">Vendas Realizadas Cadastradas</h4>
+                                        <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider">Atingimentos Cadastrados</h4>
                                         <div class="flex space-x-2">
-                                            <button onclick="deleteSelectedVendas()" class="px-3 py-1 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 text-xs font-semibold rounded-lg transition">
-                                                Excluir Selecionadas
-                                            </button>
-                                            <button onclick="deleteAllVendas()" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white text-xs font-semibold rounded-lg transition">
-                                                Excluir Todas
-                                            </button>
+                                            <button onclick="deleteSelectedVendas()" class="px-3 py-1 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 text-xs font-semibold rounded-lg transition">Excluir Selecionadas</button>
+                                            <button onclick="deleteAllVendas()" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white text-xs font-semibold rounded-lg transition">Excluir Todas</button>
                                         </div>
                                     </div>
 
@@ -828,30 +834,30 @@
                                             <thead>
                                                 <tr class="bg-slate-100 text-slate-700 font-bold border-b border-slate-200">
                                                     <th class="p-2.5 w-8 text-center"><input type="checkbox" onchange="toggleSelectAllVendaRows(this)"></th>
-                                                    <th class="p-2.5">Vendedor</th>
+                                                    <th class="p-2.5">Colaborador</th>
                                                     <th class="p-2.5">Mês/Ano</th>
-                                                    <th class="p-2.5 text-right">Venda Realizada (R$)</th>
+                                                    <th class="p-2.5 text-right" id="admin-venda-th-val">Venda Realizada (R$)</th>
                                                     <th class="p-2.5 text-center">Ações</th>
                                                 </tr>
                                             </thead>
                                             <tbody id="admin-vendas-tbody" class="divide-y divide-slate-100 font-medium">
-                                                <tr><td colspan="5" class="p-3 text-center text-slate-400 italic">Nenhuma venda realizada lançada ainda.</td></tr>
+                                                <tr><td colspan="5" class="p-3 text-center text-slate-400 italic">Nenhum faturamento/reunião lançado ainda.</td></tr>
                                             </tbody>
                                         </table>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- VISÃO GERAL DE VENDEDORES QUE POSSUEM METAS CADASTRADAS (DASHBOARD ADMIN) -->
+                            <!-- DASHBOARD DE VISÃO GERAL DO ADMIN -->
                             <div class="space-y-3">
-                                <h3 class="text-sm font-extrabold text-slate-900 uppercase tracking-wider">Dashboard do Admin (Vendedores com Meta Cadastrada)</h3>
+                                <h3 class="text-sm font-extrabold text-slate-900 uppercase tracking-wider" id="admin-dashboard-consolidated-title">Dashboard do Admin (Colaboradores com Meta Cadastrada)</h3>
                                 <div class="overflow-x-auto bg-slate-50/80 border border-slate-200 rounded-2xl p-3">
                                     <table class="w-full text-left text-xs border-collapse">
                                         <thead>
-                                            <tr class="bg-slate-200/80 text-slate-700 uppercase font-bold">
-                                                <th class="p-2.5">Posição / Vendedor</th>
+                                            <tr class="bg-slate-200/80 text-slate-700 uppercase font-bold" id="admin-consolidated-th">
+                                                <th class="p-2.5">Posição / Colaborador</th>
                                                 <th class="p-2.5 text-right">Meta Anual Total</th>
-                                                <th class="p-2.5 text-right">Vendas Realizadas (Ano)</th>
+                                                <th class="p-2.5 text-right">Realizado (Ano)</th>
                                                 <th class="p-2.5 text-right">Falta para Atingir / Superávit</th>
                                                 <th class="p-2.5 text-center">Atingimento %</th>
                                             </tr>
@@ -867,7 +873,7 @@
                         <div id="adm-sec-usuarios" class="space-y-6 hidden">
                             <div class="bg-slate-50/80 p-4 rounded-2xl border border-slate-200 space-y-3">
                                 <h3 class="text-sm font-bold text-slate-800">Cadastrar Novo Usuário no Sistema</h3>
-                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
                                     <div>
                                         <label class="text-xs text-slate-600 font-medium">Nome Completo</label>
                                         <input type="text" id="admin-new-user-nome" placeholder="Ex: Guilherme Silva" class="w-full p-2 border rounded-xl text-sm mt-1">
@@ -875,6 +881,13 @@
                                     <div>
                                         <label class="text-xs text-slate-600 font-medium">E-mail Corporativo</label>
                                         <input type="email" id="admin-new-user-email" placeholder="nome@lifeapps.com.br" class="w-full p-2 border rounded-xl text-sm mt-1">
+                                    </div>
+                                    <div>
+                                        <label class="text-xs text-slate-600 font-medium">Cargo / Função</label>
+                                        <select id="admin-new-user-cargo" class="w-full p-2 border rounded-xl text-sm mt-1 bg-white font-medium">
+                                            <option value="vendedor">Vendedor (Closer)</option>
+                                            <option value="prevenda">Pré-venda (BDR / SDR)</option>
+                                        </select>
                                     </div>
                                     <div>
                                         <label class="text-xs text-slate-600 font-medium">Senha</label>
@@ -896,6 +909,7 @@
                                             <tr class="bg-slate-200/80 text-slate-700 uppercase font-bold">
                                                 <th class="p-2.5">Nome</th>
                                                 <th class="p-2.5">E-mail Corporativo</th>
+                                                <th class="p-2.5">Cargo / Função</th>
                                                 <th class="p-2.5 text-center">Status</th>
                                                 <th class="p-2.5 text-center">Ações</th>
                                             </tr>
@@ -1045,12 +1059,8 @@
                                 <div class="flex justify-between items-center">
                                     <h4 class="text-xs font-bold text-slate-500 uppercase">Produtos Cadastrados (Arraste para mover)</h4>
                                     <div class="flex space-x-2">
-                                        <button onclick="deleteSelectedProducts()" class="px-3 py-1 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 text-xs font-semibold rounded-lg transition">
-                                            Excluir Selecionados
-                                        </button>
-                                        <button onclick="deleteAllProducts()" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white text-xs font-semibold rounded-lg transition">
-                                            Excluir Todos
-                                        </button>
+                                        <button onclick="deleteSelectedProducts()" class="px-3 py-1 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 text-xs font-semibold rounded-lg transition">Excluir Selecionados</button>
+                                        <button onclick="deleteAllProducts()" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white text-xs font-semibold rounded-lg transition">Excluir Todos</button>
                                     </div>
                                 </div>
 
@@ -1062,12 +1072,8 @@
                             <div class="flex justify-between items-center">
                                 <h3 class="text-md font-bold text-slate-800">Orçamentos Criados pelos Usuários</h3>
                                 <div class="flex space-x-2">
-                                    <button onclick="deleteSelectedPropostasAdmin()" class="px-3 py-1 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 text-xs font-semibold rounded-lg transition">
-                                        Excluir Selecionados
-                                    </button>
-                                    <button onclick="deleteAllPropostasAdmin()" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white text-xs font-semibold rounded-lg transition">
-                                        Excluir Todos
-                                    </button>
+                                    <button onclick="deleteSelectedPropostasAdmin()" class="px-3 py-1 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 text-xs font-semibold rounded-lg transition">Excluir Selecionados</button>
+                                    <button onclick="deleteAllPropostasAdmin()" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white text-xs font-semibold rounded-lg transition">Excluir Todos</button>
                                 </div>
                             </div>
 
@@ -1129,7 +1135,7 @@
 
         <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-500 mt-auto z-30">
             <div class="max-w-7xl mx-auto px-4">
-                LifeSocial v6.4 | Plataforma desenvolvida por 
+                LifeSocial v7.0 | Plataforma desenvolvida por 
                 <a href="https://www.linkedin.com/in/rafaelrobertonascimento" target="_blank" rel="noopener noreferrer" class="text-blue-600 font-bold hover:underline">
                     Rafael Roberto Nascimento <i class="fa-brands fa-linkedin text-xs ml-0.5"></i>
                 </a>
@@ -1287,6 +1293,7 @@
         let dbCustomCards = [];
         let dbKpisMetas = [];
         let dbKpisVendas = [];
+        let currentAdminKpiView = 'vendedor'; // 'vendedor' ou 'prevenda'
         let proposalProducts = [];
         let draggedItemIndex = null;
         let activeSharePostId = null;
@@ -1323,7 +1330,7 @@
 
             const roleBadge = document.getElementById('user-role-badge');
             if (roleBadge) {
-                roleBadge.innerText = currentUser.role === 'admin' ? 'Administrador' : 'Lifer';
+                roleBadge.innerText = currentUser.role === 'admin' ? 'Administrador' : (currentUser.cargo === 'prevenda' ? 'Pré-venda (BDR/SDR)' : 'Vendedor');
                 roleBadge.className = currentUser.role === 'admin' ? 'text-[9px] text-amber-400 font-bold uppercase tracking-wider block' : 'text-[9px] text-emerald-400 font-semibold uppercase tracking-wider block';
             }
 
@@ -1335,8 +1342,7 @@
             const metasBtn = document.getElementById('nav-item-metas');
             const propostasBtn = document.getElementById('nav-item-propostas');
 
-            // REGRAS ADAPTADAS V6.4:
-            // PARA ADMIN: OCULTA O MENU METAS E EXIBE PAINEL ADM
+            // REGRA V7.0: OCULTA METAS DO ADMIN, EXIBE APENAS PARA VENDEDOR/PRÉ-VENDA QUE POSSUI META
             if (currentUser.role === 'admin') {
                 adminBtn.classList.remove('hidden');
                 metasBtn.classList.add('hidden');
@@ -1347,7 +1353,6 @@
                 propostasBtn.classList.remove('hidden');
                 document.getElementById('admin-pin-notice-option').classList.add('hidden');
                 
-                // REGRA V6.8: O MENU METAS SÓ É EXIBIDO SE O USUÁRIO TIVER AO MENOS UMA META CADASTRADA
                 const userHasMeta = dbKpisMetas.some(m => m.userNome && currentUser.nome && m.userNome.toLowerCase() === currentUser.nome.toLowerCase());
                 if (userHasMeta) {
                     metasBtn.classList.remove('hidden');
@@ -1385,7 +1390,6 @@
 
             document.getElementById('nav-item-social').className = "w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white font-medium text-xs sm:text-sm transition";
             
-            // REGRA V6.8: CHECA SE O USUÁRIO PODE VER O BOTÃO METAS
             const userHasMeta = currentUser && currentUser.role !== 'admin' && dbKpisMetas.some(m => m.userNome && currentUser.nome && m.userNome.toLowerCase() === currentUser.nome.toLowerCase());
             document.getElementById('nav-item-metas').className = "w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white font-medium text-xs sm:text-sm transition " + (userHasMeta ? '' : 'hidden');
             
@@ -1507,7 +1511,7 @@
             let user = dbUsers.find(u => u.email === email && u.senha === pass);
 
             if (!user && email === 'vendedor@lifeapps.com.br' && pass === '123') {
-                user = { id: 'vendedor_padrao', nome: "Usuário Padrão", email: "vendedor@lifeapps.com.br", status: "aprovado", role: "usuario" };
+                user = { id: 'vendedor_padrao', nome: "Usuário Padrão", email: "vendedor@lifeapps.com.br", cargo: "vendedor", status: "aprovado", role: "usuario" };
             }
 
             if (!user) {
@@ -1554,6 +1558,7 @@
             e.preventDefault();
             const nome = document.getElementById('reg-nome').value.trim();
             const email = document.getElementById('reg-email').value.trim().toLowerCase();
+            const cargo = document.getElementById('reg-cargo').value;
             const senha = document.getElementById('reg-senha').value;
             const confirm = document.getElementById('reg-senha-confirm').value;
 
@@ -1576,6 +1581,7 @@
             db.collection("usuarios").add({
                 nome,
                 email,
+                cargo,
                 senha,
                 status: 'pendente',
                 dataCriacao: new Date().toISOString()
@@ -1881,7 +1887,7 @@
             closeShareModal();
         }
 
-        // MÓDULO REESTRUTURADO: METAS & KPIS
+        // MÓDULO METAS & KPIS V7.0 (DUAL: VENDEDORES X PRÉ-VENDAS)
         function listenFirebaseKpis() {
             db.collection("kpis_metas").onSnapshot((snapshot) => {
                 dbKpisMetas = [];
@@ -1905,6 +1911,46 @@
             });
         }
 
+        function switchAdminKpiView(type) {
+            currentAdminKpiView = type;
+            const btnVend = document.getElementById('admin-kpi-view-vendedor');
+            const btnPre = document.getElementById('admin-kpi-view-prevenda');
+
+            if (type === 'vendedor') {
+                btnVend.className = "flex-1 py-2 rounded-xl bg-blue-600 text-white shadow transition";
+                btnPre.className = "flex-1 py-2 rounded-xl text-slate-600 hover:text-slate-900 transition";
+
+                document.getElementById('admin-kpi-form1-title').innerText = "Lançamento de Meta de Vendas (R$)";
+                document.getElementById('admin-kpi-meta-label').innerText = "Valor da Meta (R$)";
+                document.getElementById('admin-meta-th-val').innerText = "Meta (R$)";
+
+                document.getElementById('admin-kpi-form2-title').innerText = "Lançamento de Venda Realizada (R$)";
+                document.getElementById('admin-kpi-venda-label').innerText = "Venda Realizada (R$)";
+                document.getElementById('admin-venda-th-val').innerText = "Venda Realizada (R$)";
+
+                document.getElementById('admin-dashboard-consolidated-title').innerText = "Dashboard Vendedores (Metas em R$)";
+            } else {
+                btnVend.className = "flex-1 py-2 rounded-xl text-slate-600 hover:text-slate-900 transition";
+                btnPre.className = "flex-1 py-2 rounded-xl bg-blue-600 text-white shadow transition";
+
+                document.getElementById('admin-kpi-form1-title').innerText = "Lançamento de Meta de Reuniões (Qtd)";
+                document.getElementById('admin-kpi-meta-label').innerText = "Meta de Reuniões (Qtd)";
+                document.getElementById('admin-meta-th-val').innerText = "Meta (Reuniões)";
+
+                document.getElementById('admin-kpi-form2-title').innerText = "Lançamento de Reuniões Realizadas (Qtd)";
+                document.getElementById('admin-kpi-venda-label').innerText = "Reuniões Realizadas (Qtd)";
+                document.getElementById('admin-venda-th-val').innerText = "Realizado (Reuniões)";
+
+                document.getElementById('admin-dashboard-consolidated-title').innerText = "Dashboard Pré-Vendas (Reuniões Agendadas)";
+            }
+
+            populateAdminKpiUserCheckboxes();
+            populateAdminKpiVendaUserSelect();
+            renderAdminMetasTable();
+            renderAdminVendasTable();
+            renderAdminConsolidatedKpis();
+        }
+
         function toggleSelectAllKpiUsers(master) {
             const cbs = document.querySelectorAll('.kpi-user-checkbox');
             cbs.forEach(c => c.checked = master.checked);
@@ -1917,7 +1963,7 @@
             const valorMeta = parseFloat(document.getElementById('admin-kpi-meta-valor').value || 0);
 
             if (checkedUsers.length === 0 || !mesAno) {
-                alert('Selecione ao menos um Vendedor e o Mês/Ano para lançar a Meta!');
+                alert('Selecione ao menos um Colaborador e o Mês/Ano para lançar a Meta!');
                 return;
             }
 
@@ -1929,19 +1975,20 @@
                 batch.set(ref, {
                     userNome,
                     mesAno,
+                    tipo: currentAdminKpiView,
                     meta: valorMeta,
                     dataAtualizacao: new Date().toISOString()
                 });
             });
 
             batch.commit().then(() => {
-                alert(`Meta de ${formatBRLMeta(valorMeta)} gravada com sucesso para ${checkedUsers.length} vendedor(es)!`);
+                alert(`Meta gravada com sucesso para ${checkedUsers.length} colaborador(es)!`);
                 document.getElementById('admin-kpi-meta-valor').value = '';
             });
         }
 
         function editMetaEntry(id, userNome, mesAno, valorAtual) {
-            const novoValor = prompt(`Digite o novo valor de META para ${userNome} (${mesAno}):`, valorAtual);
+            const novoValor = prompt(`Digite a nova META para ${userNome} (${mesAno}):`, valorAtual);
             if (novoValor !== null && !isNaN(parseFloat(novoValor))) {
                 db.collection("kpis_metas").doc(id).update({
                     meta: parseFloat(novoValor),
@@ -1950,7 +1997,7 @@
             }
         }
 
-        function duplicateMetaNextMonth(userNome, mesAnoAtual, valorMeta) {
+        function duplicateMetaNextMonth(userNome, mesAnoAtual, valorMeta, tipo) {
             if (!mesAnoAtual) return;
             const [ano, mes] = mesAnoAtual.split('-').map(Number);
             let proxAno = ano;
@@ -1965,6 +2012,7 @@
             db.collection("kpis_metas").doc(newDocId).set({
                 userNome,
                 mesAno: proxMesStr,
+                tipo: tipo || 'vendedor',
                 meta: valorMeta,
                 dataAtualizacao: new Date().toISOString()
             }).then(() => {
@@ -1995,8 +2043,9 @@
         }
 
         function deleteAllMetas() {
-            if (confirm('ATENÇÃO: Deseja realmente excluir TODAS as metas lançadas?')) {
-                dbKpisMetas.forEach(m => db.collection("kpis_metas").doc(m.id).delete());
+            if (confirm('ATENÇÃO: Deseja realmente excluir TODAS as metas lançadas para esta visão?')) {
+                const list = dbKpisMetas.filter(m => (m.tipo || 'vendedor') === currentAdminKpiView);
+                list.forEach(m => db.collection("kpis_metas").doc(m.id).delete());
             }
         }
 
@@ -2005,20 +2054,25 @@
             if (!tbody) return;
             tbody.innerHTML = '';
 
-            if (dbKpisMetas.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="p-3 text-center text-slate-400 italic">Nenhuma meta lançada ainda.</td></tr>`;
+            const filteredMetas = dbKpisMetas.filter(m => (m.tipo || 'vendedor') === currentAdminKpiView);
+
+            if (filteredMetas.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="p-3 text-center text-slate-400 italic">Nenhuma meta lançada nesta visão ainda.</td></tr>`;
                 return;
             }
 
-            dbKpisMetas.forEach(m => {
+            filteredMetas.forEach(m => {
+                const isPre = currentAdminKpiView === 'prevenda';
+                const formattedVal = isPre ? `${m.meta} Reuniões` : formatBRLMeta(m.meta);
+
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-50">
                         <td class="p-2.5 text-center"><input type="checkbox" value="${m.id}" class="admin-meta-row-cb w-4 h-4 text-blue-600 rounded"></td>
                         <td class="p-2.5 font-bold text-slate-800">${m.userNome}</td>
                         <td class="p-2.5 text-slate-600">${m.mesAno}</td>
-                        <td class="p-2.5 text-right font-bold text-slate-800">${formatBRLMeta(m.meta)}</td>
+                        <td class="p-2.5 text-right font-bold text-slate-800">${formattedVal}</td>
                         <td class="p-2.5 text-center space-x-1">
-                            <button onclick="duplicateMetaNextMonth('${m.userNome}', '${m.mesAno}', ${m.meta})" class="px-2 py-1 bg-emerald-100 hover:bg-emerald-200 text-emerald-800 font-bold rounded text-[10px]">Duplicar p/ Próx. Mês</button>
+                            <button onclick="duplicateMetaNextMonth('${m.userNome}', '${m.mesAno}', ${m.meta}, '${m.tipo}')" class="px-2 py-1 bg-emerald-100 hover:bg-emerald-200 text-emerald-800 font-bold rounded text-[10px]">Duplicar p/ Próx. Mês</button>
                             <button onclick="editMetaEntry('${m.id}', '${m.userNome}', '${m.mesAno}', ${m.meta})" class="px-2 py-1 bg-blue-100 hover:bg-blue-200 text-blue-700 font-bold rounded text-[10px]">Editar</button>
                             <button onclick="deleteMetaEntry('${m.id}')" class="px-2 py-1 bg-red-100 hover:bg-red-200 text-red-700 font-bold rounded text-[10px]">Excluir</button>
                         </td>
@@ -2027,7 +2081,7 @@
             });
         }
 
-        // 2º ETAPA: LANÇAR / EDITAR VENDAS REALIZADAS
+        // 2º ETAPA: LANÇAR / EDITAR REALIZADOS
         function saveAdminVendaEntry() {
             const userSelect = document.getElementById('admin-kpi-venda-user');
             const userNome = userSelect.value;
@@ -2035,7 +2089,7 @@
             const valorVenda = parseFloat(document.getElementById('admin-kpi-venda-valor').value || 0);
 
             if (!userNome || !mesAno) {
-                alert('Selecione um Vendedor e o Mês/Ano para lançar a Venda Realizada!');
+                alert('Selecione um Colaborador e o Mês/Ano para lançar o Atingimento!');
                 return;
             }
 
@@ -2044,16 +2098,17 @@
             db.collection("kpis_vendas").doc(docId).set({
                 userNome,
                 mesAno,
+                tipo: currentAdminKpiView,
                 realizado: valorVenda,
                 dataAtualizacao: new Date().toISOString()
             }).then(() => {
-                alert(`Venda realizada de ${userNome} para ${mesAno} salva com sucesso!`);
+                alert(`Lançamento realizado para ${userNome} em ${mesAno} salvo com sucesso!`);
                 document.getElementById('admin-kpi-venda-valor').value = '';
             });
         }
 
         function editVendaEntry(id, userNome, mesAno, valorAtual) {
-            const novoValor = prompt(`Digite o novo valor de VENDA REALIZADA para ${userNome} (${mesAno}):`, valorAtual);
+            const novoValor = prompt(`Digite o novo valor REALIZADO para ${userNome} (${mesAno}):`, valorAtual);
             if (novoValor !== null && !isNaN(parseFloat(novoValor))) {
                 db.collection("kpis_vendas").doc(id).update({
                     realizado: parseFloat(novoValor),
@@ -2063,7 +2118,7 @@
         }
 
         function deleteVendaEntry(id) {
-            if (confirm('Deseja excluir este lançamento de venda realizada?')) {
+            if (confirm('Deseja excluir este lançamento de faturamento/reunião?')) {
                 db.collection("kpis_vendas").doc(id).delete();
             }
         }
@@ -2076,17 +2131,18 @@
         function deleteSelectedVendas() {
             const selected = Array.from(document.querySelectorAll('.admin-venda-row-cb:checked')).map(c => c.value);
             if (selected.length === 0) {
-                alert('Selecione ao menos uma venda realizada para excluir!');
+                alert('Selecione ao menos um item para excluir!');
                 return;
             }
-            if (confirm(`Deseja excluir as ${selected.length} vendas selecionadas?`)) {
+            if (confirm(`Deseja excluir os ${selected.length} lançamentos selecionados?`)) {
                 selected.forEach(id => db.collection("kpis_vendas").doc(id).delete());
             }
         }
 
         function deleteAllVendas() {
-            if (confirm('ATENÇÃO: Deseja realmente excluir TODAS as vendas realizadas lançadas?')) {
-                dbKpisVendas.forEach(v => db.collection("kpis_vendas").doc(v.id).delete());
+            if (confirm('ATENÇÃO: Deseja realmente excluir TODOS os lançamentos nesta visão?')) {
+                const list = dbKpisVendas.filter(v => (v.tipo || 'vendedor') === currentAdminKpiView);
+                list.forEach(v => db.collection("kpis_vendas").doc(v.id).delete());
             }
         }
 
@@ -2095,18 +2151,23 @@
             if (!tbody) return;
             tbody.innerHTML = '';
 
-            if (dbKpisVendas.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="p-3 text-center text-slate-400 italic">Nenhuma venda realizada lançada ainda.</td></tr>`;
+            const filteredVendas = dbKpisVendas.filter(v => (v.tipo || 'vendedor') === currentAdminKpiView);
+
+            if (filteredVendas.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="p-3 text-center text-slate-400 italic">Nenhum faturamento/reunião lançado nesta visão ainda.</td></tr>`;
                 return;
             }
 
-            dbKpisVendas.forEach(v => {
+            filteredVendas.forEach(v => {
+                const isPre = currentAdminKpiView === 'prevenda';
+                const formattedVal = isPre ? `${v.realizado} Reuniões` : formatBRLMeta(v.realizado);
+
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-50">
                         <td class="p-2.5 text-center"><input type="checkbox" value="${v.id}" class="admin-venda-row-cb w-4 h-4 text-blue-600 rounded"></td>
                         <td class="p-2.5 font-bold text-slate-800">${v.userNome}</td>
                         <td class="p-2.5 text-slate-600">${v.mesAno}</td>
-                        <td class="p-2.5 text-right font-bold text-emerald-600">${formatBRLMeta(v.realizado)}</td>
+                        <td class="p-2.5 text-right font-bold text-emerald-600">${formattedVal}</td>
                         <td class="p-2.5 text-center space-x-1">
                             <button onclick="editVendaEntry('${v.id}', '${v.userNome}', '${v.mesAno}', ${v.realizado})" class="px-2 py-1 bg-blue-100 hover:bg-blue-200 text-blue-700 font-bold rounded text-[10px]">Editar</button>
                             <button onclick="deleteVendaEntry('${v.id}')" class="px-2 py-1 bg-red-100 hover:bg-red-200 text-red-700 font-bold rounded text-[10px]">Excluir</button>
@@ -2116,22 +2177,24 @@
             });
         }
 
-        // DASHBOARD DO ADMIN (MOSTRA APENAS VENDEDORES QUE POSSUEM METAS CADASTRADAS)
+        // DASHBOARD DO ADMIN
         function renderAdminConsolidatedKpis() {
             const tbody = document.getElementById('admin-consolidated-kpi-tbody');
             if (!tbody) return;
             tbody.innerHTML = '';
 
             const vendorMap = {};
+            const isPre = currentAdminKpiView === 'prevenda';
 
-            // FILTRA APENAS VENDEDORES QUE TÊM META CADASTRADA
-            dbKpisMetas.forEach(m => {
+            const filteredMetas = dbKpisMetas.filter(m => (m.tipo || 'vendedor') === currentAdminKpiView);
+            const filteredVendas = dbKpisVendas.filter(v => (v.tipo || 'vendedor') === currentAdminKpiView);
+
+            filteredMetas.forEach(m => {
                 if (!vendorMap[m.userNome]) vendorMap[m.userNome] = { meta: 0, realizado: 0 };
                 vendorMap[m.userNome].meta += m.meta || 0;
             });
 
-            // SOMA VENDAS APENAS DOS VENDEDORES QUE TÊM META CADASTRADA
-            dbKpisVendas.forEach(v => {
+            filteredVendas.forEach(v => {
                 if (vendorMap[v.userNome]) {
                     vendorMap[v.userNome].realizado += v.realizado || 0;
                 }
@@ -2146,7 +2209,7 @@
             })).sort((a,b) => b.realizado - a.realizado);
 
             if (vendorsList.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-400 italic">Nenhum vendedor com meta cadastrada no momento.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-400 italic">Nenhum colaborador com meta cadastrada nesta visão.</td></tr>`;
                 return;
             }
 
@@ -2154,24 +2217,71 @@
                 const faltaClass = v.falta >= 0 ? 'text-emerald-600 font-bold' : 'text-red-600 font-bold';
                 const rankBadge = idx === 0 ? '🥇' : (idx === 1 ? '🥈' : (idx === 2 ? '🥉' : `#${idx+1}`));
 
+                const metaText = isPre ? `${v.meta} Reuniões` : formatBRLMeta(v.meta);
+                const realText = isPre ? `${v.realizado} Reuniões` : formatBRLMeta(v.realizado);
+                const faltaText = isPre ? `${v.falta} Reuniões` : formatBRLMeta(v.falta);
+
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-50">
                         <td class="p-2.5 font-bold text-slate-800"><span class="mr-2">${rankBadge}</span>${v.nome}</td>
-                        <td class="p-2.5 text-right font-medium">${formatBRLMeta(v.meta)}</td>
-                        <td class="p-2.5 text-right font-bold text-blue-600">${formatBRLMeta(v.realizado)}</td>
-                        <td class="p-2.5 text-right ${faltaClass}">${formatBRLMeta(v.falta)}</td>
+                        <td class="p-2.5 text-right font-medium">${metaText}</td>
+                        <td class="p-2.5 text-right font-bold text-blue-600">${realText}</td>
+                        <td class="p-2.5 text-right ${faltaClass}">${faltaText}</td>
                         <td class="p-2.5 text-center font-bold">${v.pct}%</td>
                     </tr>
                 `;
             });
         }
 
-        // DASHBOARD INDIVIDUAL DO VENDEDOR
+        // DASHBOARD INDIVIDUAL ADAPTÁVEL DO COLABORADOR
         function renderUserKpiDashboard() {
             if (!currentUser) return;
 
+            const isPreVenda = currentUser.cargo === 'prevenda';
+
             const userMetas = dbKpisMetas.filter(k => k.userNome && k.userNome.toLowerCase() === currentUser.nome.toLowerCase());
             const userVendas = dbKpisVendas.filter(k => k.userNome && k.userNome.toLowerCase() === currentUser.nome.toLowerCase());
+
+            // ADAPTA OS TÍTULOS CONFORME O CARGO
+            if (isPreVenda) {
+                if (document.getElementById('user-kpi-title-header')) document.getElementById('user-kpi-title-header').innerHTML = `<i class="fa-solid fa-calendar-check text-blue-600 mr-2.5"></i> Metas & Reuniões Agendadas (Pré-venda)`;
+                if (document.getElementById('user-kpi-subtitle-header')) document.getElementById('user-kpi-subtitle-header').innerText = "Acompanhe seus KPIs de agendamentos, meta de reuniões e seu ranking no time de BDR/SDR.";
+                if (document.getElementById('user-card1-title')) document.getElementById('user-card1-title').innerText = "Meta de Reuniões (Ano)";
+                if (document.getElementById('user-card1-sub')) document.getElementById('user-card1-sub').innerText = "Soma das reuniões estipuladas no ano";
+                if (document.getElementById('user-card2-title')) document.getElementById('user-card2-title').innerText = "Reuniões Agendadas (Ano)";
+                if (document.getElementById('user-card2-sub')) document.getElementById('user-card2-sub').innerText = "Total de reuniões realizadas/agendadas";
+                if (document.getElementById('user-kpi-table-title')) document.getElementById('user-kpi-table-title').innerText = "Acompanhamento Mês a Mês (Reuniões x Meta)";
+                if (document.getElementById('user-kpi-products-sec')) document.getElementById('user-kpi-products-sec').style.display = 'none';
+
+                if (document.getElementById('user-kpi-table-head')) {
+                    document.getElementById('user-kpi-table-head').innerHTML = `
+                        <th class="p-3">Mês/Ano</th>
+                        <th class="p-3 text-right">Meta (Reuniões)</th>
+                        <th class="p-3 text-right">Realizadas</th>
+                        <th class="p-3 text-right">Falta / Superávit</th>
+                        <th class="p-3 text-center">Status Atingimento</th>
+                    `;
+                }
+            } else {
+                if (document.getElementById('user-kpi-title-header')) document.getElementById('user-kpi-title-header').innerHTML = `<i class="fa-solid fa-chart-line text-blue-600 mr-2.5"></i> Metas & Objetivos Comerciais`;
+                if (document.getElementById('user-kpi-subtitle-header')) document.getElementById('user-kpi-subtitle-header').innerText = "Acompanhe seus KPIs de vendas, faturamento mensal e seu posicionamento no ranking de vendedores.";
+                if (document.getElementById('user-card1-title')) document.getElementById('user-card1-title').innerText = "Meta Anual Acumulada";
+                if (document.getElementById('user-card1-sub')) document.getElementById('user-card1-sub').innerText = "Soma das metas cadastradas para o ano";
+                if (document.getElementById('user-card2-title')) document.getElementById('user-card2-title').innerText = "Vendas Realizadas (Ano)";
+                if (document.getElementById('user-card2-sub')) document.getElementById('user-card2-sub').innerText = "Total de faturamento atingido no ano";
+                if (document.getElementById('user-kpi-table-title')) document.getElementById('user-kpi-table-title').innerText = "Acompanhamento Mês a Mês (Meta x Atingimento)";
+                if (document.getElementById('user-kpi-products-sec')) document.getElementById('user-kpi-products-sec').style.display = 'block';
+
+                if (document.getElementById('user-kpi-table-head')) {
+                    document.getElementById('user-kpi-table-head').innerHTML = `
+                        <th class="p-3">Mês/Ano</th>
+                        <th class="p-3 text-right">Meta (R$)</th>
+                        <th class="p-3 text-right">Realizado (R$)</th>
+                        <th class="p-3 text-right">Falta / Superávit</th>
+                        <th class="p-3 text-center">Status Atingimento</th>
+                    `;
+                }
+            }
 
             let totalMetaAno = 0;
             let totalRealizadoAno = 0;
@@ -2183,21 +2293,26 @@
             const percentAno = totalMetaAno > 0 ? ((totalRealizadoAno / totalMetaAno) * 100).toFixed(1) : 0;
 
             if (document.getElementById('user-kpi-meta-ano')) {
-                document.getElementById('user-kpi-meta-ano').innerText = formatBRLMeta(totalMetaAno);
-                document.getElementById('user-kpi-venda-ano').innerText = formatBRLMeta(totalRealizadoAno);
+                document.getElementById('user-kpi-meta-ano').innerText = isPreVenda ? `${totalMetaAno} Reuniões` : formatBRLMeta(totalMetaAno);
+                document.getElementById('user-kpi-venda-ano').innerText = isPreVenda ? `${totalRealizadoAno} Reuniões` : formatBRLMeta(totalRealizadoAno);
                 
                 const faltaEl = document.getElementById('user-kpi-falta-ano');
-                faltaEl.innerText = formatBRLMeta(faltaAno);
+                faltaEl.innerText = isPreVenda ? `${faltaAno} Reuniões` : formatBRLMeta(faltaAno);
                 faltaEl.className = faltaAno >= 0 ? "text-2xl font-black text-emerald-600" : "text-2xl font-black text-red-600";
 
                 document.getElementById('user-kpi-percent-ano').innerText = `${percentAno}% Atingido no Ano`;
             }
 
-            // CALCULA POSIÇÃO INDIVIDUAL NO RANKING
+            // CALCULA POSIÇÃO NO RANKING DO MESMO CARGO
+            const targetCargo = isPreVenda ? 'prevenda' : 'vendedor';
+            const usersInCargo = dbUsers.filter(u => (u.cargo || 'vendedor') === targetCargo).map(u => u.nome.toLowerCase());
+
             const rankingMap = {};
             dbKpisVendas.forEach(v => {
-                if (!rankingMap[v.userNome]) rankingMap[v.userNome] = 0;
-                rankingMap[v.userNome] += v.realizado || 0;
+                if (usersInCargo.includes(v.userNome.toLowerCase())) {
+                    if (!rankingMap[v.userNome]) rankingMap[v.userNome] = 0;
+                    rankingMap[v.userNome] += v.realizado || 0;
+                }
             });
 
             const sortedRank = Object.keys(rankingMap).map(nome => ({
@@ -2211,7 +2326,7 @@
                 rankEl.innerText = userPosIndex !== -1 ? `#${userPosIndex + 1}º Lugar` : '# - Colocação';
             }
 
-            // TABELA MÊS A MÊS DO VENDEDOR
+            // TABELA MÊS A MÊS DO VENDEDOR/PRÉ-VENDA
             const tbody = document.getElementById('user-kpi-months-tbody');
             if (tbody) {
                 tbody.innerHTML = '';
@@ -2229,12 +2344,16 @@
                         const pct = mObj.meta > 0 ? ((vObj.realizado / mObj.meta) * 100).toFixed(0) : 0;
                         const badge = pct >= 100 ? `<span class="px-2 py-1 bg-emerald-100 text-emerald-800 rounded-full font-bold text-[10px]">Atingida (${pct}%)</span>` : `<span class="px-2 py-1 bg-amber-100 text-amber-800 rounded-full font-bold text-[10px]">Em Aberto (${pct}%)</span>`;
 
+                        const metaValText = isPreVenda ? `${mObj.meta} Reuniões` : formatBRLMeta(mObj.meta);
+                        const realValText = isPreVenda ? `${vObj.realizado} Reuniões` : formatBRLMeta(vObj.realizado);
+                        const difValText = isPreVenda ? `${dif} Reuniões` : formatBRLMeta(dif);
+
                         tbody.innerHTML += `
                             <tr class="hover:bg-slate-50">
                                 <td class="p-3 font-bold text-slate-800">${mAno}</td>
-                                <td class="p-3 text-right">${formatBRLMeta(mObj.meta)}</td>
-                                <td class="p-3 text-right font-bold text-blue-600">${formatBRLMeta(vObj.realizado)}</td>
-                                <td class="p-3 text-right font-bold ${dif >= 0 ? 'text-emerald-600' : 'text-red-600'}">${formatBRLMeta(dif)}</td>
+                                <td class="p-3 text-right">${metaValText}</td>
+                                <td class="p-3 text-right font-bold text-blue-600">${realValText}</td>
+                                <td class="p-3 text-right font-bold ${dif >= 0 ? 'text-emerald-600' : 'text-red-600'}">${difValText}</td>
                                 <td class="p-3 text-center">${badge}</td>
                             </tr>
                         `;
@@ -2242,35 +2361,37 @@
                 }
             }
 
-            // DETALHAMENTO DE PRODUTOS VENDIDOS DO USUÁRIO
-            const userProps = dbPropostas.filter(p => p.vendedorNome && p.vendedorNome.toLowerCase() === currentUser.nome.toLowerCase());
-            const prodStats = {};
+            // DETALHAMENTO DE PRODUTOS VENDIDOS
+            if (!isPreVenda) {
+                const userProps = dbPropostas.filter(p => p.vendedorNome && p.vendedorNome.toLowerCase() === currentUser.nome.toLowerCase());
+                const prodStats = {};
 
-            userProps.forEach(p => {
-                (p.proposalProducts || []).forEach(prod => {
-                    if (!prodStats[prod.name]) prodStats[prod.name] = { qtd: 0, total: 0 };
-                    prodStats[prod.name].qtd += (prod.qtdMensal || 1);
-                    prodStats[prod.name].total += (prod.unitMensal || 0) * (prod.qtdMensal || 1);
-                });
-            });
-
-            const prodContainer = document.getElementById('user-kpi-products-container');
-            if (prodContainer) {
-                prodContainer.innerHTML = '';
-                const prodKeys = Object.keys(prodStats);
-                if (prodKeys.length === 0) {
-                    prodContainer.innerHTML = `<p class="text-xs text-slate-400 italic col-span-3">Nenhum produto registrado nas propostas salvas.</p>`;
-                } else {
-                    prodKeys.forEach(prodName => {
-                        const st = prodStats[prodName];
-                        prodContainer.innerHTML += `
-                            <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200/80 space-y-1">
-                                <strong class="text-xs font-extrabold text-slate-800 block">${prodName}</strong>
-                                <span class="text-xs text-blue-600 font-bold block">${st.qtd} Unidades Vendidas</span>
-                                <span class="text-[10px] text-slate-400 block">Acumulado: ${formatBRLMeta(st.total)}</span>
-                            </div>
-                        `;
+                userProps.forEach(p => {
+                    (p.proposalProducts || []).forEach(prod => {
+                        if (!prodStats[prod.name]) prodStats[prod.name] = { qtd: 0, total: 0 };
+                        prodStats[prod.name].qtd += (prod.qtdMensal || 1);
+                        prodStats[prod.name].total += (prod.unitMensal || 0) * (prod.qtdMensal || 1);
                     });
+                });
+
+                const prodContainer = document.getElementById('user-kpi-products-container');
+                if (prodContainer) {
+                    prodContainer.innerHTML = '';
+                    const prodKeys = Object.keys(prodStats);
+                    if (prodKeys.length === 0) {
+                        prodContainer.innerHTML = `<p class="text-xs text-slate-400 italic col-span-3">Nenhum produto registrado nas propostas salvas.</p>`;
+                    } else {
+                        prodKeys.forEach(prodName => {
+                            const st = prodStats[prodName];
+                            prodContainer.innerHTML += `
+                                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200/80 space-y-1">
+                                    <strong class="text-xs font-extrabold text-slate-800 block">${prodName}</strong>
+                                    <span class="text-xs text-blue-600 font-bold block">${st.qtd} Unidades Vendidas</span>
+                                    <span class="text-[10px] text-slate-400 block">Acumulado: ${formatBRLMeta(st.total)}</span>
+                                </div>
+                            `;
+                        });
+                    }
                 }
             }
         }
@@ -2553,7 +2674,7 @@
             });
         }
 
-        // GESTÃO DE USUÁRIOS NO PAINEL ADM
+        // GESTÃO DE USUÁRIOS NO PAINEL ADM (COM SUPORTE AO CARGO)
         function listenFirebaseUsers() {
             db.collection("usuarios").onSnapshot((snapshot) => {
                 dbUsers = [];
@@ -2572,12 +2693,15 @@
             if (!container) return;
             container.innerHTML = '';
 
-            if (dbUsers.length === 0) {
-                container.innerHTML = `<p class="text-gray-400 italic text-[11px]">Nenhum usuário cadastrado.</p>`;
+            const targetCargo = currentAdminKpiView === 'prevenda' ? 'prevenda' : 'vendedor';
+            const filteredUsers = dbUsers.filter(u => (u.cargo || 'vendedor') === targetCargo);
+
+            if (filteredUsers.length === 0) {
+                container.innerHTML = `<p class="text-gray-400 italic text-[11px]">Nenhum colaborador com cargo "${targetCargo === 'prevenda' ? 'Pré-venda' : 'Vendedor'}" cadastrado.</p>`;
                 return;
             }
 
-            dbUsers.forEach(u => {
+            filteredUsers.forEach(u => {
                 container.innerHTML += `
                     <label class="flex items-center space-x-2 text-slate-700 cursor-pointer hover:text-blue-600 font-medium">
                         <input type="checkbox" value="${u.nome}" class="kpi-user-checkbox w-3.5 h-3.5 text-blue-600 rounded">
@@ -2591,8 +2715,11 @@
             const selectVenda = document.getElementById('admin-kpi-venda-user');
             if (!selectVenda) return;
 
-            let html = '<option value="">-- Selecione o Vendedor --</option>';
-            dbUsers.forEach(u => {
+            const targetCargo = currentAdminKpiView === 'prevenda' ? 'prevenda' : 'vendedor';
+            const filteredUsers = dbUsers.filter(u => (u.cargo || 'vendedor') === targetCargo);
+
+            let html = '<option value="">-- Selecione o Colaborador --</option>';
+            filteredUsers.forEach(u => {
                 html += `<option value="${u.nome}">${u.nome} (${u.email})</option>`;
             });
 
@@ -2602,6 +2729,7 @@
         function addNewUserByAdmin() {
             const nome = document.getElementById('admin-new-user-nome').value.trim();
             const email = document.getElementById('admin-new-user-email').value.trim().toLowerCase();
+            const cargo = document.getElementById('admin-new-user-cargo').value;
             const senha = document.getElementById('admin-new-user-senha').value;
 
             if (!nome || !email || !senha) {
@@ -2623,11 +2751,12 @@
             db.collection("usuarios").add({
                 nome,
                 email,
+                cargo,
                 senha,
                 status: 'aprovado',
                 dataCriacao: new Date().toISOString()
             }).then(() => {
-                alert(`Usuário "${nome}" cadastrado e aprovado com sucesso!`);
+                alert(`Usuário "${nome}" cadastrado como ${cargo === 'prevenda' ? 'Pré-venda' : 'Vendedor'} com sucesso!`);
                 document.getElementById('admin-new-user-nome').value = '';
                 document.getElementById('admin-new-user-email').value = '';
                 document.getElementById('admin-new-user-senha').value = '';
@@ -2649,7 +2778,7 @@
             tbody.innerHTML = '';
 
             if (dbUsers.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-gray-400 italic">Nenhum usuário cadastrado ainda.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-gray-400 italic">Nenhum usuário cadastrado ainda.</td></tr>`;
                 return;
             }
 
@@ -2658,10 +2787,13 @@
                 if (u.status === 'aprovado') badge = `<span class="px-2 py-0.5 bg-green-100 text-green-800 rounded font-bold">Aprovado</span>`;
                 if (u.status === 'bloqueado') badge = `<span class="px-2 py-0.5 bg-red-100 text-red-800 rounded font-bold">Bloqueado</span>`;
 
+                const cargoText = u.cargo === 'prevenda' ? 'Pré-venda (SDR/BDR)' : 'Vendedor (Closer)';
+
                 tbody.innerHTML += `
                     <tr class="hover:bg-gray-50">
                         <td class="p-2.5 font-bold text-gray-800">${u.nome}</td>
                         <td class="p-2.5 text-gray-600">${u.email}</td>
+                        <td class="p-2.5 text-slate-700 font-semibold">${cargoText}</td>
                         <td class="p-2.5 text-center">${badge}</td>
                         <td class="p-2.5 text-center space-x-1">
                             <button onclick="changeUserPasswordByAdmin('${u.id}', '${u.nome}')" class="px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded text-[10px] font-bold">Trocar Senha</button>
@@ -3131,7 +3263,7 @@
             list.innerHTML = html;
         }
 
-        // FORMATAÇÃO PADRÃO BRL (SEMPRE MONETÁRIA)
+        // FORMATAÇÃO PADRÃO BRL
         function formatBRLMeta(val) {
             const num = parseFloat(val) || 0;
             return num.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
@@ -3542,7 +3674,7 @@
             });
         }
 
-        // INICIALIZAÇÃO DA APLICAÇÃO
+        // INICIALIZAÇÃO
         checkUserSession();
         listenSystemSettings();
         listenNewsletterSettings();
