@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LifeSocial - A rede que conecta os Lifers v6.5</title>
+    <title>LifeSocial - A rede que conecta os Lifers v6.6</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -174,7 +174,7 @@
         </div>
 
         <footer class="text-center text-xs text-white/90 py-2 z-10">
-            LifeSocial v6.5 | Plataforma criada e desenvolvida por 
+            LifeSocial v6.6 | Plataforma criada e desenvolvida por 
             <a href="https://www.linkedin.com/in/rafaelrobertonascimento" target="_blank" rel="noopener noreferrer" class="text-white font-bold underline hover:text-green-300">
                 Rafael Roberto Nascimento <i class="fa-brands fa-linkedin text-xs ml-0.5"></i>
             </a>
@@ -267,7 +267,7 @@
                             <i class="fa-solid fa-code text-blue-600 mr-1.5"></i> Desenvolvido por Rafael Roberto Nascimento
                         </span>
                     </div>
-                    <span class="text-xs font-medium text-slate-400 mt-1 sm:mt-0">LifeSocial v6.5</span>
+                    <span class="text-xs font-medium text-slate-400 mt-1 sm:mt-0">LifeSocial v6.6</span>
                 </div>
 
                 <!-- 1. REDE SOCIAL / FEED -->
@@ -704,7 +704,7 @@
                             </button>
                         </div>
 
-                        <!-- SUB-ABA ADM KPIS REESTRUTURADA EM 2 ETAPAS COM SELEÇÃO MÚLTIPLA E DUPLICAÇÃO DE MÊS -->
+                        <!-- SUB-ABA ADM KPIS REESTRUTURADA -->
                         <div id="adm-sec-kpis" class="space-y-8">
                             
                             <!-- 1º ETAPA: LANÇAMENTO / EDIÇÃO DE METAS MÊS A MÊS COM SELEÇÃO MÚLTIPLA -->
@@ -1128,7 +1128,7 @@
 
         <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-500 mt-auto z-30">
             <div class="max-w-7xl mx-auto px-4">
-                LifeSocial v6.4 | Plataforma desenvolvida por 
+                LifeSocial v6.6 | Plataforma desenvolvida por 
                 <a href="https://www.linkedin.com/in/rafaelrobertonascimento" target="_blank" rel="noopener noreferrer" class="text-blue-600 font-bold hover:underline">
                     Rafael Roberto Nascimento <i class="fa-brands fa-linkedin text-xs ml-0.5"></i>
                 </a>
@@ -1866,7 +1866,7 @@
             closeShareModal();
         }
 
-        // NOVO MÓDULO METAS & KPIS V6.4 (2 ETAPAS: METAS E VENDAS REALIZADAS)
+        // MÓDULO REESTRUTURADO: METAS & KPIS V6.6 (SEM EXIBIÇÃO DE "BONIFICADO")
         function listenFirebaseKpis() {
             db.collection("kpis_metas").onSnapshot((snapshot) => {
                 dbKpisMetas = [];
@@ -1889,13 +1889,12 @@
             });
         }
 
-        // SELEÇÃO MÚLTIPLA DE VENDEDORES PARA METAS
         function toggleSelectAllKpiUsers(master) {
             const cbs = document.querySelectorAll('.kpi-user-checkbox');
             cbs.forEach(c => c.checked = master.checked);
         }
 
-        // 1º ETAPA: LANÇAR / EDITAR METAS (COM SELEÇÃO MÚLTIPLA)
+        // 1º ETAPA: LANÇAR / EDITAR METAS
         function saveAdminMetaEntry() {
             const checkedUsers = Array.from(document.querySelectorAll('.kpi-user-checkbox:checked')).map(c => c.value);
             const mesAno = document.getElementById('admin-kpi-meta-mes').value;
@@ -1920,7 +1919,7 @@
             });
 
             batch.commit().then(() => {
-                alert(`Meta de ${formatBRL(valorMeta)} gravada com sucesso para ${checkedUsers.length} vendedor(es)!`);
+                alert(`Meta de ${formatBRLMeta(valorMeta)} gravada com sucesso para ${checkedUsers.length} vendedor(es)!`);
                 document.getElementById('admin-kpi-meta-valor').value = '';
             });
         }
@@ -2001,7 +2000,7 @@
                         <td class="p-2.5 text-center"><input type="checkbox" value="${m.id}" class="admin-meta-row-cb w-4 h-4 text-blue-600 rounded"></td>
                         <td class="p-2.5 font-bold text-slate-800">${m.userNome}</td>
                         <td class="p-2.5 text-slate-600">${m.mesAno}</td>
-                        <td class="p-2.5 text-right font-bold text-slate-800">${formatBRL(m.meta)}</td>
+                        <td class="p-2.5 text-right font-bold text-slate-800">${formatBRLMeta(m.meta)}</td>
                         <td class="p-2.5 text-center space-x-1">
                             <button onclick="duplicateMetaNextMonth('${m.userNome}', '${m.mesAno}', ${m.meta})" class="px-2 py-1 bg-emerald-100 hover:bg-emerald-200 text-emerald-800 font-bold rounded text-[10px]">Duplicar p/ Próx. Mês</button>
                             <button onclick="editMetaEntry('${m.id}', '${m.userNome}', '${m.mesAno}', ${m.meta})" class="px-2 py-1 bg-blue-100 hover:bg-blue-200 text-blue-700 font-bold rounded text-[10px]">Editar</button>
@@ -2091,7 +2090,7 @@
                         <td class="p-2.5 text-center"><input type="checkbox" value="${v.id}" class="admin-venda-row-cb w-4 h-4 text-blue-600 rounded"></td>
                         <td class="p-2.5 font-bold text-slate-800">${v.userNome}</td>
                         <td class="p-2.5 text-slate-600">${v.mesAno}</td>
-                        <td class="p-2.5 text-right font-bold text-emerald-600">${formatBRL(v.realizado)}</td>
+                        <td class="p-2.5 text-right font-bold text-emerald-600">${formatBRLMeta(v.realizado)}</td>
                         <td class="p-2.5 text-center space-x-1">
                             <button onclick="editVendaEntry('${v.id}', '${v.userNome}', '${v.mesAno}', ${v.realizado})" class="px-2 py-1 bg-blue-100 hover:bg-blue-200 text-blue-700 font-bold rounded text-[10px]">Editar</button>
                             <button onclick="deleteVendaEntry('${v.id}')" class="px-2 py-1 bg-red-100 hover:bg-red-200 text-red-700 font-bold rounded text-[10px]">Excluir</button>
@@ -2139,16 +2138,16 @@
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-50">
                         <td class="p-2.5 font-bold text-slate-800"><span class="mr-2">${rankBadge}</span>${v.nome}</td>
-                        <td class="p-2.5 text-right font-medium">${formatBRL(v.meta)}</td>
-                        <td class="p-2.5 text-right font-bold text-blue-600">${formatBRL(v.realizado)}</td>
-                        <td class="p-2.5 text-right ${faltaClass}">${formatBRL(v.falta)}</td>
+                        <td class="p-2.5 text-right font-medium">${formatBRLMeta(v.meta)}</td>
+                        <td class="p-2.5 text-right font-bold text-blue-600">${formatBRLMeta(v.realizado)}</td>
+                        <td class="p-2.5 text-right ${faltaClass}">${formatBRLMeta(v.falta)}</td>
                         <td class="p-2.5 text-center font-bold">${v.pct}%</td>
                     </tr>
                 `;
             });
         }
 
-        // DASHBOARD INDIVIDUAL DO VENDEDOR
+        // DASHBOARD INDIVIDUAL DO VENDEDOR (SEM TERMO BONIFICADO)
         function renderUserKpiDashboard() {
             if (!currentUser) return;
 
@@ -2165,11 +2164,11 @@
             const percentAno = totalMetaAno > 0 ? ((totalRealizadoAno / totalMetaAno) * 100).toFixed(1) : 0;
 
             if (document.getElementById('user-kpi-meta-ano')) {
-                document.getElementById('user-kpi-meta-ano').innerText = formatBRL(totalMetaAno);
-                document.getElementById('user-kpi-venda-ano').innerText = formatBRL(totalRealizadoAno);
+                document.getElementById('user-kpi-meta-ano').innerText = formatBRLMeta(totalMetaAno);
+                document.getElementById('user-kpi-venda-ano').innerText = formatBRLMeta(totalRealizadoAno);
                 
                 const faltaEl = document.getElementById('user-kpi-falta-ano');
-                faltaEl.innerText = formatBRL(faltaAno);
+                faltaEl.innerText = formatBRLMeta(faltaAno);
                 faltaEl.className = faltaAno >= 0 ? "text-2xl font-black text-emerald-600" : "text-2xl font-black text-red-600";
 
                 document.getElementById('user-kpi-percent-ano').innerText = `${percentAno}% Atingido no Ano`;
@@ -2214,9 +2213,9 @@
                         tbody.innerHTML += `
                             <tr class="hover:bg-slate-50">
                                 <td class="p-3 font-bold text-slate-800">${mAno}</td>
-                                <td class="p-3 text-right">${formatBRL(mObj.meta)}</td>
-                                <td class="p-3 text-right font-bold text-blue-600">${formatBRL(vObj.realizado)}</td>
-                                <td class="p-3 text-right font-bold ${dif >= 0 ? 'text-emerald-600' : 'text-red-600'}">${formatBRL(dif)}</td>
+                                <td class="p-3 text-right">${formatBRLMeta(mObj.meta)}</td>
+                                <td class="p-3 text-right font-bold text-blue-600">${formatBRLMeta(vObj.realizado)}</td>
+                                <td class="p-3 text-right font-bold ${dif >= 0 ? 'text-emerald-600' : 'text-red-600'}">${formatBRLMeta(dif)}</td>
                                 <td class="p-3 text-center">${badge}</td>
                             </tr>
                         `;
@@ -2224,7 +2223,7 @@
                 }
             }
 
-            // DETALHAMENTO DE PRODUTOS VENDIDOS DO USUÁRIO
+            // DETALHAMENTO DE PRODUTOS VENDIDOS
             const userProps = dbPropostas.filter(p => p.vendedorNome && p.vendedorNome.toLowerCase() === currentUser.nome.toLowerCase());
             const prodStats = {};
 
@@ -2249,7 +2248,7 @@
                             <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200/80 space-y-1">
                                 <strong class="text-xs font-extrabold text-slate-800 block">${prodName}</strong>
                                 <span class="text-xs text-blue-600 font-bold block">${st.qtd} Unidades Vendidas</span>
-                                <span class="text-[10px] text-slate-400 block">Acumulado: ${formatBRL(st.total)}</span>
+                                <span class="text-[10px] text-slate-400 block">Acumulado: ${formatBRLMeta(st.total)}</span>
                             </div>
                         `;
                     });
@@ -2535,15 +2534,13 @@
             });
         }
 
-        // GESTÃO DE USUÁRIOS NO PAINEL ADM (FUNÇÃO MANTIDA SEM O GATILHO RECORRENTE)
+        // GESTÃO DE USUÁRIOS NO PAINEL ADM
         function listenFirebaseUsers() {
             db.collection("usuarios").onSnapshot((snapshot) => {
                 dbUsers = [];
                 snapshot.forEach((doc) => {
                     dbUsers.push({ id: doc.id, ...doc.data() });
                 });
-
-                // O trecho que recriava 'vendedor@lifeapps.com.br' foi removido daqui!
 
                 renderAdminUsers();
                 populateAdminKpiUserCheckboxes();
@@ -3115,6 +3112,13 @@
             list.innerHTML = html;
         }
 
+        // FORMATAÇÃO PADRÃO BRL (NUNCA RETORNA BONIFICADO)
+        function formatBRLMeta(val) {
+            const num = parseFloat(val) || 0;
+            return num.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        }
+
+        // FORMATAÇÃO DO SLIDE COMERCIAL
         function formatBRL(val, isBonificado = false) {
             if (isBonificado || val === 0) return "BONIFICADO";
             return val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
