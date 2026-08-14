@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SGP - Portal Corporativo & Propostas LifeApps v5.4</title>
+    <title>SGP - Portal Corporativo & Propostas LifeApps v5.5</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -74,7 +74,7 @@
 
                 <div class="flex rounded-2xl bg-black/40 p-1 text-xs font-bold border border-white/10">
                     <button onclick="switchAuthTab('usuario')" id="auth-tab-usuario" class="flex-1 py-2.5 rounded-xl bg-blue-600 text-white shadow-lg transition">Usuário</button>
-                    <button onclick="switchAuthTab('admin')" id="auth-tab-admin" class="flex-1 py-2.5 rounded-xl text-gray-400 hover:text-white transition">Administrador</button>
+                    <button onclick="switchAuthTab('admin')" id="auth-tab-admin" class="flex-1 py-2.5 rounded-lg text-gray-400 hover:text-white transition">Administrador</button>
                 </div>
 
                 <!-- LOGIN USUÁRIO -->
@@ -168,7 +168,7 @@
         </div>
 
         <footer class="text-center text-xs text-white/90 py-2 z-10">
-            Sistema de Geração de Proposta (SGP) - Nº v5.4 | Desenvolvido por 
+            Sistema de Geração de Proposta (SGP) - Nº v5.5 | Desenvolvido por 
             <a href="https://www.linkedin.com/in/rafaelrobertonascimento" target="_blank" rel="noopener noreferrer" class="text-white font-bold underline hover:text-green-300">
                 Rafael Nascimento <i class="fa-brands fa-linkedin text-xs ml-0.5"></i>
             </a>
@@ -199,7 +199,7 @@
                     </div>
 
                     <nav class="p-3 space-y-1.5" id="sidebar-nav-container">
-                        <!-- PAINEL ADMIN NO TOPO DO MENU -->
+                        <!-- PAINEL ADMIN NO TOPO DO MENU (EXCLUSIVO ADMIN) -->
                         <button onclick="switchMainTab('admin')" id="nav-item-admin" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-white font-extrabold text-xs sm:text-sm shadow-md transition hidden mb-2">
                             <i class="fa-solid fa-user-shield text-lg min-w-[24px]"></i>
                             <span class="sidebar-text whitespace-nowrap">Painel Administrativo</span>
@@ -210,6 +210,7 @@
                             <span class="sidebar-text whitespace-nowrap">Rede Social / Feed</span>
                         </button>
 
+                        <!-- GERADOR DE PROPOSTAS (EXCLUSIVO USUÁRIOS) -->
                         <button onclick="switchMainTab('propostas')" id="nav-item-propostas" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white font-medium text-xs sm:text-sm transition">
                             <i class="fa-solid fa-calculator text-lg min-w-[24px]"></i>
                             <span class="sidebar-text whitespace-nowrap">Gerador de Proposta</span>
@@ -241,7 +242,7 @@
             <!-- CONTEÚDO PRINCIPAL -->
             <main class="flex-1 p-4 sm:p-8 max-w-7xl mx-auto w-full">
 
-                <!-- TOP BAR DE NOTIFICAÇÕES -->
+                <!-- TOP BAR DE NOTIFICAÇÕES REALTIME CORRIGIDO -->
                 <div class="flex justify-end items-center mb-6">
                     <div class="relative">
                         <button onclick="toggleNotificationsMenu()" class="p-2.5 bg-white border rounded-xl text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition relative shadow-sm">
@@ -856,7 +857,7 @@
 
         <footer class="bg-white border-t border-gray-200 py-4 text-center text-xs text-gray-500 mt-auto z-30">
             <div class="max-w-7xl mx-auto px-4">
-                Sistema de Geração de Proposta (SGP) - Nº v5.4 | Desenvolvido por 
+                Sistema de Geração de Proposta (SGP) - Nº v5.3.1 | Desenvolvido por 
                 <a href="https://www.linkedin.com/in/rafaelrobertonascimento" target="_blank" rel="noopener noreferrer" class="text-blue-600 font-bold hover:underline">
                     Rafael Nascimento <i class="fa-brands fa-linkedin text-xs ml-0.5"></i>
                 </a>
@@ -1053,7 +1054,7 @@
 
             if (currentUser.role === 'admin') {
                 adminBtn.classList.remove('hidden');
-                propostasBtn.classList.add('hidden'); // OCULTA GERADOR DE PROPOSTAS PARA O ADMIN
+                propostasBtn.classList.add('hidden');
                 document.getElementById('admin-pin-notice-option').classList.remove('hidden');
             } else {
                 adminBtn.classList.add('hidden');
@@ -1099,7 +1100,7 @@
             }
         }
 
-        // LOGIN / REGISTRO
+        // LOGIN / REGISTRO USUÁRIO
         function switchAuthTab(type) {
             document.getElementById('form-login-usuario').classList.add('hidden');
             document.getElementById('form-login-admin').classList.add('hidden');
@@ -1216,11 +1217,17 @@
             });
         }
 
+        // LOGOFF LIMPO CORRIGIDO (ZERANDO A MEMÓRIA DO ADMIN)
         function logoutSystem() {
             currentUser = null;
             sessionStorage.removeItem('sgp_session_user');
             localStorage.removeItem('sgp_user_email');
             localStorage.removeItem('sgp_user_pass');
+            
+            // Oculta os botões sensíveis do Admin
+            document.getElementById('nav-item-admin').classList.add('hidden');
+            document.getElementById('admin-pin-notice-option').classList.add('hidden');
+            
             clearProposalState();
             showAuthScreen();
         }
@@ -1270,7 +1277,7 @@
             textarea.focus();
         }
 
-        // GERENCIADOR DE NOTIFICAÇÕES REALTIME (ESTABILIZADO)
+        // GERENCIADOR DE NOTIFICAÇÕES & PUSH
         function requestNotificationPermission() {
             if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") {
                 Notification.requestPermission();
@@ -1356,41 +1363,7 @@
             });
         }
 
-        // FEED SOCIAL E CRIAÇÃO DE POSTS
-        function toggleEmojiPicker() {
-            const picker = document.getElementById('emoji-picker-popover');
-            picker.classList.toggle('hidden');
-        }
-
-        function insertEmoji(emoji) {
-            const input = document.getElementById('post-input-text');
-            const start = input.selectionStart;
-            const end = input.selectionEnd;
-            const text = input.value;
-            input.value = text.substring(0, start) + emoji + text.substring(end);
-            input.focus();
-            input.selectionStart = input.selectionEnd = start + emoji.length;
-            document.getElementById('emoji-picker-popover').classList.add('hidden');
-        }
-
-        function listenFirebasePosts() {
-            db.collection("posts").onSnapshot((snapshot) => {
-                dbPosts = [];
-                snapshot.forEach((doc) => {
-                    dbPosts.push({ id: doc.id, ...doc.data() });
-                });
-
-                dbPosts.sort((a, b) => {
-                    if (a.isPinned && !b.isPinned) return -1;
-                    if (!a.isPinned && b.isPinned) return 1;
-                    return new Date(b.dataCriacao || 0) - new Date(a.dataCriacao || 0);
-                });
-
-                renderSocialFeed();
-                renderSidebarNewsletter();
-            });
-        }
-
+        // FEED SOCIAL
         function createNewPost() {
             const input = document.getElementById('post-input-text');
             const inputImage = document.getElementById('post-input-image');
@@ -1496,6 +1469,7 @@
             db.collection("posts").doc(postId).update({ comentarios });
         }
 
+        // RENDER DO FEED (ADMIN PODE EXCLUIR QUALQUER POST OU COMENTÁRIO)
         function renderSocialFeed() {
             const container = document.getElementById('social-feed-container');
             if (!container) return;
@@ -1519,7 +1493,8 @@
                 const countLikes = (post.curtidas || []).length;
                 const comentarios = post.comentarios || [];
 
-                const isOwner = currentUser && (post.autorId === currentUser.id || post.autorNome === currentUser.nome || currentUser.role === 'admin');
+                // ADMIN PODE EXCLUIR QUALQUER POST
+                const canDeletePost = currentUser && (currentUser.role === 'admin' || post.autorId === currentUser.id || post.autorNome === currentUser.nome);
 
                 let formattedText = post.texto ? post.texto.replace(/@([a-zA-A-zA-Z0-9À-ÿ\s]+)/g, '<span class="text-blue-600 font-bold bg-blue-50 px-1 py-0.5 rounded">@$1</span>') : '';
 
@@ -1537,13 +1512,14 @@
 
                 let commentsHtml = '';
                 comentarios.forEach(c => {
-                    const isCommentOwner = currentUser && (c.autorId === currentUser.id || c.autorNome === currentUser.nome || currentUser.role === 'admin');
+                    // ADMIN PODE EXCLUIR QUALQUER COMENTÁRIO
+                    const canDeleteComment = currentUser && (currentUser.role === 'admin' || c.autorId === currentUser.id || c.autorNome === currentUser.nome);
 
                     commentsHtml += `
                         <div class="bg-gray-50 p-2.5 rounded-xl text-xs space-y-0.5 relative group">
                             <div class="flex justify-between items-center">
                                 <strong class="text-blue-900">${c.autorNome}</strong>
-                                ${isCommentOwner ? `<button onclick="deleteCommentFromPost('${post.id}', '${c.id}')" class="text-red-400 hover:text-red-600 text-[10px] font-bold">Excluir</button>` : ''}
+                                ${canDeleteComment ? `<button onclick="deleteCommentFromPost('${post.id}', '${c.id}')" class="text-red-400 hover:text-red-600 text-[10px] font-bold">Excluir</button>` : ''}
                             </div>
                             <p class="text-gray-700">${c.texto}</p>
                         </div>
@@ -1568,7 +1544,7 @@
 
                             <div class="flex items-center space-x-2">
                                 ${pinnedBadge}
-                                ${isOwner ? `
+                                ${canDeletePost ? `
                                     <button onclick="deletePostFirebase('${post.id}')" title="Excluir publicação" class="text-gray-400 hover:text-red-600 text-xs p-1">
                                         <i class="fa-solid fa-trash"></i>
                                     </button>
@@ -1657,7 +1633,7 @@
             closeShareModal();
         }
 
-        // LINKS & ATALHOS EXTERNOS
+        // LINKS & SISTEMAS EXTERNOS
         function listenFirebaseLinks() {
             db.collection("atalhos").onSnapshot((snapshot) => {
                 dbLinks = [];
@@ -1780,7 +1756,7 @@
             });
         }
 
-        // CARDS CUSTOMIZADOS
+        // CARDS CUSTOMIZADOS E NEWSLETTER
         function listenFirebaseCustomCards() {
             db.collection("cards_laterais").onSnapshot((snapshot) => {
                 dbCustomCards = [];
@@ -2087,7 +2063,7 @@
             });
         }
 
-        // CALCULADOR E PROPOSTAS
+        // PROPOSTAS E CALCULADOR
         function clearProposalState() {
             proposalProducts = [];
             const searchInput = document.getElementById('vendedor-search-input');
