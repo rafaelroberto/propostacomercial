@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LifeSocial - A rede que conecta os Lifers v6.2</title>
+    <title>LifeSocial - A rede que conecta os Lifers v6.3</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -174,7 +174,7 @@
         </div>
 
         <footer class="text-center text-xs text-white/90 py-2 z-10">
-            LifeSocial v6.2 | Plataforma criada e desenvolvida por 
+            LifeSocial v6.3 | Plataforma criada e desenvolvida por 
             <a href="https://www.linkedin.com/in/rafaelrobertonascimento" target="_blank" rel="noopener noreferrer" class="text-white font-bold underline hover:text-green-300">
                 Rafael Roberto Nascimento <i class="fa-brands fa-linkedin text-xs ml-0.5"></i>
             </a>
@@ -216,6 +216,11 @@
                         <button onclick="switchMainTab('social')" id="nav-item-social" class="w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl bg-blue-600 text-white font-bold text-xs sm:text-sm transition shadow-sm">
                             <i class="fa-solid fa-newspaper text-lg min-w-[24px]"></i>
                             <span class="sidebar-text whitespace-nowrap">LifeSocial Feed</span>
+                        </button>
+
+                        <button onclick="switchMainTab('metas')" id="nav-item-metas" class="w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-slate-300 hover:bg-slate-800 hover:text-white font-medium text-xs sm:text-sm transition">
+                            <i class="fa-solid fa-chart-line text-lg min-w-[24px]"></i>
+                            <span class="sidebar-text whitespace-nowrap">Metas & Objetivos</span>
                         </button>
 
                         <button onclick="switchMainTab('propostas')" id="nav-item-propostas" class="w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-slate-300 hover:bg-slate-800 hover:text-white font-medium text-xs sm:text-sm transition">
@@ -262,7 +267,7 @@
                             <i class="fa-solid fa-code text-blue-600 mr-1.5"></i> Desenvolvido por Rafael Roberto Nascimento
                         </span>
                     </div>
-                    <span class="text-xs font-medium text-slate-400 mt-1 sm:mt-0">LifeSocial v6.2</span>
+                    <span class="text-xs font-medium text-slate-400 mt-1 sm:mt-0">LifeSocial v6.3</span>
                 </div>
 
                 <!-- 1. REDE SOCIAL / FEED -->
@@ -270,7 +275,6 @@
                     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
                         <div class="lg:col-span-8 space-y-6">
                             
-                            <!-- BANNER COMERCIAL CORRIGIDO -->
                             <div id="feed-banner-container" class="hidden rounded-2xl overflow-hidden shadow-sm border border-gray-200">
                                 <img id="feed-banner-image" src="" alt="Banner Oficial LifeApps" class="w-full h-auto max-h-52 object-cover">
                             </div>
@@ -341,7 +345,78 @@
                     </div>
                 </section>
 
-                <!-- 2. MINHA CONTA / PERFIL DO USUÁRIO -->
+                <!-- 2. NOVO MÓDULO METAS & OBJETIVOS (KPIS) -->
+                <section id="main-sec-metas" class="hidden space-y-6">
+                    <div class="flex flex-col sm:flex-row justify-between sm:items-center bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm gap-4">
+                        <div>
+                            <h2 class="text-xl font-extrabold text-slate-900 flex items-center">
+                                <i class="fa-solid fa-chart-line text-blue-600 mr-2.5"></i> Metas & Objetivos Comerciais
+                            </h2>
+                            <p class="text-xs text-slate-500 mt-1">Acompanhe seus KPIs de vendas, atingimento mensal e seu posicionamento no ranking.</p>
+                        </div>
+                        
+                        <!-- RANKING BADGE -->
+                        <div class="bg-gradient-to-r from-amber-500 to-amber-600 text-white px-5 py-3 rounded-2xl flex items-center space-x-3 shadow-md">
+                            <i class="fa-solid fa-trophy text-2xl text-amber-100"></i>
+                            <div>
+                                <span class="text-[10px] font-extrabold uppercase tracking-wider block opacity-90">Sua Posição no Ranking</span>
+                                <strong id="user-kpi-ranking" class="text-lg font-black"># - Colocação</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CARDS RESUMO DO ANO -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm space-y-2">
+                            <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Meta Anual Acumulada</span>
+                            <h3 id="user-kpi-meta-ano" class="text-2xl font-black text-slate-800">R$ 0,00</h3>
+                            <p class="text-[10px] text-slate-400">Soma das metas cadastradas para o ano</p>
+                        </div>
+
+                        <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm space-y-2">
+                            <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Vendas Realizadas (Ano)</span>
+                            <h3 id="user-kpi-venda-ano" class="text-2xl font-black text-blue-600">R$ 0,00</h3>
+                            <p class="text-[10px] text-slate-400">Total de faturamento atingido</p>
+                        </div>
+
+                        <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm space-y-2">
+                            <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Falta para Atingir / Deta</span>
+                            <h3 id="user-kpi-falta-ano" class="text-2xl font-black text-amber-600">R$ 0,00</h3>
+                            <p id="user-kpi-percent-ano" class="text-[10px] text-emerald-600 font-bold">0% Atingido</p>
+                        </div>
+                    </div>
+
+                    <!-- TABELA MÊS A MÊS -->
+                    <div class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-4">
+                        <h3 class="text-sm font-extrabold text-slate-900 uppercase tracking-wider">Acompanhamento Mês a Mês (Meta x Atingimento)</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-xs border-collapse">
+                                <thead>
+                                    <tr class="bg-slate-100 text-slate-700 uppercase font-bold border-b border-slate-200">
+                                        <th class="p-3">Mês/Ano</th>
+                                        <th class="p-3 text-right">Meta (R$)</th>
+                                        <th class="p-3 text-right">Realizado (R$)</th>
+                                        <th class="p-3 text-right">Falta / Superávit</th>
+                                        <th class="p-3 text-center">Status Atingimento</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="user-kpi-months-tbody" class="divide-y divide-slate-100 font-medium">
+                                    <tr><td colspan="5" class="p-4 text-center text-slate-400 italic">Nenhum KPI cadastrado para seu usuário ainda.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- KPI POR PRODUTO -->
+                    <div class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-4">
+                        <h3 class="text-sm font-extrabold text-slate-900 uppercase tracking-wider">Desempenho por Produto Vendido</h3>
+                        <div id="user-kpi-products-container" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <p class="text-xs text-slate-400 italic col-span-3">Nenhum detalhamento por produto registrado.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 3. MINHA CONTA / PERFIL DO USUÁRIO -->
                 <section id="main-sec-perfil" class="hidden space-y-6 max-w-2xl">
                     <div class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
                         <div class="flex items-center space-x-3 border-b border-slate-100 pb-4">
@@ -384,7 +459,7 @@
                     </div>
                 </section>
 
-                <!-- 3. GERADOR DE PROPOSTAS -->
+                <!-- 4. GERADOR DE PROPOSTAS -->
                 <section id="main-sec-propostas" class="hidden space-y-8">
                     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
                         <div class="lg:col-span-5 bg-white p-6 rounded-3xl shadow-sm border border-slate-200/80 space-y-6">
@@ -594,20 +669,23 @@
                     </div>
                 </section>
 
-                <!-- 4. PAINEL ADM -->
+                <!-- 5. PAINEL ADM -->
                 <section id="main-sec-admin" class="hidden space-y-6">
                     <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200 space-y-6">
                         
                         <div class="flex justify-between items-center border-b pb-4">
                             <div>
                                 <h2 class="text-xl font-extrabold text-slate-900">Painel Administrativo - Gestão Geral</h2>
-                                <p class="text-xs text-slate-500">Gerencie usuários, senhas, produtos, orçamentos e segurança do LifeSocial.</p>
+                                <p class="text-xs text-slate-500">Gerencie usuários, senhas, metas de vendas (KPIs), produtos, orçamentos e segurança.</p>
                             </div>
                             <span class="bg-amber-100 text-amber-800 text-xs px-3 py-1 rounded-full font-bold">Admin Autenticado</span>
                         </div>
 
                         <div class="flex space-x-2 border-b overflow-x-auto pb-1">
-                            <button onclick="switchAdminSubTab('usuarios')" id="adm-subtab-usuarios" class="px-4 py-2 text-xs font-bold border-b-2 border-blue-600 text-blue-600 whitespace-nowrap">
+                            <button onclick="switchAdminSubTab('kpis')" id="adm-subtab-kpis" class="px-4 py-2 text-xs font-bold border-b-2 border-blue-600 text-blue-600 whitespace-nowrap">
+                                <i class="fa-solid fa-chart-line mr-1"></i> KPIs & Metas
+                            </button>
+                            <button onclick="switchAdminSubTab('usuarios')" id="adm-subtab-usuarios" class="px-4 py-2 text-xs font-bold text-slate-500 hover:text-slate-800 whitespace-nowrap">
                                 <i class="fa-solid fa-users mr-1"></i> Gestão de Usuários
                             </button>
                             <button onclick="switchAdminSubTab('cards')" id="adm-subtab-cards" class="px-4 py-2 text-xs font-bold text-slate-500 hover:text-slate-800 whitespace-nowrap">
@@ -630,8 +708,59 @@
                             </button>
                         </div>
 
-                        <!-- SUB-ABAS MANTIDAS INTEGRAS -->
-                        <div id="adm-sec-usuarios" class="space-y-6">
+                        <!-- SUB-ABA NOVA: CADASTRAR METAS E KPIS (ADMIN) -->
+                        <div id="adm-sec-kpis" class="space-y-6">
+                            <div class="bg-slate-50/80 p-5 rounded-2xl border border-slate-200 space-y-4">
+                                <h3 class="text-sm font-extrabold text-slate-800">Lançamento de Meta & Venda Realizada por Vendedor</h3>
+                                
+                                <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+                                    <div>
+                                        <label class="text-xs text-slate-600 font-bold">Selecione o Vendedor</label>
+                                        <select id="admin-kpi-user-select" class="w-full p-2.5 border rounded-xl text-xs bg-white mt-1 font-medium"></select>
+                                    </div>
+                                    <div>
+                                        <label class="text-xs text-slate-600 font-bold">Ano e Mês</label>
+                                        <input type="month" id="admin-kpi-mes" class="w-full p-2.5 border rounded-xl text-xs bg-white mt-1 font-medium">
+                                    </div>
+                                    <div>
+                                        <label class="text-xs text-slate-600 font-bold">Meta do Mês (R$)</label>
+                                        <input type="number" id="admin-kpi-meta" placeholder="0.00" class="w-full p-2.5 border rounded-xl text-xs bg-white mt-1 font-medium">
+                                    </div>
+                                    <div>
+                                        <label class="text-xs text-slate-600 font-bold">Venda Realizada (R$)</label>
+                                        <input type="number" id="admin-kpi-realizado" placeholder="0.00" class="w-full p-2.5 border rounded-xl text-xs bg-white mt-1 font-medium">
+                                    </div>
+                                </div>
+
+                                <div class="flex justify-end">
+                                    <button onclick="saveAdminKpiEntry()" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-extrabold rounded-xl text-xs shadow-md transition">
+                                        <i class="fa-solid fa-floppy-disk mr-1.5"></i> Salvar Lançamento do KPI
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="space-y-3">
+                                <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider">Histórico de KPIs Lançados no Banco</h4>
+                                <div class="overflow-x-auto bg-slate-50/80 border border-slate-200 rounded-2xl p-3">
+                                    <table class="w-full text-left text-xs border-collapse">
+                                        <thead>
+                                            <tr class="bg-slate-200/80 text-slate-700 uppercase font-bold">
+                                                <th class="p-2.5">Vendedor</th>
+                                                <th class="p-2.5">Mês/Ano</th>
+                                                <th class="p-2.5 text-right">Meta</th>
+                                                <th class="p-2.5 text-right">Realizado</th>
+                                                <th class="p-2.5 text-right">Diferença (Calculada)</th>
+                                                <th class="p-2.5 text-center">Ações</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="admin-kpi-list-tbody" class="divide-y divide-slate-200 bg-white font-medium"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- DEMAIS SUB-ABAS MANTIDAS -->
+                        <div id="adm-sec-usuarios" class="space-y-6 hidden">
                             <div class="bg-slate-50/80 p-4 rounded-2xl border border-slate-200 space-y-3">
                                 <h3 class="text-sm font-bold text-slate-800">Cadastrar Novo Usuário no Sistema</h3>
                                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -896,7 +1025,7 @@
 
         <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-500 mt-auto z-30">
             <div class="max-w-7xl mx-auto px-4">
-                LifeSocial v6.2 | Plataforma desenvolvida por 
+                LifeSocial v6.3 | Plataforma desenvolvida por 
                 <a href="https://www.linkedin.com/in/rafaelrobertonascimento" target="_blank" rel="noopener noreferrer" class="text-blue-600 font-bold hover:underline">
                     Rafael Roberto Nascimento <i class="fa-brands fa-linkedin text-xs ml-0.5"></i>
                 </a>
@@ -1052,6 +1181,7 @@
         let dbPosts = [];
         let dbLinks = [];
         let dbCustomCards = [];
+        let dbKpis = [];
         let proposalProducts = [];
         let draggedItemIndex = null;
         let activeSharePostId = null;
@@ -1108,6 +1238,8 @@
                 propostasBtn.classList.remove('hidden');
                 document.getElementById('admin-pin-notice-option').classList.add('hidden');
             }
+
+            renderUserKpiDashboard();
         }
 
         function toggleSidebar() {
@@ -1129,11 +1261,13 @@
 
         function switchMainTab(tab) {
             document.getElementById('main-sec-social').classList.add('hidden');
+            document.getElementById('main-sec-metas').classList.add('hidden');
             document.getElementById('main-sec-propostas').classList.add('hidden');
             document.getElementById('main-sec-admin').classList.add('hidden');
             document.getElementById('main-sec-perfil').classList.add('hidden');
 
             document.getElementById('nav-item-social').className = "w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white font-medium text-xs sm:text-sm transition";
+            document.getElementById('nav-item-metas').className = "w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white font-medium text-xs sm:text-sm transition";
             document.getElementById('nav-item-propostas').className = "w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white font-medium text-xs sm:text-sm transition " + (currentUser && currentUser.role === 'admin' ? 'hidden' : '');
             document.getElementById('nav-item-admin').className = "w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-white font-extrabold text-xs sm:text-sm shadow-md transition " + (currentUser && currentUser.role === 'admin' ? '' : 'hidden');
             document.getElementById('nav-item-perfil').className = "w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white font-medium text-xs sm:text-sm transition";
@@ -1141,6 +1275,10 @@
             if (tab === 'social') {
                 document.getElementById('main-sec-social').classList.remove('hidden');
                 document.getElementById('nav-item-social').className = "w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl bg-blue-600 text-white font-bold text-xs sm:text-sm transition shadow-sm";
+            } else if (tab === 'metas') {
+                document.getElementById('main-sec-metas').classList.remove('hidden');
+                document.getElementById('nav-item-metas').className = "w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl bg-blue-600 text-white font-bold text-xs sm:text-sm transition shadow-sm";
+                renderUserKpiDashboard();
             } else if (tab === 'propostas') {
                 document.getElementById('main-sec-propostas').classList.remove('hidden');
                 document.getElementById('nav-item-propostas').className = "w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl bg-blue-600 text-white font-bold text-xs sm:text-sm transition shadow-sm";
@@ -1333,10 +1471,8 @@
             localStorage.removeItem('sgp_user_email');
             localStorage.removeItem('sgp_user_pass');
             
-            const adminBtn = document.getElementById('nav-item-admin');
-            const adminOption = document.getElementById('admin-pin-notice-option');
-            if (adminBtn) adminBtn.classList.add('hidden');
-            if (adminOption) adminOption.classList.add('hidden');
+            document.getElementById('nav-item-admin').classList.add('hidden');
+            document.getElementById('admin-pin-notice-option').classList.add('hidden');
             
             clearProposalState();
             showAuthScreen();
@@ -1623,6 +1759,183 @@
             closeShareModal();
         }
 
+        // NOVO MÓDULO METAS & KPIS (FIREBASE REALTIME MANTIDO)
+        function listenFirebaseKpis() {
+            db.collection("kpis").onSnapshot((snapshot) => {
+                dbKpis = [];
+                snapshot.forEach((doc) => {
+                    dbKpis.push({ id: doc.id, ...doc.data() });
+                });
+                renderUserKpiDashboard();
+                renderAdminKpiList();
+            });
+        }
+
+        function saveAdminKpiEntry() {
+            const userSelect = document.getElementById('admin-kpi-user-select');
+            const userNome = userSelect.value;
+            const mesAno = document.getElementById('admin-kpi-mes').value;
+            const meta = parseFloat(document.getElementById('admin-kpi-meta').value || 0);
+            const realizado = parseFloat(document.getElementById('admin-kpi-realizado').value || 0);
+
+            if (!userNome || !mesAno) {
+                alert('Selecione um Vendedor e o Mês/Ano para lançar o KPI!');
+                return;
+            }
+
+            const docId = `${userNome.replace(/\s+/g, '_').toLowerCase()}_${mesAno}`;
+
+            db.collection("kpis").doc(docId).set({
+                userNome,
+                mesAno,
+                meta,
+                realizado,
+                dataAtualizacao: new Date().toISOString()
+            }).then(() => {
+                alert(`KPI de ${userNome} para ${mesAno} salvo com sucesso!`);
+                document.getElementById('admin-kpi-meta').value = '';
+                document.getElementById('admin-kpi-realizado').value = '';
+            });
+        }
+
+        function deleteKpiEntry(kpiId) {
+            if (confirm('Deseja excluir este lançamento de KPI?')) {
+                db.collection("kpis").doc(kpiId).delete();
+            }
+        }
+
+        function renderAdminKpiList() {
+            const tbody = document.getElementById('admin-kpi-list-tbody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            if (dbKpis.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400 italic">Nenhum lançamento de KPI realizado ainda.</td></tr>`;
+                return;
+            }
+
+            dbKpis.forEach(k => {
+                const dif = k.realizado - k.meta;
+                const difClass = dif >= 0 ? 'text-emerald-600 font-bold' : 'text-red-600 font-bold';
+
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50">
+                        <td class="p-2.5 font-bold text-slate-800">${k.userNome}</td>
+                        <td class="p-2.5 text-slate-600">${k.mesAno}</td>
+                        <td class="p-2.5 text-right">${formatBRL(k.meta)}</td>
+                        <td class="p-2.5 text-right font-bold text-blue-600">${formatBRL(k.realizado)}</td>
+                        <td class="p-2.5 text-right ${difClass}">${formatBRL(dif)}</td>
+                        <td class="p-2.5 text-center">
+                            <button onclick="deleteKpiEntry('${k.id}')" class="px-2 py-1 bg-red-100 hover:bg-red-200 text-red-700 rounded text-[10px] font-bold">Excluir</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function renderUserKpiDashboard() {
+            if (!currentUser) return;
+
+            const userKpis = dbKpis.filter(k => k.userNome && k.userNome.toLowerCase() === currentUser.nome.toLowerCase());
+
+            let totalMetaAno = 0;
+            let totalRealizadoAno = 0;
+
+            userKpis.forEach(k => {
+                totalMetaAno += k.meta || 0;
+                totalRealizadoAno += k.realizado || 0;
+            });
+
+            const faltaAno = totalRealizadoAno - totalMetaAno;
+            const percentAno = totalMetaAno > 0 ? ((totalRealizadoAno / totalMetaAno) * 100).toFixed(1) : 0;
+
+            if (document.getElementById('user-kpi-meta-ano')) {
+                document.getElementById('user-kpi-meta-ano').innerText = formatBRL(totalMetaAno);
+                document.getElementById('user-kpi-venda-ano').innerText = formatBRL(totalRealizadoAno);
+                
+                const faltaEl = document.getElementById('user-kpi-falta-ano');
+                faltaEl.innerText = formatBRL(faltaAno);
+                faltaEl.className = faltaAno >= 0 ? "text-2xl font-black text-emerald-600" : "text-2xl font-black text-red-600";
+
+                document.getElementById('user-kpi-percent-ano').innerText = `${percentAno}% Atingido no Ano`;
+            }
+
+            // CALCULA RANKING
+            const rankingMap = {};
+            dbKpis.forEach(k => {
+                if (!rankingMap[k.userNome]) rankingMap[k.userNome] = 0;
+                rankingMap[k.userNome] += k.realizado || 0;
+            });
+
+            const sortedRank = Object.keys(rankingMap).map(nome => ({
+                nome,
+                total: rankingMap[nome]
+            })).sort((a,b) => b.total - a.total);
+
+            const userPosIndex = sortedRank.findIndex(r => r.nome.toLowerCase() === currentUser.nome.toLowerCase());
+            const rankEl = document.getElementById('user-kpi-ranking');
+            if (rankEl) {
+                rankEl.innerText = userPosIndex !== -1 ? `#${userPosIndex + 1}º Lugar` : '# - Colocação';
+            }
+
+            // TABELA MES A MES
+            const tbody = document.getElementById('user-kpi-months-tbody');
+            if (tbody) {
+                tbody.innerHTML = '';
+                if (userKpis.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-400 italic">Nenhum KPI cadastrado para seu usuário ainda.</td></tr>`;
+                } else {
+                    userKpis.forEach(k => {
+                        const dif = k.realizado - k.meta;
+                        const pct = k.meta > 0 ? ((k.realizado / k.meta) * 100).toFixed(0) : 0;
+                        const badge = pct >= 100 ? `<span class="px-2 py-1 bg-emerald-100 text-emerald-800 rounded-full font-bold text-[10px]">Atingida (${pct}%)</span>` : `<span class="px-2 py-1 bg-amber-100 text-amber-800 rounded-full font-bold text-[10px]">Em Aberto (${pct}%)</span>`;
+
+                        tbody.innerHTML += `
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-3 font-bold text-slate-800">${k.mesAno}</td>
+                                <td class="p-3 text-right">${formatBRL(k.meta)}</td>
+                                <td class="p-3 text-right font-bold text-blue-600">${formatBRL(k.realizado)}</td>
+                                <td class="p-3 text-right font-bold ${dif >= 0 ? 'text-emerald-600' : 'text-red-600'}">${formatBRL(dif)}</td>
+                                <td class="p-3 text-center">${badge}</td>
+                            </tr>
+                        `;
+                    });
+                }
+            }
+
+            // DETALHAMENTO DE PRODUTOS VENDIDOS DO USUÁRIO COM BASE NAS PROPOSTAS SALVAS
+            const userProps = dbPropostas.filter(p => p.vendedorNome && p.vendedorNome.toLowerCase() === currentUser.nome.toLowerCase());
+            const prodStats = {};
+
+            userProps.forEach(p => {
+                (p.proposalProducts || []).forEach(prod => {
+                    if (!prodStats[prod.name]) prodStats[prod.name] = { qtd: 0, total: 0 };
+                    prodStats[prod.name].qtd += (prod.qtdMensal || 1);
+                    prodStats[prod.name].total += (prod.unitMensal || 0) * (prod.qtdMensal || 1);
+                });
+            });
+
+            const prodContainer = document.getElementById('user-kpi-products-container');
+            if (prodContainer) {
+                prodContainer.innerHTML = '';
+                const prodKeys = Object.keys(prodStats);
+                if (prodKeys.length === 0) {
+                    prodContainer.innerHTML = `<p class="text-xs text-slate-400 italic col-span-3">Nenhum produto registrado nas propostas salvas.</p>`;
+                } else {
+                    prodKeys.forEach(prodName => {
+                        const st = prodStats[prodName];
+                        prodContainer.innerHTML += `
+                            <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200/80 space-y-1">
+                                <strong class="text-xs font-extrabold text-slate-800 block">${prodName}</strong>
+                                <span class="text-xs text-blue-600 font-bold block">${st.qtd} Unidades Vendidas</span>
+                                <span class="text-[10px] text-slate-400 block">Acumulado: ${formatBRL(st.total)}</span>
+                            </div>
+                        `;
+                    });
+                }
+            }
+        }
+
         // LINKS & SISTEMAS EXTERNOS
         function listenFirebaseLinks() {
             db.collection("atalhos").onSnapshot((snapshot) => {
@@ -1859,7 +2172,7 @@
             });
         }
 
-        // BANNER FEED (PROTEÇÃO CONTRA ERROS DE CARREGAMENTO)
+        // BANNER FEED
         function listenSystemSettings() {
             db.collection("settings").doc("config").onSnapshot((doc) => {
                 if (doc.exists) {
@@ -1873,11 +2186,9 @@
                     if (bannerUrl && bannerUrl.trim() !== '') {
                         if (img && container) {
                             img.src = bannerUrl;
-                            // SE A IMAGEM FALHAR AO CARREGAR (LINK QUEBRADO OU ERRO 404), ESCONDE O CONTAINER
                             img.onerror = function() {
                                 container.classList.add('hidden');
                             };
-                            // SE A IMAGEM CARREGAR COM SUCESSO, EXIBE O BANNER
                             img.onload = function() {
                                 container.classList.remove('hidden');
                             };
@@ -1907,7 +2218,31 @@
             });
         }
 
-        // GESTÃO DE USUÁRIOS NO PAINEL ADM
+        // GESTÃO DE USUÁRIOS NO PAINEL ADM (FUNÇÃO SUBSTITUÍDA CONFORME SOLICITADO)
+        function listenFirebaseUsers() {
+            db.collection("usuarios").onSnapshot((snapshot) => {
+                dbUsers = [];
+                snapshot.forEach((doc) => {
+                    dbUsers.push({ id: doc.id, ...doc.data() });
+                });
+
+                // O trecho que recriava 'vendedor@lifeapps.com.br' foi removido daqui!
+
+                renderAdminUsers();
+                populateAdminKpiUserSelect();
+            });
+        }
+
+        function populateAdminKpiUserSelect() {
+            const select = document.getElementById('admin-kpi-user-select');
+            if (!select) return;
+            select.innerHTML = '<option value="">-- Selecione o Usuário --</option>';
+
+            dbUsers.forEach(u => {
+                select.innerHTML += `<option value="${u.nome}">${u.nome} (${u.email})</option>`;
+            });
+        }
+
         function addNewUserByAdmin() {
             const nome = document.getElementById('admin-new-user-nome').value.trim();
             const email = document.getElementById('admin-new-user-email').value.trim().toLowerCase();
@@ -1996,6 +2331,7 @@
         }
 
         function switchAdminSubTab(sec) {
+            document.getElementById('adm-sec-kpis').classList.add('hidden');
             document.getElementById('adm-sec-usuarios').classList.add('hidden');
             document.getElementById('adm-sec-cards').classList.add('hidden');
             document.getElementById('adm-sec-links').classList.add('hidden');
@@ -2004,7 +2340,7 @@
             document.getElementById('adm-sec-seguranca').classList.add('hidden');
             document.getElementById('adm-sec-banner').classList.add('hidden');
 
-            const tabIds = ['adm-subtab-usuarios', 'adm-subtab-cards', 'adm-subtab-links', 'adm-subtab-produtos', 'adm-subtab-orcamentos', 'adm-subtab-seguranca', 'adm-subtab-banner'];
+            const tabIds = ['adm-subtab-kpis', 'adm-subtab-usuarios', 'adm-subtab-cards', 'adm-subtab-links', 'adm-subtab-produtos', 'adm-subtab-orcamentos', 'adm-subtab-seguranca', 'adm-subtab-banner'];
             tabIds.forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.className = "px-4 py-2 text-xs font-bold text-gray-500 hover:text-gray-800 whitespace-nowrap";
@@ -2014,34 +2350,27 @@
             document.getElementById(`adm-subtab-${sec}`).className = "px-4 py-2 text-xs font-bold border-b-2 border-blue-600 text-blue-600 whitespace-nowrap";
         }
 
-        function saveAdminPassword() {
-            const newPass = document.getElementById('admin-new-pass').value;
-            const confirmPass = document.getElementById('admin-confirm-pass').value;
-
-            if (!newPass || newPass !== confirmPass) {
-                alert('Senhas inválidas ou divergentes!');
-                return;
-            }
-
-            db.collection("settings").doc("config").update({ adminPass: newPass }).then(() => {
-                alert('Senha do Administrador atualizada com sucesso!');
-                document.getElementById('admin-new-pass').value = '';
-                document.getElementById('admin-confirm-pass').value = '';
+        function listenSystemSettings() {
+            db.collection("settings").doc("config").onSnapshot((doc) => {
+                if (doc.exists) {
+                    if (doc.data().adminPass) adminPassHash = doc.data().adminPass;
+                    if (doc.data().bannerUrl) {
+                        const img = document.getElementById('feed-banner-image');
+                        const container = document.getElementById('feed-banner-container');
+                        if (img && container) {
+                            img.src = doc.data().bannerUrl;
+                            img.onerror = function() { container.classList.add('hidden'); };
+                            img.onload = function() { container.classList.remove('hidden'); };
+                        }
+                        const inputBanner = document.getElementById('admin-banner-url');
+                        if (inputBanner) inputBanner.value = doc.data().bannerUrl;
+                    } else {
+                        const container = document.getElementById('feed-banner-container');
+                        if (container) container.classList.add('hidden');
+                    }
+                }
             });
         }
-
-        function listenFirebaseUsers() {
-    db.collection("usuarios").onSnapshot((snapshot) => {
-        dbUsers = [];
-        snapshot.forEach((doc) => {
-            dbUsers.push({ id: doc.id, ...doc.data() });
-        });
-
-        // O trecho que recriava 'vendedor@lifeapps.com.br' foi removido daqui!
-
-        renderAdminUsers();
-    });
-}
 
         function listenFirebaseProducts() {
             db.collection("produtos").onSnapshot((snapshot) => {
@@ -2866,6 +3195,7 @@
         listenFirebasePosts();
         listenFirebaseLinks();
         listenFirebaseCustomCards();
+        listenFirebaseKpis();
     </script>
 </body>
 </html>
