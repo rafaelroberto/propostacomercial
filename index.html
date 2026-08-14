@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SGP - Portal Corporativo & Propostas LifeApps v5.6.1</title>
+    <title>SGP - Portal Corporativo & Propostas LifeApps v5.6.2</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -168,7 +168,7 @@
         </div>
 
         <footer class="text-center text-xs text-white/90 py-2 z-10">
-            Sistema de Geração de Proposta (SGP) - Nº v5.6.1 | Desenvolvido por 
+            Sistema de Geração de Proposta (SGP) - Nº v5.6.2 | Desenvolvido por 
             <a href="https://www.linkedin.com/in/rafaelrobertonascimento" target="_blank" rel="noopener noreferrer" class="text-white font-bold underline hover:text-green-300">
                 Rafael Nascimento <i class="fa-brands fa-linkedin text-xs ml-0.5"></i>
             </a>
@@ -199,7 +199,7 @@
                     </div>
 
                     <nav class="p-3 space-y-1.5" id="sidebar-nav-container">
-                        <!-- PAINEL ADMIN NO TOPO DO MENU -->
+                        <!-- BOTÃO ADMIN (VISÍVEL SÓ QUANDO FOR ADMIN) -->
                         <button onclick="switchMainTab('admin')" id="nav-item-admin" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-white font-extrabold text-xs sm:text-sm shadow-md transition hidden mb-2">
                             <i class="fa-solid fa-user-shield text-lg min-w-[24px]"></i>
                             <span class="sidebar-text whitespace-nowrap">Painel Administrativo</span>
@@ -210,7 +210,7 @@
                             <span class="sidebar-text whitespace-nowrap">Rede Social / Feed</span>
                         </button>
 
-                        <!-- GERADOR DE PROPOSTAS (NATIVAMENTE OCULTO NO HTML, EXIBIDO SÓ PARA USUÁRIOS) -->
+                        <!-- GERADOR DE PROPOSTAS (OCULTO PARA ADMIN, VISÍVEL PARA USUÁRIO COMUM) -->
                         <button onclick="switchMainTab('propostas')" id="nav-item-propostas" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white font-medium text-xs sm:text-sm transition hidden">
                             <i class="fa-solid fa-calculator text-lg min-w-[24px]"></i>
                             <span class="sidebar-text whitespace-nowrap">Gerador de Proposta</span>
@@ -220,7 +220,7 @@
                     <div id="sidebar-dynamic-links"></div>
                 </div>
 
-                <!-- PERFIL & LOGOUT -->
+                <!-- PERFIL & LOGOUT CORRIGIDO -->
                 <div class="p-3 border-t border-slate-800 bg-slate-900 sticky bottom-0">
                     <div class="flex items-center space-x-3 p-2 bg-slate-800/60 rounded-xl overflow-hidden mb-2">
                         <div class="w-8 h-8 rounded-full bg-blue-600 text-white font-bold flex items-center justify-center text-xs flex-shrink-0" id="user-avatar-initials">
@@ -232,7 +232,7 @@
                         </div>
                     </div>
 
-                    <button type="button" onclick="logoutSystem()" class="w-full flex items-center space-x-3 px-3 py-2 text-red-400 hover:bg-red-500/10 rounded-xl font-bold text-xs transition cursor-pointer">
+                    <button type="button" onclick="logoutSystem(event)" class="w-full flex items-center space-x-3 px-3 py-2 text-red-400 hover:bg-red-500/10 rounded-xl font-bold text-xs transition cursor-pointer">
                         <i class="fa-solid fa-power-off text-base min-w-[24px]"></i>
                         <span class="sidebar-text whitespace-nowrap">Sair do Sistema</span>
                     </button>
@@ -999,7 +999,7 @@
 
         const dbExtras = { extrator: 250.00 };
 
-        // INITIALIZATION DE SEGURANÇA DADOS
+        // INITIALIZATION
         function checkUserSession() {
             const savedSession = sessionStorage.getItem('sgp_session_user');
             if (savedSession) {
@@ -1195,7 +1195,22 @@
             });
         }
 
-        // GERENCIADOR DE NOTIFICAÇÕES REALTIME (COMPATIBILIZADO)
+        // LOGOFF LIMPO CORRIGIDO
+        function logoutSystem(e) {
+            if(e && e.preventDefault) e.preventDefault();
+            currentUser = null;
+            sessionStorage.removeItem('sgp_session_user');
+            localStorage.removeItem('sgp_user_email');
+            localStorage.removeItem('sgp_user_pass');
+            
+            document.getElementById('nav-item-admin').classList.add('hidden');
+            document.getElementById('admin-pin-notice-option').classList.add('hidden');
+            
+            clearProposalState();
+            showAuthScreen();
+        }
+
+        // NOTIFICAÇÕES REALTIME
         function requestNotificationPermission() {
             if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") {
                 Notification.requestPermission();
@@ -1232,6 +1247,8 @@
             const container = document.getElementById('notification-items-container');
             const badge = document.getElementById('notification-badge');
 
+            if (!container || !badge) return;
+
             const unread = dbNotifications.filter(n => !n.lida);
 
             if (unread.length > 0) {
@@ -1240,7 +1257,7 @@
 
                 const lastUnread = unread[0];
                 if (!lastUnread.pushed) {
-                    triggerWebPushNotification("Você foi mencionado no SGP!", `${lastUnread.remetenteNome} mencionou você em uma publicação.`);
+                    triggerWebPushNotification("Você recebeu um aviso no SGP!", `${lastUnread.remetenteNome}: ${lastUnread.mensagem}`);
                     db.collection("notificacoes").doc(lastUnread.id).update({ pushed: true });
                 }
             } else {
@@ -1272,7 +1289,7 @@
 
         function toggleNotificationsMenu() {
             const dropdown = document.getElementById('notification-dropdown');
-            dropdown.classList.toggle('hidden');
+            if (dropdown) dropdown.classList.toggle('hidden');
         }
 
         function markNotificationsAsRead() {
@@ -1281,7 +1298,7 @@
             });
         }
 
-        // EMOJIS & FEED SOCIAL
+        // FEED SOCIAL
         function toggleEmojiPicker() {
             const picker = document.getElementById('emoji-picker-popover');
             picker.classList.toggle('hidden');
@@ -1426,9 +1443,7 @@
                 const countLikes = (post.curtidas || []).length;
                 const comentarios = post.comentarios || [];
 
-                const isOwner = currentUser && (currentUser.role === 'admin' || post.autorId === currentUser.id || post.autorNome === currentUser.nome);
-
-                let formattedText = post.texto ? post.texto : '';
+                const canDeletePost = currentUser && (currentUser.role === 'admin' || post.autorId === currentUser.id || post.autorNome === currentUser.nome);
 
                 let pinnedBadge = post.isPinned ? `
                     <span class="bg-amber-100 text-amber-800 text-[10px] px-2.5 py-0.5 rounded-full font-bold flex items-center">
@@ -1444,13 +1459,13 @@
 
                 let commentsHtml = '';
                 comentarios.forEach(c => {
-                    const isCommentOwner = currentUser && (currentUser.role === 'admin' || c.autorId === currentUser.id || c.autorNome === currentUser.nome);
+                    const canDeleteComment = currentUser && (currentUser.role === 'admin' || c.autorId === currentUser.id || c.autorNome === currentUser.nome);
 
                     commentsHtml += `
                         <div class="bg-gray-50 p-2.5 rounded-xl text-xs space-y-0.5 relative group">
                             <div class="flex justify-between items-center">
                                 <strong class="text-blue-900">${c.autorNome}</strong>
-                                ${isCommentOwner ? `<button onclick="deleteCommentFromPost('${post.id}', '${c.id}')" class="text-red-400 hover:text-red-600 text-[10px] font-bold">Excluir</button>` : ''}
+                                ${canDeleteComment ? `<button onclick="deleteCommentFromPost('${post.id}', '${c.id}')" class="text-red-400 hover:text-red-600 text-[10px] font-bold">Excluir</button>` : ''}
                             </div>
                             <p class="text-gray-700">${c.texto}</p>
                         </div>
@@ -1475,7 +1490,7 @@
 
                             <div class="flex items-center space-x-2">
                                 ${pinnedBadge}
-                                ${isOwner ? `
+                                ${canDeletePost ? `
                                     <button onclick="deletePostFirebase('${post.id}')" title="Excluir publicação" class="text-gray-400 hover:text-red-600 text-xs p-1">
                                         <i class="fa-solid fa-trash"></i>
                                     </button>
@@ -1483,7 +1498,7 @@
                             </div>
                         </div>
 
-                        ${formattedText ? `<p class="text-xs sm:text-sm text-gray-800 leading-relaxed whitespace-pre-line">${formattedText}</p>` : ''}
+                        ${post.texto ? `<p class="text-xs sm:text-sm text-gray-800 leading-relaxed whitespace-pre-line">${post.texto}</p>` : ''}
                         ${imageHtml}
 
                         <div class="flex items-center justify-between border-t border-b py-2 text-xs text-gray-500">
@@ -1967,7 +1982,7 @@
             });
         }
 
-        // CARREGAMENTO DE PRODUTOS CORRIGIDO (SEM FILTRAR FORÇADO SE FOR NULO)
+        // CARREGAMENTO DE PRODUTOS DIRETO DO FIRESTORE (SEM FILTROS BLOQUEANTES)
         function listenFirebaseProducts() {
             db.collection("produtos").onSnapshot((snapshot) => {
                 dbProducts = [];
@@ -2006,7 +2021,7 @@
             });
         }
 
-        // PROPOSTAS E CALCULADOR
+        // CALCULADOR DE PROPOSTAS
         function clearProposalState() {
             proposalProducts = [];
             const searchInput = document.getElementById('vendedor-search-input');
@@ -2242,7 +2257,7 @@
             }
         }
 
-        // BUSCA DE PRODUTOS NO DROPDOWN (RESTABELECIDA)
+        // RENDER DE PRODUTOS NO DROPDOWN (SEM BLOQUEIOS)
         function renderCustomDropdownList(filterTerm = '') {
             const container = document.getElementById('custom-product-dropdown');
             if (!container) return;
