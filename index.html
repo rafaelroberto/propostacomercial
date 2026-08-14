@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SGP - Portal Corporativo & Propostas LifeApps v5.6</title>
+    <title>SGP - Portal Corporativo & Propostas LifeApps v5.6.1</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -168,7 +168,7 @@
         </div>
 
         <footer class="text-center text-xs text-white/90 py-2 z-10">
-            Sistema de Geração de Proposta (SGP) - Nº v5.6 | Desenvolvido por 
+            Sistema de Geração de Proposta (SGP) - Nº v5.6.1 | Desenvolvido por 
             <a href="https://www.linkedin.com/in/rafaelrobertonascimento" target="_blank" rel="noopener noreferrer" class="text-white font-bold underline hover:text-green-300">
                 Rafael Nascimento <i class="fa-brands fa-linkedin text-xs ml-0.5"></i>
             </a>
@@ -199,7 +199,7 @@
                     </div>
 
                     <nav class="p-3 space-y-1.5" id="sidebar-nav-container">
-                        <!-- BOTÃO ADMIN (CORRIGIDO: SÓ APARECE PARA ADMIN) -->
+                        <!-- PAINEL ADMIN NO TOPO DO MENU -->
                         <button onclick="switchMainTab('admin')" id="nav-item-admin" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-white font-extrabold text-xs sm:text-sm shadow-md transition hidden mb-2">
                             <i class="fa-solid fa-user-shield text-lg min-w-[24px]"></i>
                             <span class="sidebar-text whitespace-nowrap">Painel Administrativo</span>
@@ -210,8 +210,8 @@
                             <span class="sidebar-text whitespace-nowrap">Rede Social / Feed</span>
                         </button>
 
-                        <!-- GERADOR DE PROPOSTAS (SÓ APARECE PARA USUÁRIO COMUM) -->
-                        <button onclick="switchMainTab('propostas')" id="nav-item-propostas" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white font-medium text-xs sm:text-sm transition">
+                        <!-- GERADOR DE PROPOSTAS (NATIVAMENTE OCULTO NO HTML, EXIBIDO SÓ PARA USUÁRIOS) -->
+                        <button onclick="switchMainTab('propostas')" id="nav-item-propostas" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white font-medium text-xs sm:text-sm transition hidden">
                             <i class="fa-solid fa-calculator text-lg min-w-[24px]"></i>
                             <span class="sidebar-text whitespace-nowrap">Gerador de Proposta</span>
                         </button>
@@ -242,26 +242,6 @@
             <!-- CONTEÚDO PRINCIPAL -->
             <main class="flex-1 p-4 sm:p-8 max-w-7xl mx-auto w-full">
 
-                <!-- TOP BAR DE NOTIFICAÇÕES -->
-                <div class="flex justify-end items-center mb-6">
-                    <div class="relative">
-                        <button onclick="toggleNotificationsMenu()" class="p-2.5 bg-white border rounded-xl text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition relative shadow-sm">
-                            <i class="fa-solid fa-bell text-lg"></i>
-                            <span id="notification-badge" class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-extrabold w-5 h-5 rounded-full flex items-center justify-center hidden">0</span>
-                        </button>
-
-                        <div id="notification-dropdown" class="hidden absolute right-0 mt-2 w-80 bg-white border rounded-2xl shadow-2xl z-50 overflow-hidden divide-y">
-                            <div class="p-3 bg-gray-50 flex justify-between items-center border-b">
-                                <span class="font-bold text-xs text-gray-800">Notificações / Menções</span>
-                                <button onclick="markNotificationsAsRead()" class="text-[10px] font-bold text-blue-600 hover:underline">Marcar lidas</button>
-                            </div>
-                            <div id="notification-items-container" class="max-h-64 overflow-y-auto divide-y text-xs text-gray-700">
-                                <p class="p-4 text-center text-gray-400 italic text-xs">Nenhuma notificação por enquanto.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
                 <!-- 1. REDE SOCIAL / FEED -->
                 <section id="main-sec-social" class="space-y-6">
                     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -273,9 +253,7 @@
 
                             <div class="bg-white p-4 sm:p-5 rounded-2xl border shadow-sm space-y-3 relative">
                                 <div class="w-full relative">
-                                    <textarea id="post-input-text" rows="3" oninput="handleMentionAutocomplete(this)" placeholder="Publique algo para seus colegas da LifeApps aqui... (Use @ para mencionar um colega)" class="w-full p-3 bg-gray-50 border rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none resize-none"></textarea>
-
-                                    <div id="mention-autocomplete-popover" class="hidden absolute left-3 bottom-full mb-1 w-64 bg-white border border-gray-200 rounded-xl shadow-2xl z-50 max-h-48 overflow-y-auto divide-y"></div>
+                                    <textarea id="post-input-text" rows="3" placeholder="Publique algo para seus colegas da LifeApps aqui..." class="w-full p-3 bg-gray-50 border rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none resize-none"></textarea>
                                 </div>
 
                                 <div class="relative">
@@ -857,7 +835,7 @@
 
         <footer class="bg-white border-t border-gray-200 py-4 text-center text-xs text-gray-500 mt-auto z-30">
             <div class="max-w-7xl mx-auto px-4">
-                Sistema de Geração de Proposta (SGP) - Nº v5.6 | Desenvolvido por 
+                Sistema de Geração de Proposta (SGP) - Nº v5.6.1 | Desenvolvido por 
                 <a href="https://www.linkedin.com/in/rafaelrobertonascimento" target="_blank" rel="noopener noreferrer" class="text-blue-600 font-bold hover:underline">
                     Rafael Nascimento <i class="fa-brands fa-linkedin text-xs ml-0.5"></i>
                 </a>
@@ -1021,14 +999,13 @@
 
         const dbExtras = { extrator: 250.00 };
 
-        // SESSÃO E ROTEAMENTO
+        // INITIALIZATION DE SEGURANÇA DADOS
         function checkUserSession() {
             const savedSession = sessionStorage.getItem('sgp_session_user');
             if (savedSession) {
                 currentUser = JSON.parse(savedSession);
                 showMainApp();
                 requestNotificationPermission();
-                listenFirebaseNotifications();
             } else {
                 showAuthScreen();
             }
@@ -1218,66 +1195,7 @@
             });
         }
 
-        // LOGOFF COMPLETO
-        function logoutSystem() {
-            currentUser = null;
-            sessionStorage.removeItem('sgp_session_user');
-            localStorage.removeItem('sgp_user_email');
-            localStorage.removeItem('sgp_user_pass');
-            
-            document.getElementById('nav-item-admin').classList.add('hidden');
-            document.getElementById('admin-pin-notice-option').classList.add('hidden');
-            
-            clearProposalState();
-            showAuthScreen();
-        }
-
-        // AUTOCOMPLETE MENTIONS
-        function handleMentionAutocomplete(textarea) {
-            const val = textarea.value;
-            const cursor = textarea.selectionStart;
-            const textBeforeCursor = val.substring(0, cursor);
-            const lastAt = textBeforeCursor.lastIndexOf('@');
-
-            const popover = document.getElementById('mention-autocomplete-popover');
-
-            if (lastAt !== -1) {
-                const query = textBeforeCursor.substring(lastAt + 1).toLowerCase();
-                const matches = dbUsers.filter(u => (u.nome && u.nome.toLowerCase().includes(query)) || (u.email && u.email.toLowerCase().includes(query)));
-
-                if (matches.length > 0 && !query.includes(' ')) {
-                    let html = '';
-                    matches.forEach(u => {
-                        html += `
-                            <div onclick="selectMentionUser('${u.nome}')" class="p-2 text-xs text-gray-700 hover:bg-blue-50 hover:text-blue-700 font-medium cursor-pointer transition flex items-center space-x-2">
-                                <div class="w-6 h-6 rounded-full bg-blue-600 text-white text-[10px] font-bold flex items-center justify-center">
-                                    ${(u.nome || 'U').slice(0,2).toUpperCase()}
-                                </div>
-                                <span>${u.nome}</span>
-                            </div>
-                        `;
-                    });
-                    popover.innerHTML = html;
-                    popover.classList.remove('hidden');
-                    return;
-                }
-            }
-            popover.classList.add('hidden');
-        }
-
-        function selectMentionUser(userName) {
-            const textarea = document.getElementById('post-input-text');
-            const cursor = textarea.selectionStart;
-            const text = textarea.value;
-            const lastAt = text.substring(0, cursor).lastIndexOf('@');
-
-            const newText = text.substring(0, lastAt) + `@${userName} ` + text.substring(cursor);
-            textarea.value = newText;
-            document.getElementById('mention-autocomplete-popover').classList.add('hidden');
-            textarea.focus();
-        }
-
-        // NOTIFICAÇÕES REALTIME
+        // GERENCIADOR DE NOTIFICAÇÕES REALTIME (COMPATIBILIZADO)
         function requestNotificationPermission() {
             if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") {
                 Notification.requestPermission();
@@ -1363,7 +1281,41 @@
             });
         }
 
-        // FEED SOCIAL
+        // EMOJIS & FEED SOCIAL
+        function toggleEmojiPicker() {
+            const picker = document.getElementById('emoji-picker-popover');
+            picker.classList.toggle('hidden');
+        }
+
+        function insertEmoji(emoji) {
+            const input = document.getElementById('post-input-text');
+            const start = input.selectionStart;
+            const end = input.selectionEnd;
+            const text = input.value;
+            input.value = text.substring(0, start) + emoji + text.substring(end);
+            input.focus();
+            input.selectionStart = input.selectionEnd = start + emoji.length;
+            document.getElementById('emoji-picker-popover').classList.add('hidden');
+        }
+
+        function listenFirebasePosts() {
+            db.collection("posts").onSnapshot((snapshot) => {
+                dbPosts = [];
+                snapshot.forEach((doc) => {
+                    dbPosts.push({ id: doc.id, ...doc.data() });
+                });
+
+                dbPosts.sort((a, b) => {
+                    if (a.isPinned && !b.isPinned) return -1;
+                    if (!a.isPinned && b.isPinned) return 1;
+                    return new Date(b.dataCriacao || 0) - new Date(a.dataCriacao || 0);
+                });
+
+                renderSocialFeed();
+                renderSidebarNewsletter();
+            });
+        }
+
         function createNewPost() {
             const input = document.getElementById('post-input-text');
             const inputImage = document.getElementById('post-input-image');
@@ -1376,8 +1328,6 @@
                 alert('Digite uma mensagem ou adicione uma imagem para publicar!');
                 return;
             }
-
-            const mentions = text.match(/@([a-zA-A-zA-Z0-9À-ÿ\s]+)/g) || [];
 
             const newPost = {
                 autorId: currentUser.id || 'usr',
@@ -1395,22 +1345,6 @@
                 input.value = '';
                 inputImage.value = '';
                 document.getElementById('post-is-pinned').checked = false;
-
-                mentions.forEach(mention => {
-                    const cleanName = mention.replace('@', '').trim();
-                    const targetUser = dbUsers.find(u => u.nome && u.nome.toLowerCase() === cleanName.toLowerCase());
-
-                    if (targetUser) {
-                        db.collection("notificacoes").add({
-                            destinatarioNome: targetUser.nome,
-                            remetenteNome: currentUser.nome,
-                            mensagem: `Mencionou você: "${text.substring(0, 60)}..."`,
-                            data: new Date().toISOString(),
-                            lida: false,
-                            pushed: false
-                        });
-                    }
-                });
             });
         }
 
@@ -1492,9 +1426,9 @@
                 const countLikes = (post.curtidas || []).length;
                 const comentarios = post.comentarios || [];
 
-                const isOwner = currentUser && (post.autorId === currentUser.id || post.autorNome === currentUser.nome || currentUser.role === 'admin');
+                const isOwner = currentUser && (currentUser.role === 'admin' || post.autorId === currentUser.id || post.autorNome === currentUser.nome);
 
-                let formattedText = post.texto ? post.texto.replace(/@([a-zA-A-zA-Z0-9À-ÿ\s]+)/g, '<span class="text-blue-600 font-bold bg-blue-50 px-1 py-0.5 rounded">@$1</span>') : '';
+                let formattedText = post.texto ? post.texto : '';
 
                 let pinnedBadge = post.isPinned ? `
                     <span class="bg-amber-100 text-amber-800 text-[10px] px-2.5 py-0.5 rounded-full font-bold flex items-center">
@@ -1510,7 +1444,7 @@
 
                 let commentsHtml = '';
                 comentarios.forEach(c => {
-                    const isCommentOwner = currentUser && (c.autorId === currentUser.id || c.autorNome === currentUser.nome || currentUser.role === 'admin');
+                    const isCommentOwner = currentUser && (currentUser.role === 'admin' || c.autorId === currentUser.id || c.autorNome === currentUser.nome);
 
                     commentsHtml += `
                         <div class="bg-gray-50 p-2.5 rounded-xl text-xs space-y-0.5 relative group">
@@ -1630,7 +1564,7 @@
             closeShareModal();
         }
 
-        // LINKS EXTERNOS
+        // LINKS & SISTEMAS EXTERNOS
         function listenFirebaseLinks() {
             db.collection("atalhos").onSnapshot((snapshot) => {
                 dbLinks = [];
@@ -1753,7 +1687,7 @@
             });
         }
 
-        // CARDS CUSTOMIZADOS E NEWSLETTER
+        // CARDS CUSTOMIZADOS
         function listenFirebaseCustomCards() {
             db.collection("cards_laterais").onSnapshot((snapshot) => {
                 dbCustomCards = [];
@@ -2033,20 +1967,32 @@
             });
         }
 
+        // CARREGAMENTO DE PRODUTOS CORRIGIDO (SEM FILTRAR FORÇADO SE FOR NULO)
         function listenFirebaseProducts() {
             db.collection("produtos").onSnapshot((snapshot) => {
                 dbProducts = [];
                 snapshot.forEach((doc) => {
                     dbProducts.push({ id: doc.id, ...doc.data() });
                 });
+                
                 dbProducts.sort((a, b) => (a.order || 0) - (b.order || 0));
 
-                if (dbProducts.length === 0) seedDefaultProducts();
-                else {
+                if (dbProducts.length === 0) {
+                    seedDefaultProducts();
+                } else {
                     renderCustomDropdownList();
                     renderAdminProducts();
                 }
             });
+        }
+
+        function seedDefaultProducts() {
+            const defaults = [
+                { name: 'E-Commerce + App (iOS e Android)', setup: 18742.50, mensal: 2490.00, active: true, order: 1 },
+                { name: 'LifeGrowth', setup: 5000.00, mensal: 1200.00, active: true, order: 2 },
+                { name: 'LifeChat', setup: 3500.00, mensal: 890.00, active: true, order: 3 }
+            ];
+            defaults.forEach(p => db.collection("produtos").add(p));
         }
 
         function listenFirebasePropostas() {
@@ -2296,13 +2242,14 @@
             }
         }
 
+        // BUSCA DE PRODUTOS NO DROPDOWN (RESTABELECIDA)
         function renderCustomDropdownList(filterTerm = '') {
             const container = document.getElementById('custom-product-dropdown');
-            const activeProducts = dbProducts.filter(p => p.active !== false);
+            if (!container) return;
 
-            let filtered = activeProducts;
+            let filtered = dbProducts;
             if (filterTerm.trim() !== '') {
-                filtered = activeProducts.filter(p => p.name.toLowerCase().includes(filterTerm.toLowerCase()));
+                filtered = dbProducts.filter(p => p.name && p.name.toLowerCase().includes(filterTerm.toLowerCase()));
             }
 
             if (filtered.length === 0) {
@@ -2837,7 +2784,7 @@
             });
         }
 
-        // INICIALIZAÇÃO
+        // INICIALIZAÇÃO DO PORTAL
         checkUserSession();
         listenSystemSettings();
         listenNewsletterSettings();
