@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SGP - Portal Corporativo & Propostas LifeApps v5.8</title>
+    <title>SGP - Portal Corporativo & Propostas LifeApps v5.9</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -168,7 +168,7 @@
         </div>
 
         <footer class="text-center text-xs text-white/90 py-2 z-10">
-            Sistema de Geração de Proposta (SGP) - Nº v5.8 | Desenvolvido por 
+            Sistema de Geração de Proposta (SGP) - Nº v5.9 | Desenvolvido por 
             <a href="https://www.linkedin.com/in/rafaelrobertonascimento" target="_blank" rel="noopener noreferrer" class="text-white font-bold underline hover:text-green-300">
                 Rafael Nascimento <i class="fa-brands fa-linkedin text-xs ml-0.5"></i>
             </a>
@@ -216,6 +216,12 @@
                             <i class="fa-solid fa-calculator text-lg min-w-[24px]"></i>
                             <span class="sidebar-text whitespace-nowrap">Gerador de Proposta</span>
                         </button>
+
+                        <!-- MINHA CONTA / PERFIL DO USUÁRIO (NOVO) -->
+                        <button onclick="switchMainTab('perfil')" id="nav-item-perfil" class="w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-slate-300 hover:bg-slate-800 hover:text-white font-medium text-xs sm:text-sm transition">
+                            <i class="fa-solid fa-user-gear text-lg min-w-[24px]"></i>
+                            <span class="sidebar-text whitespace-nowrap">Minha Conta / Perfil</span>
+                        </button>
                     </nav>
 
                     <div id="sidebar-dynamic-links"></div>
@@ -255,7 +261,7 @@
 
                             <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-3.5 relative">
                                 <div class="w-full relative">
-                                    <textarea id="post-input-text" rows="3" placeholder="Publique algo para seus colegas da LifeApps aqui..." class="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs sm:text-sm text-slate-800 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none transition resize-none"></textarea>
+                                    <textarea id="post-input-text" rows="3" placeholder="Publique algo para seus colegas da LifeApps aqui..." class="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs sm:text-sm text-slate-800 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none transition resize-none"></textarea>
                                 </div>
 
                                 <div class="relative">
@@ -318,7 +324,50 @@
                     </div>
                 </section>
 
-                <!-- 2. GERADOR DE PROPOSTAS -->
+                <!-- 2. MINHA CONTA / PERFIL DO USUÁRIO (NOVA FUNCIONALIDADE) -->
+                <section id="main-sec-perfil" class="hidden space-y-6 max-w-2xl">
+                    <div class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
+                        <div class="flex items-center space-x-3 border-b border-slate-100 pb-4">
+                            <div class="w-12 h-12 bg-blue-600 text-white font-black rounded-2xl flex items-center justify-center text-lg shadow-md">
+                                <i class="fa-solid fa-user-pen"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-lg font-extrabold text-slate-900">Minha Conta & Segurança</h2>
+                                <p class="text-xs text-slate-500">Atualize seus dados pessoais e altere sua senha de acesso.</p>
+                            </div>
+                        </div>
+
+                        <form onsubmit="saveUserProfileSelf(event)" class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Nome Completo</label>
+                                <input type="text" id="user-profile-nome" required class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">E-mail Corporativo (@lifeapps.com.br)</label>
+                                <input type="email" id="user-profile-email" required class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                            </div>
+
+                            <div class="border-t border-slate-100 pt-4 space-y-3">
+                                <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider">Alterar Senha de Acesso</h3>
+                                <div>
+                                    <label class="block text-xs font-medium text-slate-600 mb-1">Nova Senha</label>
+                                    <input type="password" id="user-profile-new-pass" placeholder="Digite uma nova senha se desejar alterar..." class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-slate-600 mb-1">Confirmar Nova Senha</label>
+                                    <input type="password" id="user-profile-confirm-pass" placeholder="Confirme a nova senha..." class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                                </div>
+                            </div>
+
+                            <button type="submit" class="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-extrabold rounded-2xl shadow-md transition text-xs uppercase tracking-wider">
+                                Salvar Minhas Alterações
+                            </button>
+                        </form>
+                    </div>
+                </section>
+
+                <!-- 3. GERADOR DE PROPOSTAS -->
                 <section id="main-sec-propostas" class="hidden space-y-8">
                     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
                         <div class="lg:col-span-5 bg-white p-6 rounded-3xl shadow-sm border border-slate-200/80 space-y-6">
@@ -528,7 +577,7 @@
                     </div>
                 </section>
 
-                <!-- 3. PAINEL ADM -->
+                <!-- 4. PAINEL ADM -->
                 <section id="main-sec-admin" class="hidden space-y-6">
                     <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200 space-y-6">
                         
@@ -564,7 +613,7 @@
                             </button>
                         </div>
 
-                        <!-- SUB-ABAS MANTIDAS -->
+                        <!-- SUB-ABAS DO ADMIN MANTIDAS -->
                         <div id="adm-sec-usuarios" class="space-y-6">
                             <div class="bg-slate-50/80 p-4 rounded-2xl border border-slate-200 space-y-3">
                                 <h3 class="text-sm font-bold text-slate-800">Cadastrar Novo Usuário no Sistema</h3>
@@ -986,7 +1035,6 @@
         let dbPosts = [];
         let dbLinks = [];
         let dbCustomCards = [];
-        let dbNotifications = [];
         let proposalProducts = [];
         let draggedItemIndex = null;
         let activeSharePostId = null;
@@ -1016,6 +1064,12 @@
             document.getElementById('user-display-name').innerText = currentUser.nome || 'Usuário';
             document.getElementById('user-display-email').innerText = currentUser.email || 'Corporativo';
 
+            // Preenche o formulário da Minha Conta
+            if (document.getElementById('user-profile-nome')) {
+                document.getElementById('user-profile-nome').value = currentUser.nome || '';
+                document.getElementById('user-profile-email').value = currentUser.email || '';
+            }
+
             const roleBadge = document.getElementById('user-role-badge');
             if (roleBadge) {
                 roleBadge.innerText = currentUser.role === 'admin' ? 'Administrador' : 'Colaborador';
@@ -1029,14 +1083,14 @@
             const adminBtn = document.getElementById('nav-item-admin');
             const propostasBtn = document.getElementById('nav-item-propostas');
 
-            // REGRA FIXA MANTIDA: ADMIN VÊ Apenas FEED E ADMIN; USUÁRIO VÊ FEED E GERADOR PROPOSTAS
+            // REGRA FIXA MANTIDA: ADMIN VÊ PAINEL ADM E FEED; USUÁRIO VÊ FEED E GERADOR PROPOSTAS
             if (currentUser.role === 'admin') {
                 adminBtn.classList.remove('hidden');
                 propostasBtn.classList.add('hidden');
                 document.getElementById('admin-pin-notice-option').classList.remove('hidden');
             } else {
                 adminBtn.classList.add('hidden');
-                propostasBtn.classList.remove('hidden');
+                propostasBtn.classList.remove('hidden'); // GARANTE QUE GERADOR DE PROPOSTAS FIQUE VISÍVEL PARA USUÁRIOS
                 document.getElementById('admin-pin-notice-option').classList.add('hidden');
             }
         }
@@ -1062,10 +1116,12 @@
             document.getElementById('main-sec-social').classList.add('hidden');
             document.getElementById('main-sec-propostas').classList.add('hidden');
             document.getElementById('main-sec-admin').classList.add('hidden');
+            document.getElementById('main-sec-perfil').classList.add('hidden');
 
             document.getElementById('nav-item-social').className = "w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white font-medium text-xs sm:text-sm transition";
             document.getElementById('nav-item-propostas').className = "w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white font-medium text-xs sm:text-sm transition " + (currentUser && currentUser.role === 'admin' ? 'hidden' : '');
             document.getElementById('nav-item-admin').className = "w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-white font-extrabold text-xs sm:text-sm shadow-md transition " + (currentUser && currentUser.role === 'admin' ? '' : 'hidden');
+            document.getElementById('nav-item-perfil').className = "w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white font-medium text-xs sm:text-sm transition";
 
             if (tab === 'social') {
                 document.getElementById('main-sec-social').classList.remove('hidden');
@@ -1075,6 +1131,68 @@
                 document.getElementById('nav-item-propostas').className = "w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl bg-blue-600 text-white font-bold text-xs sm:text-sm transition shadow-sm";
             } else if (tab === 'admin') {
                 document.getElementById('main-sec-admin').classList.remove('hidden');
+            } else if (tab === 'perfil') {
+                document.getElementById('main-sec-perfil').classList.remove('hidden');
+                document.getElementById('nav-item-perfil').className = "w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl bg-blue-600 text-white font-bold text-xs sm:text-sm transition shadow-sm";
+            }
+        }
+
+        // SALVAR PERFIL DO PRÓPRIO USUÁRIO (NOVA FUNCIONALIDADE DA V5.9)
+        function saveUserProfileSelf(e) {
+            e.preventDefault();
+            const newNome = document.getElementById('user-profile-nome').value.trim();
+            const newEmail = document.getElementById('user-profile-email').value.trim().toLowerCase();
+            const newPass = document.getElementById('user-profile-new-pass').value;
+            const confirmPass = document.getElementById('user-profile-confirm-pass').value;
+
+            if (!newNome || !newEmail) {
+                alert('Nome e E-mail são obrigatórios!');
+                return;
+            }
+
+            if (!newEmail.endsWith('@lifeapps.com.br')) {
+                alert('Por favor, utilize seu e-mail corporativo @lifeapps.com.br');
+                return;
+            }
+
+            if (newPass || confirmPass) {
+                if (newPass !== confirmPass) {
+                    alert('As senhas digitadas não coincidem!');
+                    return;
+                }
+            }
+
+            const userDocId = currentUser.id;
+            const updatePayload = {
+                nome: newNome,
+                email: newEmail
+            };
+
+            if (newPass && newPass.trim() !== '') {
+                updatePayload.senha = newPass.trim();
+            }
+
+            if (userDocId && userDocId !== 'vendedor_padrao' && userDocId !== 'admin_root') {
+                db.collection("usuarios").doc(userDocId).update(updatePayload).then(() => {
+                    currentUser.nome = newNome;
+                    currentUser.email = newEmail;
+                    if (newPass) currentUser.senha = newPass;
+
+                    sessionStorage.setItem('sgp_session_user', JSON.stringify(currentUser));
+                    showMainApp();
+                    alert('Seus dados e senha foram atualizados com sucesso!');
+                    document.getElementById('user-profile-new-pass').value = '';
+                    document.getElementById('user-profile-confirm-pass').value = '';
+                }).catch(err => alert("Erro ao atualizar perfil: " + err.message));
+            } else {
+                currentUser.nome = newNome;
+                currentUser.email = newEmail;
+                if (newPass) currentUser.senha = newPass;
+                sessionStorage.setItem('sgp_session_user', JSON.stringify(currentUser));
+                showMainApp();
+                alert('Sua sessão local foi atualizada!');
+                document.getElementById('user-profile-new-pass').value = '';
+                document.getElementById('user-profile-confirm-pass').value = '';
             }
         }
 
@@ -1893,19 +2011,16 @@
             });
         }
 
-        // CARREGAMENTO DE PRODUTOS DIRETO DO FIRESTORE (GARANTIDO)
         function listenFirebaseProducts() {
             db.collection("produtos").onSnapshot((snapshot) => {
                 dbProducts = [];
                 snapshot.forEach((doc) => {
                     dbProducts.push({ id: doc.id, ...doc.data() });
                 });
-                
                 dbProducts.sort((a, b) => (a.order || 0) - (b.order || 0));
 
-                if (dbProducts.length === 0) {
-                    seedDefaultProducts();
-                } else {
+                if (dbProducts.length === 0) seedDefaultProducts();
+                else {
                     renderCustomDropdownList();
                     renderAdminProducts();
                 }
@@ -1932,7 +2047,7 @@
             });
         }
 
-        // PROPOSTAS E CALCULADOR
+        // CALCULADOR E PROPOSTAS
         function clearProposalState() {
             proposalProducts = [];
             const searchInput = document.getElementById('vendedor-search-input');
@@ -2168,7 +2283,6 @@
             }
         }
 
-        // RENDER DE PRODUTOS NO DROPDOWN (100% GARANTIDO)
         function renderCustomDropdownList(filterTerm = '') {
             const container = document.getElementById('custom-product-dropdown');
             if (!container) return;
@@ -2710,7 +2824,7 @@
             });
         }
 
-        // INICIALIZAÇÃO DO PORTAL
+        // INICIALIZAÇÃO
         checkUserSession();
         listenSystemSettings();
         listenNewsletterSettings();
