@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SGP - Portal Corporativo & Propostas LifeApps v5.0.1</title>
+    <title>SGP - Portal Corporativo & Propostas LifeApps v5.1</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -16,128 +16,161 @@
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', system-ui, sans-serif; background-color: #f1f5f9; }
+        body { font-family: 'Inter', system-ui, sans-serif; background-color: #090d16; }
         .slide-preview { background-color: #ffffff; aspect-ratio: 16/9; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1); }
         .sidebar-expanded { width: 260px; }
         .sidebar-collapsed { width: 80px; }
         .draggable-card { cursor: grab; user-select: none; }
         .draggable-card:active { cursor: grabbing; }
         .draggable-card.dragging { opacity: 0.4; border: 2px dashed #3b82f6; }
-        .hero-auth-bg {
-            background: linear-gradient(135deg, rgba(15, 23, 42, 0.88) 0%, rgba(0, 86, 145, 0.82) 50%, rgba(62, 176, 73, 0.78) 100%), 
-                        url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
+        
+        /* DESIGN GEN Z - GLASSMOROPHISM & NEON GLOW */
+        .genz-bg {
+            background-color: #0b0f19;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.25) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(16, 185, 129, 0.2) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(245, 158, 11, 0.15) 0px, transparent 50%),
+                radial-gradient(at 0% 100%, rgba(99, 102, 241, 0.2) 0px, transparent 50%);
+        }
+        .genz-card {
+            background: rgba(18, 24, 38, 0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+        .genz-input {
+            background: rgba(10, 15, 26, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #f3f4f6;
+            transition: all 0.3s ease;
+        }
+        .genz-input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
+            outline: none;
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between">
+<body class="min-h-screen flex flex-col justify-between text-gray-100">
 
-    <!-- 1. TELA DE LOGIN / REGISTRO -->
-    <section id="screen-auth" class="fixed inset-0 z-50 hero-auth-bg flex flex-col justify-between p-4 overflow-y-auto">
-        <div class="my-auto flex justify-center w-full">
-            <div class="bg-white/95 backdrop-blur-md rounded-3xl w-full max-w-md p-6 sm:p-8 shadow-2xl space-y-6 border border-white/30">
+    <!-- 1. TELA DE LOGIN / REGISTRO (DESIGN GEN Z) -->
+    <section id="screen-auth" class="fixed inset-0 z-50 genz-bg flex flex-col justify-between p-4 overflow-y-auto">
+        
+        <!-- ELEMENTOS DE ILUMINAÇÃO DE FUNDO -->
+        <div class="fixed top-1/4 left-1/4 w-96 h-96 bg-blue-600/20 rounded-full blur-3xl pointer-events-none animate-pulse"></div>
+        <div class="fixed bottom-1/4 right-1/4 w-96 h-96 bg-emerald-500/15 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="my-auto flex justify-center w-full z-10">
+            <div class="genz-card rounded-3xl w-full max-w-md p-6 sm:p-8 space-y-6">
                 
+                <!-- LOGO E HEADER -->
                 <div class="text-center flex flex-col items-center">
-                    <svg class="h-10 w-auto mb-2" viewBox="0 0 320 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <rect x="0" y="55" width="14" height="15" rx="1.5" fill="#3eb049"/>
-                        <rect x="22" y="30" width="14" height="40" rx="1.5" fill="#3eb049"/>
-                        <rect x="44" y="42" width="14" height="28" rx="1.5" fill="#3eb049"/>
-                        <rect x="70" y="5" width="14" height="65" rx="3" fill="#005691"/>
-                        <rect x="94" y="28" width="14" height="42" rx="3" fill="#005691"/>
-                        <path d="M 125 18 C 125 10 132 5 142 5 L 148 5 L 148 18 L 140 18 C 138 18 137 19 137 21 L 137 28 L 148 28 L 148 40 L 137 40 L 137 70 L 125 70 Z" fill="#005691"/>
-                        <path d="M 185 48 C 185 36 175 27 163 27 C 151 27 141 36 141 49 C 141 62 151 71 163 71 C 172 71 180 66 183 58 L 172 54 C 170 58 167 60 163 60 C 157 60 153 56 153 51 L 185 51 Z M 153 43 C 154 39 158 36 163 36 C 168 36 172 39 173 43 Z" fill="#005691"/>
-                        <text x="188" y="68" font-family="'Segoe UI', Roboto, Arial, sans-serif" font-size="34" font-weight="500" fill="#3eb049">apps</text>
-                    </svg>
-                    <h2 class="text-xs font-extrabold text-blue-900 tracking-wider uppercase">Portal Corporativo & Propostas</h2>
-                    <p class="text-[10px] text-gray-500 font-medium">A plataforma escolhida pelo Atacado Distribuidor</p>
+                    <div class="p-3 rounded-2xl bg-white/5 border border-white/10 mb-3 shadow-inner">
+                        <svg class="h-9 w-auto" viewBox="0 0 320 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="0" y="55" width="14" height="15" rx="1.5" fill="#10b981"/>
+                            <rect x="22" y="30" width="14" height="40" rx="1.5" fill="#10b981"/>
+                            <rect x="44" y="42" width="14" height="28" rx="1.5" fill="#10b981"/>
+                            <rect x="70" y="5" width="14" height="65" rx="3" fill="#3b82f6"/>
+                            <rect x="94" y="28" width="14" height="42" rx="3" fill="#3b82f6"/>
+                            <path d="M 125 18 C 125 10 132 5 142 5 L 148 5 L 148 18 L 140 18 C 138 18 137 19 137 21 L 137 28 L 148 28 L 148 40 L 137 40 L 137 70 L 125 70 Z" fill="#ffffff"/>
+                            <path d="M 185 48 C 185 36 175 27 163 27 C 151 27 141 36 141 49 C 141 62 151 71 163 71 C 172 71 180 66 183 58 L 172 54 C 170 58 167 60 163 60 C 157 60 153 56 153 51 L 185 51 Z M 153 43 C 154 39 158 36 163 36 C 168 36 172 39 173 43 Z" fill="#ffffff"/>
+                            <text x="188" y="68" font-family="'Segoe UI', Roboto, Arial, sans-serif" font-size="34" font-weight="500" fill="#10b981">apps</text>
+                        </svg>
+                    </div>
+                    <h2 class="text-xs font-black text-white tracking-widest uppercase">Portal Corporativo & Propostas</h2>
+                    <p class="text-[10px] text-gray-400 font-medium mt-1">A plataforma escolhida pelo Atacado Distribuidor</p>
                 </div>
 
-                <div class="flex rounded-xl bg-gray-100 p-1 text-xs font-bold">
-                    <button onclick="switchAuthTab('usuario')" id="auth-tab-usuario" class="flex-1 py-2.5 rounded-lg bg-white shadow text-blue-900 transition">Usuário</button>
-                    <button onclick="switchAuthTab('admin')" id="auth-tab-admin" class="flex-1 py-2.5 rounded-lg text-gray-500 hover:text-gray-900 transition">Administrador</button>
+                <!-- SELECTOR DE TABS -->
+                <div class="flex rounded-2xl bg-black/40 p-1 text-xs font-bold border border-white/5">
+                    <button onclick="switchAuthTab('usuario')" id="auth-tab-usuario" class="flex-1 py-2.5 rounded-xl bg-blue-600 text-white shadow-lg transition duration-200">Usuário</button>
+                    <button onclick="switchAuthTab('admin')" id="auth-tab-admin" class="flex-1 py-2.5 rounded-xl text-gray-400 hover:text-white transition duration-200">Administrador</button>
                 </div>
 
-                <!-- LOGIN USUÁRIO -->
+                <!-- LOGIN USUÁRIO (CAMPOS LIMPOS) -->
                 <form id="form-login-usuario" onsubmit="handleUsuarioLogin(event)" class="space-y-4">
                     <div>
-                        <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">E-mail Corporativo</label>
+                        <label class="block text-[11px] font-bold text-gray-300 uppercase tracking-wider mb-1.5">E-mail Corporativo</label>
                         <div class="relative">
-                            <input type="email" id="login-usuario-email" required placeholder="usuario@lifeapps.com.br" value="vendedor@lifeapps.com.br" class="w-full pl-9 pr-3 py-2.5 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
-                            <i class="fa-solid fa-envelope absolute left-3 top-3.5 text-gray-400 text-xs"></i>
+                            <input type="email" id="login-usuario-email" required placeholder="nome@lifeapps.com.br" value="" class="w-full pl-10 pr-4 py-3 genz-input rounded-2xl text-sm">
+                            <i class="fa-solid fa-envelope absolute left-3.5 top-4 text-gray-400 text-xs"></i>
                         </div>
                     </div>
 
                     <div>
-                        <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Senha</label>
+                        <label class="block text-[11px] font-bold text-gray-300 uppercase tracking-wider mb-1.5">Senha</label>
                         <div class="relative">
-                            <input type="password" id="login-usuario-senha" required placeholder="123" value="123" class="w-full pl-9 pr-3 py-2.5 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
-                            <i class="fa-solid fa-lock absolute left-3 top-3.5 text-gray-400 text-xs"></i>
+                            <input type="password" id="login-usuario-senha" required placeholder="••••••••" value="" class="w-full pl-10 pr-4 py-3 genz-input rounded-2xl text-sm">
+                            <i class="fa-solid fa-lock absolute left-3.5 top-4 text-gray-400 text-xs"></i>
                         </div>
                     </div>
 
-                    <div class="flex items-center justify-between text-xs">
-                        <label class="flex items-center text-gray-600 font-medium cursor-pointer">
-                            <input type="checkbox" id="remember-me" class="w-4 h-4 text-blue-600 rounded mr-2">
-                            Lembrar de mim neste dispositivo
+                    <div class="flex items-center justify-between text-xs pt-1">
+                        <label class="flex items-center text-gray-400 cursor-pointer">
+                            <input type="checkbox" id="remember-me" class="w-4 h-4 text-blue-600 bg-gray-900 border-gray-700 rounded mr-2 focus:ring-0">
+                            Lembrar de mim
                         </label>
                     </div>
 
-                    <button type="submit" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg transition flex items-center justify-center text-sm">
+                    <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-extrabold rounded-2xl shadow-lg transition transform hover:-translate-y-0.5 flex items-center justify-center text-sm">
                         Entrar na Rede Social <i class="fa-solid fa-arrow-right-to-bracket ml-2"></i>
                     </button>
 
                     <div class="text-center pt-2">
-                        <button type="button" onclick="showRegisterScreen()" class="text-xs text-blue-600 font-bold hover:underline">
+                        <button type="button" onclick="showRegisterScreen()" class="text-xs text-blue-400 font-bold hover:underline">
                             Ainda não tem conta? Criar conta
                         </button>
                     </div>
                 </form>
 
-                <!-- LOGIN ADMIN -->
+                <!-- LOGIN ADMIN (CAMPOS LIMPOS) -->
                 <form id="form-login-admin" onsubmit="handleAdminLogin(event)" class="space-y-4 hidden">
                     <div>
-                        <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Senha do Administrador</label>
+                        <label class="block text-[11px] font-bold text-gray-300 uppercase tracking-wider mb-1.5">Senha do Administrador</label>
                         <div class="relative">
-                            <input type="password" id="login-admin-senha" required placeholder="Digite a senha de administrador..." class="w-full pl-9 pr-3 py-2.5 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
-                            <i class="fa-solid fa-shield-halved absolute left-3 top-3.5 text-gray-400 text-xs"></i>
+                            <input type="password" id="login-admin-senha" required placeholder="Digite a senha de administrador..." value="" class="w-full pl-10 pr-4 py-3 genz-input rounded-2xl text-sm">
+                            <i class="fa-solid fa-shield-halved absolute left-3.5 top-4 text-gray-400 text-xs"></i>
                         </div>
                     </div>
 
-                    <button type="submit" class="w-full py-3 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl shadow-lg transition flex items-center justify-center text-sm">
+                    <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-white font-extrabold rounded-2xl shadow-lg transition transform hover:-translate-y-0.5 flex items-center justify-center text-sm">
                         Acessar como Admin <i class="fa-solid fa-user-shield ml-2"></i>
                     </button>
                 </form>
 
-                <!-- REGISTRO USUÁRIO -->
-                <form id="form-register-usuario" onsubmit="handleUsuarioRegister(event)" class="space-y-3 hidden">
-                    <h3 class="text-xs font-bold text-gray-700 uppercase border-b pb-1">Criar Conta de Usuário</h3>
+                <!-- REGISTRO USUÁRIO (CAMPOS LIMPOS) -->
+                <form id="form-register-usuario" onsubmit="handleUsuarioRegister(event)" class="space-y-3.5 hidden">
+                    <h3 class="text-xs font-bold text-gray-300 uppercase border-b border-white/10 pb-2">Criar Conta de Usuário</h3>
 
                     <div>
-                        <label class="block text-[11px] font-semibold text-gray-600 uppercase">Nome Completo</label>
-                        <input type="text" id="reg-nome" required placeholder="Seu nome" class="w-full p-2 border rounded-lg text-sm">
+                        <label class="block text-[11px] font-bold text-gray-400 uppercase">Nome Completo</label>
+                        <input type="text" id="reg-nome" required placeholder="Seu nome" value="" class="w-full p-2.5 genz-input rounded-xl text-sm mt-1">
                     </div>
 
                     <div>
-                        <label class="block text-[11px] font-semibold text-gray-600 uppercase">E-mail Corporativo (@lifeapps.com.br)</label>
-                        <input type="email" id="reg-email" required placeholder="nome@lifeapps.com.br" class="w-full p-2 border rounded-lg text-sm">
+                        <label class="block text-[11px] font-bold text-gray-400 uppercase">E-mail Corporativo (@lifeapps.com.br)</label>
+                        <input type="email" id="reg-email" required placeholder="nome@lifeapps.com.br" value="" class="w-full p-2.5 genz-input rounded-xl text-sm mt-1">
                     </div>
 
                     <div class="grid grid-cols-2 gap-2">
                         <div>
-                            <label class="block text-[11px] font-semibold text-gray-600 uppercase">Senha</label>
-                            <input type="password" id="reg-senha" required placeholder="••••••••" class="w-full p-2 border rounded-lg text-sm">
+                            <label class="block text-[11px] font-bold text-gray-400 uppercase">Senha</label>
+                            <input type="password" id="reg-senha" required placeholder="••••••••" value="" class="w-full p-2.5 genz-input rounded-xl text-sm mt-1">
                         </div>
                         <div>
-                            <label class="block text-[11px] font-semibold text-gray-600 uppercase">Confirmar Senha</label>
-                            <input type="password" id="reg-senha-confirm" required placeholder="••••••••" class="w-full p-2 border rounded-lg text-sm">
+                            <label class="block text-[11px] font-bold text-gray-400 uppercase">Confirmar Senha</label>
+                            <input type="password" id="reg-senha-confirm" required placeholder="••••••••" value="" class="w-full p-2.5 genz-input rounded-xl text-sm mt-1">
                         </div>
                     </div>
 
-                    <button type="submit" class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow transition text-xs">
+                    <button type="submit" class="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-2xl shadow transition text-xs mt-2">
                         Cadastrar Minha Conta
                     </button>
 
                     <div class="text-center pt-1">
-                        <button type="button" onclick="hideRegisterScreen()" class="text-xs text-gray-500 font-bold hover:underline">
+                        <button type="button" onclick="hideRegisterScreen()" class="text-xs text-gray-400 font-bold hover:underline">
                             Voltar para o Login
                         </button>
                     </div>
@@ -146,16 +179,16 @@
             </div>
         </div>
 
-        <footer class="text-center text-xs text-white/90 py-2">
-            Sistema de Geração de Proposta (SGP) - Nº v5.0.1 | Desenvolvido por 
-            <a href="https://www.linkedin.com/in/rafaelrobertonascimento" target="_blank" rel="noopener noreferrer" class="text-white font-bold underline hover:text-green-300">
+        <footer class="text-center text-xs text-gray-400/80 py-2 z-10">
+            Sistema de Geração de Proposta (SGP) - Nº v5.1 | Desenvolvido por 
+            <a href="https://www.linkedin.com/in/rafaelrobertonascimento" target="_blank" rel="noopener noreferrer" class="text-white font-bold underline hover:text-blue-400">
                 Rafael Nascimento <i class="fa-brands fa-linkedin text-xs ml-0.5"></i>
             </a>
         </footer>
     </section>
 
-    <!-- 2. PAINEL PRINCIPAL -->
-    <div id="screen-main-app" class="hidden flex-1 relative">
+    <!-- 2. PAINEL PRINCIPAL (SGP + REDE SOCIAL) -->
+    <div id="screen-main-app" class="hidden flex-1 relative text-gray-800">
 
         <div class="flex flex-1 relative">
             <!-- SIDEBAR RETRÁTIL (MENU ESQUERDO) -->
@@ -178,7 +211,7 @@
                     </div>
 
                     <nav class="p-3 space-y-1.5" id="sidebar-nav-container">
-                        <!-- PAINEL ADMIN NO TOPO (SE LOGADO COMO ADMIN) -->
+                        <!-- PAINEL ADMIN NO TOPO DA SIDEBAR SE LOGADO COMO ADMIN -->
                         <button onclick="switchMainTab('admin')" id="nav-item-admin" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-white font-extrabold text-xs sm:text-sm shadow-md transition hidden mb-2">
                             <i class="fa-solid fa-user-shield text-lg min-w-[24px]"></i>
                             <span class="sidebar-text whitespace-nowrap">Painel Administrativo</span>
@@ -195,7 +228,7 @@
                         </button>
                     </nav>
 
-                    <!-- ATALHOS EXTERNOS DINÂMICOS (SISTEMAS & LINKS COMPACTO) -->
+                    <!-- ATALHOS EXTERNOS DINÂMICOS -->
                     <div id="sidebar-dynamic-links"></div>
                 </div>
 
@@ -317,7 +350,7 @@
                     </div>
                 </section>
 
-                <!-- 2. GERADOR DE PROPOSTA -->
+                <!-- 2. GERADOR DE PROPOSTAS -->
                 <section id="main-sec-propostas" class="hidden space-y-8">
                     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
                         <div class="lg:col-span-5 bg-white p-6 rounded-2xl shadow-sm border border-gray-200 space-y-6">
@@ -563,9 +596,8 @@
                             </button>
                         </div>
 
-                        <!-- SUB-ABA GESTÃO DE USUÁRIOS (CADASTRAR E EDITAR SENHAS) -->
+                        <!-- SUB-ABA GESTÃO DE USUÁRIOS -->
                         <div id="adm-sec-usuarios" class="space-y-6">
-                            <!-- Cadastrar Novo Usuário -->
                             <div class="bg-gray-50 p-4 rounded-xl border space-y-3">
                                 <h3 class="text-sm font-bold text-gray-800">Cadastrar Novo Usuário no Sistema</h3>
                                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -589,7 +621,6 @@
                                 </div>
                             </div>
 
-                            <!-- Tabela de Usuários com Editar Senha -->
                             <div class="space-y-2">
                                 <h3 class="text-sm font-bold text-gray-800">Usuários Cadastrados</h3>
                                 <div class="bg-gray-50 p-3 rounded-xl border overflow-x-auto">
@@ -1002,7 +1033,7 @@
 
         const dbExtras = { extrator: 250.00 };
 
-        // SESSÃO E DESTAQUE ADMIN NO TOPO DO MENU
+        // INITIALIZATION
         function checkUserSession() {
             const savedSession = sessionStorage.getItem('sgp_session_user');
             if (savedSession) {
@@ -1030,7 +1061,6 @@
             document.getElementById('user-avatar-initials').innerText = initials;
             document.getElementById('post-avatar-initials').innerText = initials;
 
-            // PAINEL ADMIN NO TOPO DO MENU SE LOGADO COMO ADMIN
             if (currentUser.role === 'admin') {
                 document.getElementById('nav-item-admin').classList.remove('hidden');
                 document.getElementById('admin-pin-notice-option').classList.remove('hidden');
@@ -1077,7 +1107,7 @@
             }
         }
 
-        // AUTHENTICATION
+        // LOGIN / REGISTRO USUÁRIO
         function switchAuthTab(type) {
             document.getElementById('form-login-usuario').classList.add('hidden');
             document.getElementById('form-login-admin').classList.add('hidden');
@@ -1330,41 +1360,7 @@
             });
         }
 
-        // PUBLICAR E MENCIONAR NO FEED
-        function toggleEmojiPicker() {
-            const picker = document.getElementById('emoji-picker-popover');
-            picker.classList.toggle('hidden');
-        }
-
-        function insertEmoji(emoji) {
-            const input = document.getElementById('post-input-text');
-            const start = input.selectionStart;
-            const end = input.selectionEnd;
-            const text = input.value;
-            input.value = text.substring(0, start) + emoji + text.substring(end);
-            input.focus();
-            input.selectionStart = input.selectionEnd = start + emoji.length;
-            document.getElementById('emoji-picker-popover').classList.add('hidden');
-        }
-
-        function listenFirebasePosts() {
-            db.collection("posts").onSnapshot((snapshot) => {
-                dbPosts = [];
-                snapshot.forEach((doc) => {
-                    dbPosts.push({ id: doc.id, ...doc.data() });
-                });
-
-                dbPosts.sort((a, b) => {
-                    if (a.isPinned && !b.isPinned) return -1;
-                    if (!a.isPinned && b.isPinned) return 1;
-                    return new Date(b.dataCriacao) - new Date(a.dataCriacao);
-                });
-
-                renderSocialFeed();
-                renderSidebarNewsletter();
-            });
-        }
-
+        // FEED SOCIAL
         function createNewPost() {
             const input = document.getElementById('post-input-text');
             const inputImage = document.getElementById('post-input-image');
@@ -1579,7 +1575,7 @@
             });
         }
 
-        // LINKS & SISTEMAS EXTERNOS (LAYOUT COMPACTO E ELEGANTE)
+        // LINKS COMPACTOS NO MENU LATERAL
         function listenFirebaseLinks() {
             db.collection("atalhos").onSnapshot((snapshot) => {
                 dbLinks = [];
