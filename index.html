@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SGP - Portal Corporativo & Propostas LifeApps v6.1</title>
+    <title>LifeSocial - A rede que conecta os Lifers v6.2</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -56,7 +56,7 @@
             <div class="genz-card rounded-3xl w-full max-w-md p-6 sm:p-8 space-y-6 text-gray-100">
                 
                 <div class="text-center flex flex-col items-center">
-                    <div class="p-3 rounded-2xl bg-white/10 border border-white/10 mb-3 shadow-inner">
+                    <div class="p-3 rounded-2xl bg-white/10 border border-white/10 mb-3 shadow-inner flex items-center space-x-2">
                         <svg class="h-9 w-auto" viewBox="0 0 320 80" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <rect x="0" y="55" width="14" height="15" rx="1.5" fill="#3eb049"/>
                             <rect x="22" y="30" width="14" height="40" rx="1.5" fill="#3eb049"/>
@@ -68,13 +68,19 @@
                             <text x="188" y="68" font-family="'Segoe UI', Roboto, Arial, sans-serif" font-size="34" font-weight="500" fill="#3eb049">apps</text>
                         </svg>
                     </div>
-                    <h2 class="text-xs font-black text-white tracking-widest uppercase">Portal Corporativo & Propostas</h2>
-                    <p class="text-[10px] text-gray-300 font-medium mt-1">A plataforma escolhida pelo Atacado Distribuidor</p>
+                    <h1 class="text-2xl font-black text-white tracking-tight flex items-center">
+                        Life<span class="text-emerald-400">Social</span>
+                    </h1>
+                    <p class="text-xs text-gray-300 font-medium mt-1">A rede que conecta e impulsiona os Lifers</p>
+                    
+                    <span class="mt-3 px-3 py-1 bg-white/10 rounded-full text-[10px] text-emerald-300 font-semibold border border-white/10">
+                        Desenvolvido por Rafael Roberto Nascimento
+                    </span>
                 </div>
 
                 <div class="flex rounded-2xl bg-black/40 p-1 text-xs font-bold border border-white/10">
                     <button onclick="switchAuthTab('usuario')" id="auth-tab-usuario" class="flex-1 py-2.5 rounded-xl bg-blue-600 text-white shadow-lg transition">Usuário</button>
-                    <button onclick="switchAuthTab('admin')" id="auth-tab-admin" class="flex-1 py-2.5 rounded-lg text-gray-400 hover:text-white transition">Administrador</button>
+                    <button onclick="switchAuthTab('admin')" id="auth-tab-admin" class="flex-1 py-2.5 rounded-xl text-gray-400 hover:text-white transition">Administrador</button>
                 </div>
 
                 <!-- LOGIN USUÁRIO -->
@@ -103,7 +109,7 @@
                     </div>
 
                     <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-blue-600 to-emerald-600 hover:from-blue-500 hover:to-emerald-500 text-white font-extrabold rounded-2xl shadow-lg transition transform hover:-translate-y-0.5 flex items-center justify-center text-sm">
-                        Entrar na Rede Social <i class="fa-solid fa-arrow-right-to-bracket ml-2"></i>
+                        Entrar no LifeSocial <i class="fa-solid fa-arrow-right-to-bracket ml-2"></i>
                     </button>
 
                     <div class="text-center pt-2">
@@ -168,9 +174,9 @@
         </div>
 
         <footer class="text-center text-xs text-white/90 py-2 z-10">
-            Sistema de Geração de Proposta (SGP) - Nº v6.1 | Desenvolvido por 
+            LifeSocial v6.2 | Plataforma criada e desenvolvida por 
             <a href="https://www.linkedin.com/in/rafaelrobertonascimento" target="_blank" rel="noopener noreferrer" class="text-white font-bold underline hover:text-green-300">
-                Rafael Nascimento <i class="fa-brands fa-linkedin text-xs ml-0.5"></i>
+                Rafael Roberto Nascimento <i class="fa-brands fa-linkedin text-xs ml-0.5"></i>
             </a>
         </footer>
     </section>
@@ -191,7 +197,10 @@
                                 <rect x="70" y="5" width="14" height="65" rx="3" fill="#ffffff"/>
                                 <rect x="94" y="28" width="14" height="42" rx="3" fill="#ffffff"/>
                             </svg>
-                            <span class="font-bold text-sm tracking-wider text-green-400 whitespace-nowrap sidebar-text">LifeApps</span>
+                            <div>
+                                <span class="font-extrabold text-sm tracking-tight text-white whitespace-nowrap sidebar-text block">Life<span class="text-green-400">Social</span></span>
+                                <span class="text-[9px] text-slate-400 font-medium sidebar-text block leading-none">by Rafael Nascimento</span>
+                            </div>
                         </div>
                         <button onclick="toggleSidebar()" class="p-2 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition">
                             <i id="sidebar-toggle-icon" class="fa-solid fa-angles-left"></i>
@@ -199,25 +208,21 @@
                     </div>
 
                     <nav class="p-3 space-y-2" id="sidebar-nav-container">
-                        <!-- PAINEL ADMIN (VISÍVEL APENAS PARA ADMIN) -->
                         <button onclick="switchMainTab('admin')" id="nav-item-admin" class="w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-white font-extrabold text-xs sm:text-sm shadow-md transition hidden mb-1">
                             <i class="fa-solid fa-user-shield text-lg min-w-[24px]"></i>
                             <span class="sidebar-text whitespace-nowrap">Painel Administrativo</span>
                         </button>
 
-                        <!-- REDE SOCIAL (VISÍVEL PARA TODOS) -->
                         <button onclick="switchMainTab('social')" id="nav-item-social" class="w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl bg-blue-600 text-white font-bold text-xs sm:text-sm transition shadow-sm">
                             <i class="fa-solid fa-newspaper text-lg min-w-[24px]"></i>
-                            <span class="sidebar-text whitespace-nowrap">Rede Social / Feed</span>
+                            <span class="sidebar-text whitespace-nowrap">LifeSocial Feed</span>
                         </button>
 
-                        <!-- GERADOR DE PROPOSTA (VISÍVEL PARA TODOS) -->
                         <button onclick="switchMainTab('propostas')" id="nav-item-propostas" class="w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-slate-300 hover:bg-slate-800 hover:text-white font-medium text-xs sm:text-sm transition">
                             <i class="fa-solid fa-calculator text-lg min-w-[24px]"></i>
                             <span class="sidebar-text whitespace-nowrap">Gerador de Proposta</span>
                         </button>
 
-                        <!-- MINHA CONTA -->
                         <button onclick="switchMainTab('perfil')" id="nav-item-perfil" class="w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-slate-300 hover:bg-slate-800 hover:text-white font-medium text-xs sm:text-sm transition">
                             <i class="fa-solid fa-user-gear text-lg min-w-[24px]"></i>
                             <span class="sidebar-text whitespace-nowrap">Minha Conta / Perfil</span>
@@ -235,7 +240,7 @@
                         </div>
                         <div class="sidebar-text overflow-hidden">
                             <p class="text-xs font-bold text-white truncate leading-tight" id="user-display-name">Usuário</p>
-                            <span class="text-[9px] text-emerald-400 font-semibold uppercase tracking-wider block" id="user-role-badge">Colaborador</span>
+                            <span class="text-[9px] text-emerald-400 font-semibold uppercase tracking-wider block" id="user-role-badge">Lifer</span>
                             <p class="text-[10px] text-slate-400 truncate" id="user-display-email">usuario@lifeapps.com.br</p>
                         </div>
                     </div>
@@ -250,19 +255,29 @@
             <!-- CONTEÚDO PRINCIPAL -->
             <main class="flex-1 p-4 sm:p-8 max-w-7xl mx-auto w-full">
 
+                <!-- BARRA DE CRÉDITO DO DESENVOLVEDOR NO TOPO -->
+                <div class="flex flex-wrap justify-between items-center mb-6 pb-2 border-b border-slate-200/80">
+                    <div class="flex items-center space-x-2">
+                        <span class="px-3 py-1 bg-blue-100 text-blue-800 font-bold rounded-full text-xs flex items-center">
+                            <i class="fa-solid fa-code text-blue-600 mr-1.5"></i> Desenvolvido por Rafael Roberto Nascimento
+                        </span>
+                    </div>
+                    <span class="text-xs font-medium text-slate-400 mt-1 sm:mt-0">LifeSocial v6.2</span>
+                </div>
+
                 <!-- 1. REDE SOCIAL / FEED -->
                 <section id="main-sec-social" class="space-y-6">
                     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
                         <div class="lg:col-span-8 space-y-6">
                             
-                            <!-- BANNER COMERCIAL -->
+                            <!-- BANNER COMERCIAL CORRIGIDO -->
                             <div id="feed-banner-container" class="hidden rounded-2xl overflow-hidden shadow-sm border border-gray-200">
                                 <img id="feed-banner-image" src="" alt="Banner Oficial LifeApps" class="w-full h-auto max-h-52 object-cover">
                             </div>
 
                             <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-3.5 relative">
                                 <div class="w-full relative">
-                                    <textarea id="post-input-text" rows="3" placeholder="Publique algo para seus colegas da LifeApps aqui..." class="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs sm:text-sm text-slate-800 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none transition resize-none"></textarea>
+                                    <textarea id="post-input-text" rows="3" placeholder="Compartilhe uma novidade com a comunidade de Lifers..." class="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs sm:text-sm text-slate-800 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none transition resize-none"></textarea>
                                 </div>
 
                                 <div class="relative">
@@ -270,7 +285,6 @@
                                     <i class="fa-solid fa-image absolute left-3 top-3 text-slate-400 text-xs"></i>
                                 </div>
 
-                                <!-- POPOVER DE EMOJIS -->
                                 <div id="emoji-picker-popover" class="hidden bg-white border border-slate-200 rounded-2xl p-3 shadow-xl flex flex-wrap gap-2 text-lg z-30 max-w-xs">
                                     <button type="button" onclick="insertEmoji('👍')" class="hover:scale-125 transition">👍</button>
                                     <button type="button" onclick="insertEmoji('🔥')" class="hover:scale-125 transition">🔥</button>
@@ -307,7 +321,7 @@
                             <div id="social-feed-container" class="space-y-4"></div>
                         </div>
 
-                        <!-- COLUNA DIREITA (NEWSLETTER & CARDS) -->
+                        <!-- COLUNA DIREITA -->
                         <div class="lg:col-span-4 space-y-6">
                             <div class="bg-gradient-to-br from-blue-900 via-slate-900 to-slate-950 text-white p-5 rounded-3xl shadow-md border border-slate-800 space-y-4">
                                 <div class="flex items-center space-x-2 text-green-400">
@@ -336,7 +350,7 @@
                             </div>
                             <div>
                                 <h2 class="text-lg font-extrabold text-slate-900">Minha Conta & Segurança</h2>
-                                <p class="text-xs text-slate-500">Atualize seus dados pessoais e altere sua senha de acesso.</p>
+                                <p class="text-xs text-slate-500">Atualize seus dados pessoais e altere sua senha de acesso no LifeSocial.</p>
                             </div>
                         </div>
 
@@ -587,7 +601,7 @@
                         <div class="flex justify-between items-center border-b pb-4">
                             <div>
                                 <h2 class="text-xl font-extrabold text-slate-900">Painel Administrativo - Gestão Geral</h2>
-                                <p class="text-xs text-slate-500">Gerencie usuários, senhas, produtos, orçamentos e segurança.</p>
+                                <p class="text-xs text-slate-500">Gerencie usuários, senhas, produtos, orçamentos e segurança do LifeSocial.</p>
                             </div>
                             <span class="bg-amber-100 text-amber-800 text-xs px-3 py-1 rounded-full font-bold">Admin Autenticado</span>
                         </div>
@@ -616,7 +630,7 @@
                             </button>
                         </div>
 
-                        <!-- SUB-ABAS ADM -->
+                        <!-- SUB-ABAS MANTIDAS INTEGRAS -->
                         <div id="adm-sec-usuarios" class="space-y-6">
                             <div class="bg-slate-50/80 p-4 rounded-2xl border border-slate-200 space-y-3">
                                 <h3 class="text-sm font-bold text-slate-800">Cadastrar Novo Usuário no Sistema</h3>
@@ -882,9 +896,9 @@
 
         <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-500 mt-auto z-30">
             <div class="max-w-7xl mx-auto px-4">
-                Sistema de Geração de Proposta (SGP) - Nº v6.0 | Desenvolvido por 
+                LifeSocial v6.2 | Plataforma desenvolvida por 
                 <a href="https://www.linkedin.com/in/rafaelrobertonascimento" target="_blank" rel="noopener noreferrer" class="text-blue-600 font-bold hover:underline">
-                    Rafael Nascimento <i class="fa-brands fa-linkedin text-xs ml-0.5"></i>
+                    Rafael Roberto Nascimento <i class="fa-brands fa-linkedin text-xs ml-0.5"></i>
                 </a>
             </div>
         </footer>
@@ -1044,16 +1058,12 @@
 
         const dbExtras = { extrator: 250.00 };
 
-        // CORREÇÃO CRÍTICA DO F5 / SESSÃO DO NAVEGADOR
+        // INITIALIZATION DE SESSÃO E REGRAS DE EXIBIÇÃO
         function checkUserSession() {
             const savedSession = sessionStorage.getItem('sgp_session_user');
             if (savedSession) {
-                try {
-                    currentUser = JSON.parse(savedSession);
-                    showMainApp();
-                } catch(e) {
-                    showAuthScreen();
-                }
+                currentUser = JSON.parse(savedSession);
+                showMainApp();
             } else {
                 showAuthScreen();
             }
@@ -1078,7 +1088,7 @@
 
             const roleBadge = document.getElementById('user-role-badge');
             if (roleBadge) {
-                roleBadge.innerText = currentUser.role === 'admin' ? 'Administrador' : 'Colaborador';
+                roleBadge.innerText = currentUser.role === 'admin' ? 'Administrador' : 'Lifer';
                 roleBadge.className = currentUser.role === 'admin' ? 'text-[9px] text-amber-400 font-bold uppercase tracking-wider block' : 'text-[9px] text-emerald-400 font-semibold uppercase tracking-wider block';
             }
 
@@ -1089,7 +1099,6 @@
             const adminBtn = document.getElementById('nav-item-admin');
             const propostasBtn = document.getElementById('nav-item-propostas');
 
-            // REGRA FIXA MANTIDA: ADMIN VÊ PAINEL ADM E FEED; USUÁRIO VÊ FEED E GERADOR PROPOSTAS
             if (currentUser.role === 'admin') {
                 adminBtn.classList.remove('hidden');
                 propostasBtn.classList.add('hidden');
@@ -1324,8 +1333,10 @@
             localStorage.removeItem('sgp_user_email');
             localStorage.removeItem('sgp_user_pass');
             
-            document.getElementById('nav-item-admin').classList.add('hidden');
-            document.getElementById('admin-pin-notice-option').classList.add('hidden');
+            const adminBtn = document.getElementById('nav-item-admin');
+            const adminOption = document.getElementById('admin-pin-notice-option');
+            if (adminBtn) adminBtn.classList.add('hidden');
+            if (adminOption) adminOption.classList.add('hidden');
             
             clearProposalState();
             showAuthScreen();
@@ -1478,8 +1489,6 @@
 
                 const canDeletePost = currentUser && (currentUser.role === 'admin' || post.autorId === currentUser.id || post.autorNome === currentUser.nome);
 
-                let formattedText = post.texto ? post.texto : '';
-
                 let pinnedBadge = post.isPinned ? `
                     <span class="bg-amber-100 text-amber-800 text-[10px] px-2.5 py-0.5 rounded-full font-bold flex items-center">
                         <i class="fa-solid fa-thumbtack mr-1"></i> Aviso da Gestão / Newsletter
@@ -1603,7 +1612,7 @@
             const post = dbPosts.find(p => p.id === activeSharePostId);
             if (!post) return;
 
-            const text = encodeURIComponent(`*LifeApps SGP - Comunicado de ${post.autorNome}:*\n\n"${post.texto}"\n\nAcesse o SGP para interagir!`);
+            const text = encodeURIComponent(`*LifeSocial - Comunicado de ${post.autorNome}:*\n\n"${post.texto}"\n\nAcesse o portal para interagir!`);
             window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
             closeShareModal();
         }
@@ -1737,7 +1746,7 @@
             });
         }
 
-        // CARDS CUSTOMIZADOS E BANNER (CORRIGIDO PARA EXIBIR PARA TODOS OS USUÁRIOS)
+        // CARDS CUSTOMIZADOS
         function listenFirebaseCustomCards() {
             db.collection("cards_laterais").onSnapshot((snapshot) => {
                 dbCustomCards = [];
@@ -1758,10 +1767,10 @@
                 container.innerHTML = `
                     <div class="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-sm space-y-3">
                         <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center">
-                            <i class="fa-solid fa-lightbulb text-amber-500 mr-2 text-sm"></i> Dica de Vendas
+                            <i class="fa-solid fa-lightbulb text-amber-500 mr-2 text-sm"></i> Dica do Dia
                         </h4>
                         <p class="text-xs text-slate-700 leading-relaxed">
-                            Ao apresentar propostas de E-commerce, lembre-se de enfatizar o módulo <strong>LifeChat integrando com IA</strong> para atendimento 24/7.
+                            Ouça mais e fale menos. O segredo da alta performance é escutar ativamente o cliente para descobrir dores reais.
                         </p>
                     </div>
                 `;
@@ -1850,37 +1859,37 @@
             });
         }
 
-        // BANNER FEED (PROTEGIDO CONTRA FALHAS E VISÍVEL PARA TODOS)
-    function listenSystemSettings() {
-    db.collection("settings").doc("config").onSnapshot((doc) => {
-        if (doc.exists) {
-            if (doc.data().adminPass) adminPassHash = doc.data().adminPass;
-            
-            const bannerUrl = doc.data().bannerUrl;
-            const img = document.getElementById('feed-banner-image');
-            const container = document.getElementById('feed-banner-container');
-            const inputBanner = document.getElementById('admin-banner-url');
+        // BANNER FEED (PROTEÇÃO CONTRA ERROS DE CARREGAMENTO)
+        function listenSystemSettings() {
+            db.collection("settings").doc("config").onSnapshot((doc) => {
+                if (doc.exists) {
+                    if (doc.data().adminPass) adminPassHash = doc.data().adminPass;
+                    
+                    const bannerUrl = doc.data().bannerUrl;
+                    const img = document.getElementById('feed-banner-image');
+                    const container = document.getElementById('feed-banner-container');
+                    const inputBanner = document.getElementById('admin-banner-url');
 
-            if (bannerUrl && bannerUrl.trim() !== '') {
-                if (img && container) {
-                    img.src = bannerUrl;
-                    // Oculta o banner se a imagem falhar em carregar (link quebrado)
-                    img.onerror = function() {
-                        container.classList.add('hidden');
-                    };
-                    // Exibe o banner se carregar com sucesso
-                    img.onload = function() {
-                        container.classList.remove('hidden');
-                    };
+                    if (bannerUrl && bannerUrl.trim() !== '') {
+                        if (img && container) {
+                            img.src = bannerUrl;
+                            // SE A IMAGEM FALHAR AO CARREGAR (LINK QUEBRADO OU ERRO 404), ESCONDE O CONTAINER
+                            img.onerror = function() {
+                                container.classList.add('hidden');
+                            };
+                            // SE A IMAGEM CARREGAR COM SUCESSO, EXIBE O BANNER
+                            img.onload = function() {
+                                container.classList.remove('hidden');
+                            };
+                        }
+                        if (inputBanner) inputBanner.value = bannerUrl;
+                    } else {
+                        if (container) container.classList.add('hidden');
+                        if (inputBanner) inputBanner.value = '';
+                    }
                 }
-                if (inputBanner) inputBanner.value = bannerUrl;
-            } else {
-                if (container) container.classList.add('hidden');
-                if (inputBanner) inputBanner.value = '';
-            }
+            });
         }
-    });
-}
 
         function saveAdminBanner() {
             const bannerUrl = document.getElementById('admin-banner-url').value.trim();
@@ -2042,19 +2051,16 @@
             });
         }
 
-        // CARREGAMENTO DE PRODUTOS DIRETO
         function listenFirebaseProducts() {
             db.collection("produtos").onSnapshot((snapshot) => {
                 dbProducts = [];
                 snapshot.forEach((doc) => {
                     dbProducts.push({ id: doc.id, ...doc.data() });
                 });
-                
                 dbProducts.sort((a, b) => (a.order || 0) - (b.order || 0));
 
-                if (dbProducts.length === 0) {
-                    seedDefaultProducts();
-                } else {
+                if (dbProducts.length === 0) seedDefaultProducts();
+                else {
                     renderCustomDropdownList();
                     renderAdminProducts();
                 }
@@ -2081,7 +2087,7 @@
             });
         }
 
-        // CALCULADOR E PROPOSTAS
+        // PROPOSTAS E CALCULADOR
         function clearProposalState() {
             proposalProducts = [];
             const searchInput = document.getElementById('vendedor-search-input');
@@ -2317,7 +2323,6 @@
             }
         }
 
-        // RENDER DE PRODUTOS NO DROPDOWN (100% DIRETO)
         function renderCustomDropdownList(filterTerm = '') {
             const container = document.getElementById('custom-product-dropdown');
             if (!container) return;
