@@ -2031,25 +2031,17 @@
         }
 
         function listenFirebaseUsers() {
-            db.collection("usuarios").onSnapshot((snapshot) => {
-                dbUsers = [];
-                snapshot.forEach((doc) => {
-                    dbUsers.push({ id: doc.id, ...doc.data() });
-                });
+    db.collection("usuarios").onSnapshot((snapshot) => {
+        dbUsers = [];
+        snapshot.forEach((doc) => {
+            dbUsers.push({ id: doc.id, ...doc.data() });
+        });
 
-                if (!dbUsers.some(u => u.email === 'vendedor@lifeapps.com.br')) {
-                    db.collection("usuarios").add({
-                        nome: "Usuário Padrão",
-                        email: "vendedor@lifeapps.com.br",
-                        senha: "123",
-                        status: "aprovado",
-                        dataCriacao: new Date().toISOString()
-                    });
-                }
+        // O trecho que recriava 'vendedor@lifeapps.com.br' foi removido daqui!
 
-                renderAdminUsers();
-            });
-        }
+        renderAdminUsers();
+    });
+}
 
         function listenFirebaseProducts() {
             db.collection("produtos").onSnapshot((snapshot) => {
