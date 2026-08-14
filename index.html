@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SGP - Portal Corporativo & Propostas LifeApps v5.1.1</title>
+    <title>SGP - Portal Corporativo & Propostas LifeApps v5.2</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -24,68 +24,63 @@
         .draggable-card:active { cursor: grabbing; }
         .draggable-card.dragging { opacity: 0.4; border: 2px dashed #3b82f6; }
         
-        /* DESIGN GEN Z - GLASSMOROPHISM & NEON GLOW */
-        .genz-bg {
-            background-color: #0b0f19;
-            background-image: 
-                radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.25) 0px, transparent 50%),
-                radial-gradient(at 100% 0%, rgba(16, 185, 129, 0.2) 0px, transparent 50%),
-                radial-gradient(at 100% 100%, rgba(245, 158, 11, 0.15) 0px, transparent 50%),
-                radial-gradient(at 0% 100%, rgba(99, 102, 241, 0.2) 0px, transparent 50%);
+        /* EXCLUSIVO PARA TELA DE LOGIN: Colaboradores Jovens com Uniforme / Conceito LifeApps */
+        .genz-auth-bg {
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.90) 0%, rgba(0, 86, 145, 0.85) 50%, rgba(62, 176, 73, 0.80) 100%), 
+                        url('https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
         }
         .genz-card {
-            background: rgba(18, 24, 38, 0.75);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            background: rgba(15, 23, 42, 0.80);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
         }
         .genz-input {
-            background: rgba(10, 15, 26, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: #f3f4f6;
+            background: rgba(2, 6, 23, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #f8fafc;
             transition: all 0.3s ease;
         }
         .genz-input:focus {
-            border-color: #3b82f6;
-            box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
+            border-color: #3eb049;
+            box-shadow: 0 0 12px rgba(62, 176, 73, 0.4);
             outline: none;
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between text-gray-100">
+<body class="min-h-screen flex flex-col justify-between text-gray-800">
 
-    <!-- 1. TELA DE LOGIN / REGISTRO (DESIGN GEN Z) -->
-    <section id="screen-auth" class="fixed inset-0 z-50 genz-bg flex flex-col justify-between p-4 overflow-y-auto">
-        <div class="fixed top-1/4 left-1/4 w-96 h-96 bg-blue-600/20 rounded-full blur-3xl pointer-events-none animate-pulse"></div>
-        <div class="fixed bottom-1/4 right-1/4 w-96 h-96 bg-emerald-500/15 rounded-full blur-3xl pointer-events-none"></div>
-
+    <!-- 1. TELA DE LOGIN / REGISTRO (APENAS AQUI O FUNDO E CARDS DESTAQUE) -->
+    <section id="screen-auth" class="fixed inset-0 z-50 genz-auth-bg flex flex-col justify-between p-4 overflow-y-auto">
         <div class="my-auto flex justify-center w-full z-10">
-            <div class="genz-card rounded-3xl w-full max-w-md p-6 sm:p-8 space-y-6">
+            <div class="genz-card rounded-3xl w-full max-w-md p-6 sm:p-8 space-y-6 text-gray-100">
                 
+                <!-- LOGO E HEADER -->
                 <div class="text-center flex flex-col items-center">
-                    <div class="p-3 rounded-2xl bg-white/5 border border-white/10 mb-3 shadow-inner">
+                    <div class="p-3 rounded-2xl bg-white/10 border border-white/10 mb-3 shadow-inner">
                         <svg class="h-9 w-auto" viewBox="0 0 320 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <rect x="0" y="55" width="14" height="15" rx="1.5" fill="#10b981"/>
-                            <rect x="22" y="30" width="14" height="40" rx="1.5" fill="#10b981"/>
-                            <rect x="44" y="42" width="14" height="28" rx="1.5" fill="#10b981"/>
-                            <rect x="70" y="5" width="14" height="65" rx="3" fill="#3b82f6"/>
-                            <rect x="94" y="28" width="14" height="42" rx="3" fill="#3b82f6"/>
+                            <rect x="0" y="55" width="14" height="15" rx="1.5" fill="#3eb049"/>
+                            <rect x="22" y="30" width="14" height="40" rx="1.5" fill="#3eb049"/>
+                            <rect x="44" y="42" width="14" height="28" rx="1.5" fill="#3eb049"/>
+                            <rect x="70" y="5" width="14" height="65" rx="3" fill="#ffffff"/>
+                            <rect x="94" y="28" width="14" height="42" rx="3" fill="#ffffff"/>
                             <path d="M 125 18 C 125 10 132 5 142 5 L 148 5 L 148 18 L 140 18 C 138 18 137 19 137 21 L 137 28 L 148 28 L 148 40 L 137 40 L 137 70 L 125 70 Z" fill="#ffffff"/>
                             <path d="M 185 48 C 185 36 175 27 163 27 C 151 27 141 36 141 49 C 141 62 151 71 163 71 C 172 71 180 66 183 58 L 172 54 C 170 58 167 60 163 60 C 157 60 153 56 153 51 L 185 51 Z M 153 43 C 154 39 158 36 163 36 C 168 36 172 39 173 43 Z" fill="#ffffff"/>
-                            <text x="188" y="68" font-family="'Segoe UI', Roboto, Arial, sans-serif" font-size="34" font-weight="500" fill="#10b981">apps</text>
+                            <text x="188" y="68" font-family="'Segoe UI', Roboto, Arial, sans-serif" font-size="34" font-weight="500" fill="#3eb049">apps</text>
                         </svg>
                     </div>
                     <h2 class="text-xs font-black text-white tracking-widest uppercase">Portal Corporativo & Propostas</h2>
-                    <p class="text-[10px] text-gray-400 font-medium mt-1">A plataforma escolhida pelo Atacado Distribuidor</p>
+                    <p class="text-[10px] text-gray-300 font-medium mt-1">A plataforma escolhida pelo Atacado Distribuidor</p>
                 </div>
 
-                <div class="flex rounded-2xl bg-black/40 p-1 text-xs font-bold border border-white/5">
-                    <button onclick="switchAuthTab('usuario')" id="auth-tab-usuario" class="flex-1 py-2.5 rounded-xl bg-blue-600 text-white shadow-lg transition duration-200">Usuário</button>
-                    <button onclick="switchAuthTab('admin')" id="auth-tab-admin" class="flex-1 py-2.5 rounded-xl text-gray-400 hover:text-white transition duration-200">Administrador</button>
+                <!-- SELECTOR DE TABS -->
+                <div class="flex rounded-2xl bg-black/40 p-1 text-xs font-bold border border-white/10">
+                    <button onclick="switchAuthTab('usuario')" id="auth-tab-usuario" class="flex-1 py-2.5 rounded-xl bg-blue-600 text-white shadow-lg transition">Usuário</button>
+                    <button onclick="switchAuthTab('admin')" id="auth-tab-admin" class="flex-1 py-2.5 rounded-xl text-gray-400 hover:text-white transition">Administrador</button>
                 </div>
 
-                <!-- LOGIN USUÁRIO -->
+                <!-- LOGIN USUÁRIO (CAMPOS TOTALMENTE LIMPOS) -->
                 <form id="form-login-usuario" onsubmit="handleUsuarioLogin(event)" class="space-y-4">
                     <div>
                         <label class="block text-[11px] font-bold text-gray-300 uppercase tracking-wider mb-1.5">E-mail Corporativo</label>
@@ -104,24 +99,24 @@
                     </div>
 
                     <div class="flex items-center justify-between text-xs pt-1">
-                        <label class="flex items-center text-gray-400 cursor-pointer">
+                        <label class="flex items-center text-gray-300 cursor-pointer">
                             <input type="checkbox" id="remember-me" class="w-4 h-4 text-blue-600 bg-gray-900 border-gray-700 rounded mr-2 focus:ring-0">
                             Lembrar de mim
                         </label>
                     </div>
 
-                    <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-extrabold rounded-2xl shadow-lg transition transform hover:-translate-y-0.5 flex items-center justify-center text-sm">
+                    <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-blue-600 to-emerald-600 hover:from-blue-500 hover:to-emerald-500 text-white font-extrabold rounded-2xl shadow-lg transition transform hover:-translate-y-0.5 flex items-center justify-center text-sm">
                         Entrar na Rede Social <i class="fa-solid fa-arrow-right-to-bracket ml-2"></i>
                     </button>
 
                     <div class="text-center pt-2">
-                        <button type="button" onclick="showRegisterScreen()" class="text-xs text-blue-400 font-bold hover:underline">
+                        <button type="button" onclick="showRegisterScreen()" class="text-xs text-green-400 font-bold hover:underline">
                             Ainda não tem conta? Criar conta
                         </button>
                     </div>
                 </form>
 
-                <!-- LOGIN ADMIN -->
+                <!-- LOGIN ADMIN (CAMPOS TOTALMENTE LIMPOS) -->
                 <form id="form-login-admin" onsubmit="handleAdminLogin(event)" class="space-y-4 hidden">
                     <div>
                         <label class="block text-[11px] font-bold text-gray-300 uppercase tracking-wider mb-1.5">Senha do Administrador</label>
@@ -175,15 +170,15 @@
             </div>
         </div>
 
-        <footer class="text-center text-xs text-gray-400/80 py-2 z-10">
-            Sistema de Geração de Proposta (SGP) - Nº v5.1.1 | Desenvolvido por 
-            <a href="https://www.linkedin.com/in/rafaelrobertonascimento" target="_blank" rel="noopener noreferrer" class="text-white font-bold underline hover:text-blue-400">
+        <footer class="text-center text-xs text-white/90 py-2 z-10">
+            Sistema de Geração de Proposta (SGP) - Nº v5.2 | Desenvolvido por 
+            <a href="https://www.linkedin.com/in/rafaelrobertonascimento" target="_blank" rel="noopener noreferrer" class="text-white font-bold underline hover:text-green-300">
                 Rafael Nascimento <i class="fa-brands fa-linkedin text-xs ml-0.5"></i>
             </a>
         </footer>
     </section>
 
-    <!-- 2. PAINEL PRINCIPAL -->
+    <!-- 2. PAINEL PRINCIPAL (LAYOUT CLEAN INSTITUCIONAL MANTIDO) -->
     <div id="screen-main-app" class="hidden flex-1 relative text-gray-800">
 
         <div class="flex flex-1 relative">
@@ -207,7 +202,7 @@
                     </div>
 
                     <nav class="p-3 space-y-1.5" id="sidebar-nav-container">
-                        <!-- PAINEL ADMIN NO TOPO (CORRIGIDO PARA APARECER IMEDIATAMENTE AO LOGAR COMO ADMIN) -->
+                        <!-- PAINEL ADMIN NO TOPO DA SIDEBAR SE LOGADO COMO ADMIN -->
                         <button onclick="switchMainTab('admin')" id="nav-item-admin" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-white font-extrabold text-xs sm:text-sm shadow-md transition hidden mb-2">
                             <i class="fa-solid fa-user-shield text-lg min-w-[24px]"></i>
                             <span class="sidebar-text whitespace-nowrap">Painel Administrativo</span>
@@ -249,7 +244,7 @@
             <!-- CONTEÚDO PRINCIPAL -->
             <main class="flex-1 p-4 sm:p-8 max-w-7xl mx-auto w-full">
 
-                <!-- TOP BAR DE NOTIFICAÇÕES DE MENÇÃO (@) -->
+                <!-- TOP BAR DE NOTIFICAÇÕES -->
                 <div class="flex justify-end items-center mb-6">
                     <div class="relative">
                         <button onclick="toggleNotificationsMenu()" class="p-2.5 bg-white border rounded-xl text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition relative shadow-sm">
@@ -345,7 +340,7 @@
                     </div>
                 </section>
 
-                <!-- 2. GERADOR DE PROPOSTA -->
+                <!-- 2. GERADOR DE PROPOSTAS -->
                 <section id="main-sec-propostas" class="hidden space-y-8">
                     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
                         <div class="lg:col-span-5 bg-white p-6 rounded-2xl shadow-sm border border-gray-200 space-y-6">
@@ -864,7 +859,7 @@
 
         <footer class="bg-white border-t border-gray-200 py-4 text-center text-xs text-gray-500 mt-auto z-30">
             <div class="max-w-7xl mx-auto px-4">
-                Sistema de Geração de Proposta (SGP) - Nº v5.1.1 | Desenvolvido por 
+                Sistema de Geração de Proposta (SGP) - Nº v5.2 | Desenvolvido por 
                 <a href="https://www.linkedin.com/in/rafaelrobertonascimento" target="_blank" rel="noopener noreferrer" class="text-blue-600 font-bold hover:underline">
                     Rafael Nascimento <i class="fa-brands fa-linkedin text-xs ml-0.5"></i>
                 </a>
@@ -1028,7 +1023,7 @@
 
         const dbExtras = { extrator: 250.00 };
 
-        // SESSÃO E DESTAQUE ADMIN NO TOPO DO MENU (CORRIGIDO NA v5.1.1)
+        // SESSÃO E DESTAQUE ADMIN NO TOPO DO MENU
         function checkUserSession() {
             const savedSession = sessionStorage.getItem('sgp_session_user');
             if (savedSession) {
@@ -1056,7 +1051,6 @@
             document.getElementById('user-avatar-initials').innerText = initials;
             document.getElementById('post-avatar-initials').innerText = initials;
 
-            // EXIBE E POSICIONA O BOTAO DE PAINEL ADMIN SE LOGADO COMO ADMIN
             const adminBtn = document.getElementById('nav-item-admin');
             if (currentUser.role === 'admin') {
                 adminBtn.classList.remove('hidden');
@@ -1104,7 +1098,7 @@
             }
         }
 
-        // LOGIN / REGISTRO USUÁRIO
+        // LOGIN / REGISTRO
         function switchAuthTab(type) {
             document.getElementById('form-login-usuario').classList.add('hidden');
             document.getElementById('form-login-admin').classList.add('hidden');
@@ -1357,7 +1351,7 @@
             });
         }
 
-        // PUBLICAR E MENCIONAR NO FEED (CORRIGIDO PARA SALVAR GATILHO DE MENSAGEM NO FIREBASE)
+        // FEED SOCIAL
         function createNewPost() {
             const input = document.getElementById('post-input-text');
             const inputImage = document.getElementById('post-input-image');
@@ -1390,7 +1384,6 @@
                 inputImage.value = '';
                 document.getElementById('post-is-pinned').checked = false;
 
-                // Salva notificação no banco de dados para cada usuário @mencionado
                 mentions.forEach(mention => {
                     const cleanName = mention.replace('@', '').trim();
                     const targetUser = dbUsers.find(u => u.nome.toLowerCase() === cleanName.toLowerCase());
@@ -1571,6 +1564,52 @@
                     </div>
                 `;
             });
+        }
+
+        function renderSidebarNewsletter() {
+            const container = document.getElementById('sidebar-newsletter-list');
+            if (!container) return;
+            const pinned = dbPosts.filter(p => p.isPinned);
+
+            if (pinned.length === 0) {
+                container.innerHTML = `<p class="text-slate-400 italic text-[11px]">Nenhum aviso fixado no momento.</p>`;
+                return;
+            }
+
+            let html = '';
+            pinned.slice(0, 3).forEach(p => {
+                html += `
+                    <div class="bg-slate-800/70 p-2.5 rounded-xl border border-slate-700/80">
+                        <strong class="text-amber-400 block text-[11px] mb-0.5">📌 ${p.autorNome}</strong>
+                        <p class="text-slate-200 text-[11px] line-clamp-2">${p.texto}</p>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        function openShareModal(postId) {
+            activeSharePostId = postId;
+            document.getElementById('share-post-modal').classList.remove('hidden');
+        }
+
+        function closeShareModal() {
+            document.getElementById('share-post-modal').classList.add('hidden');
+        }
+
+        function sharePostWhatsApp() {
+            const post = dbPosts.find(p => p.id === activeSharePostId);
+            if (!post) return;
+
+            const text = encodeURIComponent(`*LifeApps SGP - Comunicado de ${post.autorNome}:*\n\n"${post.texto}"\n\nAcesse o SGP para interagir!`);
+            window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
+            closeShareModal();
+        }
+
+        function copyPostLink() {
+            navigator.clipboard.writeText(window.location.href);
+            alert('Link interno da plataforma copiado!');
+            closeShareModal();
         }
 
         // LINKS & SISTEMAS EXTERNOS
@@ -2780,7 +2819,7 @@
             });
         }
 
-        // INICIALIZAÇÃO DO PORTAL
+        // INICIALIZAÇÃO
         checkUserSession();
         listenSystemSettings();
         listenNewsletterSettings();
