@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LifeSocial - A rede que conecta os Lifers v7.2</title>
+    <title>LifeSocial - A rede que conecta os Lifers v7.3</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -18,7 +18,7 @@
     <style>
         body { font-family: 'Inter', system-ui, sans-serif; background-color: #f8fafc; }
         .slide-preview { background-color: #ffffff; aspect-ratio: 16/9; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1); }
-        .sidebar-expanded { width: 260px; }
+        .sidebar-expanded { width: 270px; }
         .sidebar-collapsed { width: 80px; }
         .draggable-card { cursor: grab; user-select: none; }
         .draggable-card:active { cursor: grabbing; }
@@ -182,7 +182,7 @@
         </div>
 
         <footer class="text-center text-xs text-white/90 py-2 z-10">
-            LifeSocial v7.2 | Plataforma criada e desenvolvida por 
+            LifeSocial v7.3 | Plataforma criada e desenvolvida por 
             <a href="https://www.linkedin.com/in/rafaelrobertonascimento" target="_blank" rel="noopener noreferrer" class="text-white font-bold underline hover:text-green-300">
                 Rafael Roberto Nascimento <i class="fa-brands fa-linkedin text-xs ml-0.5"></i>
             </a>
@@ -193,11 +193,11 @@
     <div id="screen-main-app" class="hidden flex-1 relative text-slate-800">
 
         <div class="flex flex-1 relative">
-            <!-- SIDEBAR RETRÁTIL -->
+            <!-- SIDEBAR RETRÁTIL (COM CABEÇALHO CORRIGIDO E ALINHADO) -->
             <aside id="main-sidebar" class="sidebar-expanded bg-slate-900 text-white min-h-screen transition-all duration-300 flex flex-col justify-between sticky top-0 h-screen z-40 overflow-y-auto">
                 <div>
-                    <div class="p-4 border-b border-slate-800 flex items-center justify-between">
-                        <div class="flex items-center space-x-3 overflow-hidden logo-text">
+                    <div class="p-4 border-b border-slate-800 flex items-center justify-between gap-2">
+                        <div class="flex items-center space-x-2.5 overflow-hidden logo-text flex-1">
                             <svg class="h-8 w-auto flex-shrink-0" viewBox="0 0 320 80" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <rect x="0" y="55" width="14" height="15" rx="1.5" fill="#3eb049"/>
                                 <rect x="22" y="30" width="14" height="40" rx="1.5" fill="#3eb049"/>
@@ -205,13 +205,13 @@
                                 <rect x="70" y="5" width="14" height="65" rx="3" fill="#ffffff"/>
                                 <rect x="94" y="28" width="14" height="42" rx="3" fill="#ffffff"/>
                             </svg>
-                            <div>
-                                <span class="font-extrabold text-sm tracking-tight text-white whitespace-nowrap sidebar-text block">Life<span class="text-green-400">Social</span></span>
-                                <span class="text-[9px] text-slate-400 font-medium sidebar-text block leading-none">by Rafael Nascimento</span>
+                            <div class="sidebar-text leading-none min-w-0 flex-1">
+                                <span class="font-black text-sm tracking-tight text-white whitespace-nowrap block">Life<span class="text-green-400">Social</span></span>
+                                <span class="text-[9px] text-slate-400 font-medium whitespace-nowrap block mt-0.5">by Rafael Nascimento</span>
                             </div>
                         </div>
-                        <button onclick="toggleSidebar()" class="p-2 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition">
-                            <i id="sidebar-toggle-icon" class="fa-solid fa-angles-left"></i>
+                        <button onclick="toggleSidebar()" class="p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition flex-shrink-0">
+                            <i id="sidebar-toggle-icon" class="fa-solid fa-angles-left text-sm"></i>
                         </button>
                     </div>
 
@@ -226,7 +226,7 @@
                             <span class="sidebar-text whitespace-nowrap">LifeSocial Feed</span>
                         </button>
 
-                        <!-- METAS & OBJETIVOS (Sempre visível para não-admin) -->
+                        <!-- METAS & OBJETIVOS -->
                         <button onclick="switchMainTab('metas')" id="nav-item-metas" class="w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-slate-300 hover:bg-slate-800 hover:text-white font-medium text-xs sm:text-sm transition">
                             <i class="fa-solid fa-chart-line text-lg min-w-[24px]"></i>
                             <span class="sidebar-text whitespace-nowrap">Metas & Objetivos</span>
@@ -268,16 +268,6 @@
 
             <!-- CONTEÚDO PRINCIPAL -->
             <main class="flex-1 p-4 sm:p-8 max-w-7xl mx-auto w-full">
-
-                <!-- BARRA DE CRÉDITO DO DESENVOLVEDOR NO TOPO -->
-                <div class="flex flex-wrap justify-between items-center mb-6 pb-2 border-b border-slate-200/80">
-                    <div class="flex items-center space-x-2">
-                        <span class="px-3 py-1 bg-blue-100 text-blue-800 font-bold rounded-full text-xs flex items-center">
-                            <i class="fa-solid fa-code text-blue-600 mr-1.5"></i> Desenvolvido por Rafael Roberto Nascimento
-                        </span>
-                    </div>
-                    <span class="text-xs font-medium text-slate-400 mt-1 sm:mt-0">LifeSocial v7.2</span>
-                </div>
 
                 <!-- 1. REDE SOCIAL / FEED -->
                 <section id="main-sec-social" class="space-y-6">
@@ -524,7 +514,7 @@
                                         </div>
                                     </div>
 
-                                    <button onclick="addProductToProposal()" class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-extrabold rounded-xl text-xs shadow-sm flex items-center justify-center">
+                                    <button onclick="addProductToProposal()" class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition shadow-sm flex items-center justify-center">
                                         <i class="fa-solid fa-plus mr-1.5"></i> Adicionar à Proposta
                                     </button>
                                 </div>
@@ -1344,12 +1334,12 @@
                 document.getElementById('admin-pin-notice-option').classList.remove('hidden');
             } else {
                 adminBtn.classList.add('hidden');
-                metasBtn.classList.remove('hidden');
+                metasBtn.classList.remove('hidden'); // METAS VISÍVEL PERMANENTEMENTE
                 propostasBtn.classList.remove('hidden');
                 document.getElementById('admin-pin-notice-option').classList.add('hidden');
             }
 
-            // PRIORIZA A ABERTURA NA TELA LIFESOCIAL FEED NO LOGIN OU REFRESH
+            // PRIORIZA A ABERTURA DA ABA LIFESOCIAL FEED NO LOGIN E NO REFRESH
             switchMainTab('social');
             renderUserKpiDashboard();
         }
@@ -1584,6 +1574,7 @@
             localStorage.removeItem('sgp_user_pass');
             
             document.getElementById('nav-item-admin').classList.add('hidden');
+            document.getElementById('nav-item-metas').classList.add('hidden');
             document.getElementById('admin-pin-notice-option').classList.add('hidden');
             
             clearProposalState();
@@ -2309,7 +2300,7 @@
                 rankEl.innerText = userPosIndex !== -1 ? `#${userPosIndex + 1}º Lugar` : '# - Colocação';
             }
 
-            // TABELA MÊS A MÊS DO VENDEDOR/PRÉ-VENDA
+            // TABELA MÊS A MÊS
             const tbody = document.getElementById('user-kpi-months-tbody');
             if (tbody) {
                 tbody.innerHTML = '';
@@ -3657,7 +3648,7 @@
             });
         }
 
-        // INICIALIZAÇÃO
+        // INICIALIZAÇÃO DA APLICAÇÃO
         checkUserSession();
         listenSystemSettings();
         listenNewsletterSettings();
