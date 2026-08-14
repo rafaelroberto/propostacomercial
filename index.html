@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SGP - Portal Corporativo & Propostas LifeApps v5.3.1</title>
+    <title>SGP - Portal Corporativo & Propostas LifeApps v5.4</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -168,7 +168,7 @@
         </div>
 
         <footer class="text-center text-xs text-white/90 py-2 z-10">
-            Sistema de Geração de Proposta (SGP) - Nº v5.3.1 | Desenvolvido por 
+            Sistema de Geração de Proposta (SGP) - Nº v5.4 | Desenvolvido por 
             <a href="https://www.linkedin.com/in/rafaelrobertonascimento" target="_blank" rel="noopener noreferrer" class="text-white font-bold underline hover:text-green-300">
                 Rafael Nascimento <i class="fa-brands fa-linkedin text-xs ml-0.5"></i>
             </a>
@@ -199,6 +199,7 @@
                     </div>
 
                     <nav class="p-3 space-y-1.5" id="sidebar-nav-container">
+                        <!-- PAINEL ADMIN NO TOPO DO MENU -->
                         <button onclick="switchMainTab('admin')" id="nav-item-admin" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-white font-extrabold text-xs sm:text-sm shadow-md transition hidden mb-2">
                             <i class="fa-solid fa-user-shield text-lg min-w-[24px]"></i>
                             <span class="sidebar-text whitespace-nowrap">Painel Administrativo</span>
@@ -855,7 +856,7 @@
 
         <footer class="bg-white border-t border-gray-200 py-4 text-center text-xs text-gray-500 mt-auto z-30">
             <div class="max-w-7xl mx-auto px-4">
-                Sistema de Geração de Proposta (SGP) - Nº v5.3.1 | Desenvolvido por 
+                Sistema de Geração de Proposta (SGP) - Nº v5.4 | Desenvolvido por 
                 <a href="https://www.linkedin.com/in/rafaelrobertonascimento" target="_blank" rel="noopener noreferrer" class="text-blue-600 font-bold hover:underline">
                     Rafael Nascimento <i class="fa-brands fa-linkedin text-xs ml-0.5"></i>
                 </a>
@@ -1052,7 +1053,7 @@
 
             if (currentUser.role === 'admin') {
                 adminBtn.classList.remove('hidden');
-                propostasBtn.classList.add('hidden'); // ADMIN NÃO VÊ O GERADOR DE PROPOSTAS
+                propostasBtn.classList.add('hidden'); // OCULTA GERADOR DE PROPOSTAS PARA O ADMIN
                 document.getElementById('admin-pin-notice-option').classList.remove('hidden');
             } else {
                 adminBtn.classList.add('hidden');
@@ -1269,7 +1270,7 @@
             textarea.focus();
         }
 
-        // NOTIFICAÇÕES REALTIME
+        // GERENCIADOR DE NOTIFICAÇÕES REALTIME (ESTABILIZADO)
         function requestNotificationPermission() {
             if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") {
                 Notification.requestPermission();
@@ -1355,7 +1356,41 @@
             });
         }
 
-        // FEED SOCIAL
+        // FEED SOCIAL E CRIAÇÃO DE POSTS
+        function toggleEmojiPicker() {
+            const picker = document.getElementById('emoji-picker-popover');
+            picker.classList.toggle('hidden');
+        }
+
+        function insertEmoji(emoji) {
+            const input = document.getElementById('post-input-text');
+            const start = input.selectionStart;
+            const end = input.selectionEnd;
+            const text = input.value;
+            input.value = text.substring(0, start) + emoji + text.substring(end);
+            input.focus();
+            input.selectionStart = input.selectionEnd = start + emoji.length;
+            document.getElementById('emoji-picker-popover').classList.add('hidden');
+        }
+
+        function listenFirebasePosts() {
+            db.collection("posts").onSnapshot((snapshot) => {
+                dbPosts = [];
+                snapshot.forEach((doc) => {
+                    dbPosts.push({ id: doc.id, ...doc.data() });
+                });
+
+                dbPosts.sort((a, b) => {
+                    if (a.isPinned && !b.isPinned) return -1;
+                    if (!a.isPinned && b.isPinned) return 1;
+                    return new Date(b.dataCriacao || 0) - new Date(a.dataCriacao || 0);
+                });
+
+                renderSocialFeed();
+                renderSidebarNewsletter();
+            });
+        }
+
         function createNewPost() {
             const input = document.getElementById('post-input-text');
             const inputImage = document.getElementById('post-input-image');
@@ -1622,7 +1657,7 @@
             closeShareModal();
         }
 
-        // LINKS & SISTEMAS EXTERNOS
+        // LINKS & ATALHOS EXTERNOS
         function listenFirebaseLinks() {
             db.collection("atalhos").onSnapshot((snapshot) => {
                 dbLinks = [];
@@ -1745,7 +1780,7 @@
             });
         }
 
-        // CARDS CUSTOMIZADOS E NEWSLETTER
+        // CARDS CUSTOMIZADOS
         function listenFirebaseCustomCards() {
             db.collection("cards_laterais").onSnapshot((snapshot) => {
                 dbCustomCards = [];
@@ -2052,7 +2087,7 @@
             });
         }
 
-        // PROPOSTAS E CALCULADOR (ESTABILIZADO)
+        // CALCULADOR E PROPOSTAS
         function clearProposalState() {
             proposalProducts = [];
             const searchInput = document.getElementById('vendedor-search-input');
