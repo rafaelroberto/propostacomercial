@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SGP - Feed Social Corporativo & Propostas</title>
+    <title>SGP - Feed Social Corporativo & Propostas v4.1</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -33,7 +33,7 @@
         <!-- SIDEBAR RETRÁTIL (MENU ESQUERDO) -->
         <aside id="main-sidebar" class="sidebar-expanded bg-slate-900 text-white min-h-screen transition-all duration-300 flex flex-col justify-between sticky top-0 h-screen z-40">
             <div>
-                <!-- Header do Sidebar com Botão de Encolher -->
+                <!-- Header do Sidebar -->
                 <div class="p-4 border-b border-slate-800 flex items-center justify-between">
                     <div class="flex items-center space-x-3 overflow-hidden logo-text">
                         <svg class="h-8 w-auto flex-shrink-0" viewBox="0 0 320 80" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -96,19 +96,25 @@
                 
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
                     
-                    <!-- FEED PRINCIPAL (ESQUERDA / CENTRO) -->
+                    <!-- FEED PRINCIPAL -->
                     <div class="lg:col-span-8 space-y-6">
                         
-                        <!-- Caixa de Nova Publicação -->
+                        <!-- Caixa de Nova Publicação com opção de imagem -->
                         <div class="bg-white p-4 sm:p-5 rounded-2xl border shadow-sm space-y-3">
                             <div class="flex items-center space-x-3">
-                                <div class="w-9 h-9 rounded-full bg-blue-600 text-white font-bold flex items-center justify-center text-xs" id="post-avatar-initials">
+                                <div class="w-9 h-9 rounded-full bg-blue-600 text-white font-bold flex items-center justify-center text-xs flex-shrink-0" id="post-avatar-initials">
                                     U
                                 </div>
                                 <input type="text" id="post-input-text" placeholder="No que você está pensando ou negociando hoje?" class="w-full p-2.5 bg-gray-50 border rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
                             </div>
 
-                            <div class="flex justify-between items-center border-t pt-3">
+                            <!-- Campo de URL de Imagem da Publicação -->
+                            <div class="relative">
+                                <input type="text" id="post-input-image" placeholder="📷 Cole o link de uma imagem/foto para anexar (opcional)..." class="w-full pl-8 pr-3 py-1.5 bg-gray-50 border rounded-lg text-xs focus:ring-1 focus:ring-blue-500 focus:outline-none">
+                                <i class="fa-solid fa-image absolute left-2.5 top-2.5 text-gray-400 text-xs"></i>
+                            </div>
+
+                            <div class="flex flex-wrap justify-between items-center border-t pt-3 gap-2">
                                 <div class="flex space-x-2 text-xs">
                                     <label id="admin-pin-notice-option" class="hidden flex items-center space-x-1.5 text-amber-800 font-bold bg-amber-50 border border-amber-200 px-3 py-1 rounded-lg cursor-pointer">
                                         <input type="checkbox" id="post-is-pinned" class="w-3.5 h-3.5 text-amber-600 rounded">
@@ -116,7 +122,7 @@
                                     </label>
                                 </div>
 
-                                <button onclick="createNewPost()" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs shadow transition flex items-center">
+                                <button onclick="createNewPost()" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs shadow transition flex items-center ml-auto">
                                     <i class="fa-solid fa-paper-plane mr-1.5"></i> Publicar
                                 </button>
                             </div>
@@ -131,7 +137,6 @@
                     <!-- BARRA LATERAL DIREITA: NEWSLETTER & DESTAQUES -->
                     <div class="lg:col-span-4 space-y-6">
                         
-                        <!-- Bloco Newsletter -->
                         <div class="bg-gradient-to-br from-blue-900 to-slate-900 text-white p-5 rounded-2xl shadow-sm space-y-4">
                             <div class="flex items-center space-x-2 text-green-400">
                                 <i class="fa-solid fa-bullhorn text-lg"></i>
@@ -145,7 +150,6 @@
                             </div>
                         </div>
 
-                        <!-- Card Dica do Vendedor -->
                         <div class="bg-white p-5 rounded-2xl border shadow-sm space-y-3">
                             <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider flex items-center">
                                 <i class="fa-solid fa-lightbulb text-yellow-500 mr-2 text-sm"></i> Dica de Vendas
@@ -164,7 +168,6 @@
             <section id="main-sec-propostas" class="hidden space-y-8">
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
                     
-                    <!-- Formulário Vendedor -->
                     <div class="lg:col-span-5 bg-white p-6 rounded-2xl shadow-sm border border-gray-200 space-y-6">
                         <div class="flex justify-between items-center border-b pb-3">
                             <h2 class="text-xl font-bold text-gray-900">
@@ -180,7 +183,6 @@
                             </div>
                         </div>
 
-                        <!-- Módulo de Adicionar Produtos -->
                         <div class="border rounded-xl p-4 bg-gray-50 space-y-3">
                             <label class="block text-xs font-bold text-gray-700 uppercase">Adicionar Produto</label>
                             <div class="space-y-3">
@@ -236,7 +238,6 @@
                             </label>
                         </div>
 
-                        <!-- Lista de Produtos Adicionados -->
                         <div class="space-y-2">
                             <label class="block text-xs font-semibold text-gray-600 uppercase">Produtos Selecionados</label>
                             <div id="proposal-items-list" class="space-y-2">
@@ -244,7 +245,6 @@
                             </div>
                         </div>
 
-                        <!-- Serviços Extras -->
                         <div class="space-y-3 border-t pt-4">
                             <label class="block text-xs font-semibold text-gray-600 uppercase">Serviço Adicional</label>
                             <div>
@@ -257,7 +257,6 @@
                             </div>
                         </div>
 
-                        <!-- Descontos -->
                         <div class="space-y-3 border-t pt-4">
                             <label class="block text-xs font-semibold text-gray-600 uppercase">Descontos Comerciais (%)</label>
                             <div class="grid grid-cols-2 gap-3">
@@ -272,7 +271,6 @@
                             </div>
                         </div>
 
-                        <!-- Parcelamento e Datas -->
                         <div class="space-y-3 border-t pt-4">
                             <label class="block text-xs font-semibold text-gray-600 uppercase">Condições & Parcelamento</label>
                             <div class="grid grid-cols-2 gap-3">
@@ -539,7 +537,7 @@
     <!-- FOOTER INSTITUCIONAL FIXO -->
     <footer class="bg-white border-t border-gray-200 py-4 text-center text-xs text-gray-500 mt-auto z-30">
         <div class="max-w-7xl mx-auto px-4">
-            Sistema de Geração de Proposta (SGP) - Nº v4.0 | Desenvolvido por 
+            Sistema de Geração de Proposta (SGP) - Nº v4.1 | Desenvolvido por 
             <a href="https://www.linkedin.com/in/rafaelrobertonascimento" target="_blank" rel="noopener noreferrer" class="text-blue-600 font-bold hover:underline">
                 Rafael Nascimento <i class="fa-brands fa-linkedin text-xs ml-0.5"></i>
             </a>
@@ -676,7 +674,6 @@
 
         const dbExtras = { extrator: 250.00 };
 
-        // Verifica Sessão Ativa do Usuário
         function checkUserSession() {
             const savedSession = sessionStorage.getItem('sgp_session_user');
             if (!savedSession) {
@@ -692,7 +689,6 @@
             document.getElementById('user-avatar-initials').innerText = initials;
             document.getElementById('post-avatar-initials').innerText = initials;
 
-            // Se for Admin, mostra a aba de controle do Admin e opção de fixar aviso
             if (currentUser.role === 'admin') {
                 document.getElementById('nav-item-admin').classList.remove('hidden');
                 document.getElementById('admin-pin-notice-option').classList.remove('hidden');
@@ -741,7 +737,7 @@
             }
         }
 
-        // LÓGICA DA REDE SOCIAL / FEED CORPORATIVO
+        // LÓGICA DA REDE SOCIAL DA v4.1
         function listenFirebasePosts() {
             db.collection("posts").onSnapshot((snapshot) => {
                 dbPosts = [];
@@ -749,7 +745,6 @@
                     dbPosts.push({ id: doc.id, ...doc.data() });
                 });
 
-                // Ordenação: Postagens Fixadas no Topo primeiro, depois por Data
                 dbPosts.sort((a, b) => {
                     if (a.isPinned && !b.isPinned) return -1;
                     if (!a.isPinned && b.isPinned) return 1;
@@ -763,11 +758,14 @@
 
         function createNewPost() {
             const input = document.getElementById('post-input-text');
+            const inputImage = document.getElementById('post-input-image');
             const isPinned = document.getElementById('post-is-pinned').checked;
-            const text = input.value.trim();
 
-            if (!text) {
-                alert('Digite uma mensagem antes de publicar!');
+            const text = input.value.trim();
+            const imageUrl = inputImage.value.trim();
+
+            if (!text && !imageUrl) {
+                alert('Digite uma mensagem ou adicione uma imagem para publicar!');
                 return;
             }
 
@@ -776,6 +774,7 @@
                 autorNome: currentUser.nome,
                 autorRole: currentUser.role || 'vendedor',
                 texto: text,
+                imageUrl: imageUrl,
                 dataCriacao: new Date().toISOString(),
                 isPinned: currentUser.role === 'admin' ? isPinned : false,
                 curtidas: [],
@@ -784,8 +783,15 @@
 
             db.collection("posts").add(newPost).then(() => {
                 input.value = '';
+                inputImage.value = '';
                 document.getElementById('post-is-pinned').checked = false;
             });
+        }
+
+        function deletePostFirebase(postId) {
+            if (confirm('Deseja excluir esta mensagem da rede social?')) {
+                db.collection("posts").doc(postId).delete();
+            }
         }
 
         function toggleLikePost(postId) {
@@ -815,6 +821,8 @@
 
             const comentarios = post.comentarios || [];
             comentarios.push({
+                id: Date.now().toString(),
+                autorId: currentUser.id || 'usr',
                 autorNome: currentUser.nome,
                 texto: text,
                 data: new Date().toISOString()
@@ -823,6 +831,16 @@
             db.collection("posts").doc(postId).update({ comentarios }).then(() => {
                 input.value = '';
             });
+        }
+
+        function deleteCommentFromPost(postId, commentId) {
+            if (!confirm('Deseja apagar este comentário?')) return;
+
+            const post = dbPosts.find(p => p.id === postId);
+            if (!post) return;
+
+            const comentarios = (post.comentarios || []).filter(c => c.id !== commentId);
+            db.collection("posts").doc(postId).update({ comentarios });
         }
 
         function renderSocialFeed() {
@@ -841,17 +859,31 @@
                 const countLikes = (post.curtidas || []).length;
                 const comentarios = post.comentarios || [];
 
+                // Permissão para excluir: autor ou admin
+                const isOwner = (post.autorId === currentUser.id || post.autorNome === currentUser.nome || currentUser.role === 'admin');
+
                 let pinnedBadge = post.isPinned ? `
                     <span class="bg-amber-100 text-amber-800 text-[10px] px-2.5 py-0.5 rounded-full font-bold flex items-center">
                         <i class="fa-solid fa-thumbtack mr-1"></i> Aviso da Gestão / Newsletter
                     </span>
                 ` : '';
 
+                let imageHtml = post.imageUrl ? `
+                    <div class="mt-3 rounded-xl overflow-hidden border max-h-96 flex items-center justify-center bg-gray-50">
+                        <img src="${post.imageUrl}" alt="Imagem da publicação" class="w-full h-auto object-cover" onerror="this.style.display='none'">
+                    </div>
+                ` : '';
+
                 let commentsHtml = '';
                 comentarios.forEach(c => {
+                    const isCommentOwner = (c.autorId === currentUser.id || c.autorNome === currentUser.nome || currentUser.role === 'admin');
+
                     commentsHtml += `
-                        <div class="bg-gray-50 p-2.5 rounded-xl text-xs space-y-0.5">
-                            <strong class="text-blue-900">${c.autorNome}</strong>
+                        <div class="bg-gray-50 p-2.5 rounded-xl text-xs space-y-0.5 relative group">
+                            <div class="flex justify-between items-center">
+                                <strong class="text-blue-900">${c.autorNome}</strong>
+                                ${isCommentOwner ? `<button onclick="deleteCommentFromPost('${post.id}', '${c.id}')" class="text-red-400 hover:text-red-600 text-[10px] font-bold">Excluir</button>` : ''}
+                            </div>
                             <p class="text-gray-700">${c.texto}</p>
                         </div>
                     `;
@@ -872,12 +904,20 @@
                                     <span class="text-[10px] text-gray-400">${dataFormatada}</span>
                                 </div>
                             </div>
-                            ${pinnedBadge}
+
+                            <div class="flex items-center space-x-2">
+                                ${pinnedBadge}
+                                ${isOwner ? `
+                                    <button onclick="deletePostFirebase('${post.id}')" title="Excluir publicação" class="text-gray-400 hover:text-red-600 text-xs p-1">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                ` : ''}
+                            </div>
                         </div>
 
-                        <p class="text-xs sm:text-sm text-gray-800 leading-relaxed whitespace-pre-line">${post.texto}</p>
+                        ${post.texto ? `<p class="text-xs sm:text-sm text-gray-800 leading-relaxed whitespace-pre-line">${post.texto}</p>` : ''}
+                        ${imageHtml}
 
-                        <!-- Ações: Curtir, Comentar, Compartilhar -->
                         <div class="flex items-center justify-between border-t border-b py-2 text-xs text-gray-500">
                             <button onclick="toggleLikePost('${post.id}')" class="flex items-center space-x-1.5 ${isLiked ? 'text-red-500 font-bold' : 'hover:text-red-500'} transition">
                                 <i class="${isLiked ? 'fa-solid' : 'fa-regular'} fa-heart"></i>
@@ -895,7 +935,6 @@
                             </button>
                         </div>
 
-                        <!-- Comentários -->
                         <div class="space-y-2 pt-1">
                             ${commentsHtml}
 
@@ -999,120 +1038,6 @@
                 renderAdminPropostasTable();
                 renderVendedorPropostasList();
             });
-        }
-
-        function seedDefaultProducts() {
-            const defaults = [
-                { name: 'E-Commerce + App (iOS e Android)', setup: 18742.50, mensal: 2490.00, active: true, order: 1 },
-                { name: 'LifeGrowth', setup: 5000.00, mensal: 1200.00, active: true, order: 2 },
-                { name: 'LifeChat', setup: 3500.00, mensal: 890.00, active: true, order: 3 }
-            ];
-            defaults.forEach(p => db.collection("produtos").add(p));
-        }
-
-        function clearProposalState() {
-            proposalProducts = [];
-            const searchInput = document.getElementById('vendedor-search-input');
-            const selectedProdId = document.getElementById('selected-product-id');
-            const qtdSetup = document.getElementById('vendedor-qtd-setup');
-            const qtdMensal = document.getElementById('vendedor-qtd-mensal');
-            const semSetup = document.getElementById('vendedor-sem-setup');
-            const bonifSetup = document.getElementById('vendedor-bonificar-setup');
-            const bonifMensal = document.getElementById('vendedor-bonificar-mensal');
-            const ocultarSetup = document.getElementById('vendedor-ocultar-setup');
-            const descSetup = document.getElementById('desc-setup');
-            const descMensal = document.getElementById('desc-mensal');
-            const extrator = document.getElementById('vendedor-extrator');
-            const parcSetup = document.getElementById('vendedor-parc-setup');
-            const dataSetup = document.getElementById('vendedor-data-setup');
-            const dataMensal = document.getElementById('vendedor-data-mensal');
-
-            if (searchInput) searchInput.value = '';
-            if (selectedProdId) selectedProdId.value = '';
-            if (qtdSetup) qtdSetup.value = 1;
-            if (qtdMensal) qtdMensal.value = 1;
-            if (semSetup) semSetup.checked = false;
-            if (bonifSetup) bonifSetup.checked = false;
-            if (bonifMensal) bonifMensal.checked = false;
-            if (ocultarSetup) ocultarSetup.checked = false;
-            if (descSetup) descSetup.value = 0;
-            if (descMensal) descMensal.value = 0;
-            if (extrator) extrator.value = 'nao';
-            if (parcSetup) parcSetup.value = '3';
-            if (dataSetup) dataSetup.value = '';
-            if (dataMensal) dataMensal.value = '';
-            
-            renderProposalItemsList();
-            calculateProposal();
-        }
-
-        function createNewProposal() {
-            if (proposalProducts.length > 0 && confirm("Deseja descartar a proposta atual e iniciar um Novo Orçamento em branco?")) {
-                clearProposalState();
-            } else if (proposalProducts.length === 0) {
-                clearProposalState();
-            }
-        }
-
-        function logoutSystem() {
-            sessionStorage.removeItem('sgp_session_user');
-            localStorage.removeItem('sgp_user_email');
-            localStorage.removeItem('sgp_user_pass');
-            window.location.href = 'index.html';
-        }
-
-        function switchAdminSubTab(sec) {
-            document.getElementById('adm-sec-produtos').classList.add('hidden');
-            document.getElementById('adm-sec-orcamentos').classList.add('hidden');
-            document.getElementById('adm-sec-usuarios').classList.add('hidden');
-            document.getElementById('adm-sec-seguranca').classList.add('hidden');
-
-            document.getElementById('adm-subtab-produtos').className = "px-4 py-2 text-xs font-bold text-gray-500 hover:text-gray-800";
-            document.getElementById('adm-subtab-orcamentos').className = "px-4 py-2 text-xs font-bold text-gray-500 hover:text-gray-800";
-            document.getElementById('adm-subtab-usuarios').className = "px-4 py-2 text-xs font-bold text-gray-500 hover:text-gray-800";
-            document.getElementById('adm-subtab-seguranca').className = "px-4 py-2 text-xs font-bold text-gray-500 hover:text-gray-800";
-
-            if (sec === 'produtos') {
-                document.getElementById('adm-sec-produtos').classList.remove('hidden');
-                document.getElementById('adm-subtab-produtos').className = "px-4 py-2 text-xs font-bold border-b-2 border-blue-600 text-blue-600";
-            } else if (sec === 'orcamentos') {
-                document.getElementById('adm-sec-orcamentos').classList.remove('hidden');
-                document.getElementById('adm-subtab-orcamentos').className = "px-4 py-2 text-xs font-bold border-b-2 border-blue-600 text-blue-600";
-            } else if (sec === 'usuarios') {
-                document.getElementById('adm-sec-usuarios').classList.remove('hidden');
-                document.getElementById('adm-subtab-usuarios').className = "px-4 py-2 text-xs font-bold border-b-2 border-blue-600 text-blue-600";
-            } else {
-                document.getElementById('adm-sec-seguranca').classList.remove('hidden');
-                document.getElementById('adm-subtab-seguranca').className = "px-4 py-2 text-xs font-bold border-b-2 border-blue-600 text-blue-600";
-            }
-        }
-
-        function saveAdminPassword() {
-            const newPass = document.getElementById('admin-new-pass').value;
-            const confirmPass = document.getElementById('admin-confirm-pass').value;
-
-            if (!newPass || newPass !== confirmPass) {
-                alert('Senhas inválidas ou divergentes!');
-                return;
-            }
-
-            db.collection("settings").doc("config").update({ adminPass: newPass }).then(() => {
-                alert('Senha do Administrador atualizada com sucesso!');
-                document.getElementById('admin-new-pass').value = '';
-                document.getElementById('admin-confirm-pass').value = '';
-            });
-        }
-
-        function setUserStatus(userId, status) {
-            db.collection("usuarios").doc(userId).update({ status }).then(() => {
-                alert(`Status do usuário atualizado para: ${status.toUpperCase()}`);
-            });
-        }
-
-        function deleteUser(userId) {
-            if (confirm('Deseja excluir este vendedor do sistema?')) {
-                db.collection("usuarios").doc(userId).delete();
-            }
         }
 
         function renderAdminUsers() {
@@ -1285,7 +1210,7 @@
             tbody.innerHTML = '';
 
             if (filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-gray-400 italic">Nenhum orçamento encontrado no banco de dados.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-gray-400 italic">Nenhum orçamento encontrado.</td></tr>`;
                 return;
             }
 
@@ -1875,7 +1800,6 @@
             });
         }
 
-        // Inicialização do Portal
         checkUserSession();
         listenSystemSettings();
         listenFirebaseUsers();
