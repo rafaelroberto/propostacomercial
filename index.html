@@ -3,12 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SGP - Sistema de Geração de Propostas v3.2</title>
+    <title>SGP - Portal Corporativo LifeApps</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- html2canvas para captura de imagem em alta qualidade -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
@@ -16,648 +13,131 @@
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', system-ui, sans-serif; background-color: #f8fafc; }
-        .slide-preview { background-color: #ffffff; aspect-ratio: 16/9; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1); }
-        @media (max-width: 768px) {
-            .slide-preview { aspect-ratio: auto; }
-        }
-        .draggable-card { cursor: grab; user-select: none; }
-        .draggable-card:active { cursor: grabbing; }
-        .draggable-card.dragging { opacity: 0.4; border: 2px dashed #3b82f6; }
+        body { font-family: 'Inter', system-ui, sans-serif; }
         .auth-bg { background: linear-gradient(135deg, #0f172a 0%, #005691 50%, #3eb049 100%); }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800 min-h-screen flex flex-col justify-between">
+<body class="auth-bg min-h-screen flex flex-col justify-between p-4 text-gray-800">
 
-    <!-- TELA DE LOGIN / REGISTRO -->
-    <section id="screen-auth" class="fixed inset-0 z-50 auth-bg flex flex-col justify-between p-4 overflow-y-auto">
-        <div class="my-auto flex justify-center w-full">
-            <div class="bg-white/95 backdrop-blur-md rounded-3xl w-full max-w-md p-6 sm:p-8 shadow-2xl space-y-6 border border-white/20">
-                
-                <div class="text-center flex flex-col items-center">
-                    <svg class="h-9 sm:h-10 w-auto mb-2" viewBox="0 0 320 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <rect x="0" y="55" width="14" height="15" rx="1.5" fill="#3eb049"/>
-                        <rect x="22" y="30" width="14" height="40" rx="1.5" fill="#3eb049"/>
-                        <rect x="44" y="42" width="14" height="28" rx="1.5" fill="#3eb049"/>
-                        <rect x="70" y="5" width="14" height="65" rx="3" fill="#005691"/>
-                        <rect x="94" y="28" width="14" height="42" rx="3" fill="#005691"/>
-                        <path d="M 125 18 C 125 10 132 5 142 5 L 148 5 L 148 18 L 140 18 C 138 18 137 19 137 21 L 137 28 L 148 28 L 148 40 L 137 40 L 137 70 L 125 70 Z" fill="#005691"/>
-                        <path d="M 185 48 C 185 36 175 27 163 27 C 151 27 141 36 141 49 C 141 62 151 71 163 71 C 172 71 180 66 183 58 L 172 54 C 170 58 167 60 163 60 C 157 60 153 56 153 51 L 185 51 Z M 153 43 C 154 39 158 36 163 36 C 168 36 172 39 173 43 Z" fill="#005691"/>
-                        <text x="188" y="68" font-family="'Segoe UI', Roboto, Arial, sans-serif" font-size="34" font-weight="500" fill="#3eb049">apps</text>
-                    </svg>
-                    <h2 class="text-xs font-bold text-gray-500 tracking-wider uppercase">Sistema de Geração de Proposta (SGP)</h2>
-                </div>
-
-                <div class="flex rounded-xl bg-gray-100 p-1 text-xs font-bold">
-                    <button onclick="switchAuthTab('vendedor')" id="auth-tab-vendedor" class="flex-1 py-2 rounded-lg bg-white shadow text-blue-900 transition">Vendedor</button>
-                    <button onclick="switchAuthTab('admin')" id="auth-tab-admin" class="flex-1 py-2 rounded-lg text-gray-500 hover:text-gray-900 transition">Administrador</button>
-                </div>
-
-                <!-- LOGIN VENDEDOR -->
-                <form id="form-login-vendedor" onsubmit="handleVendedorLogin(event)" class="space-y-4">
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">E-mail Corporativo</label>
-                        <div class="relative">
-                            <input type="email" id="login-vendedor-email" required placeholder="vendedor@lifeapps.com.br" value="vendedor@lifeapps.com.br" class="w-full pl-9 pr-3 py-2.5 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
-                            <i class="fa-solid fa-envelope absolute left-3 top-3.5 text-gray-400 text-xs"></i>
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Senha</label>
-                        <div class="relative">
-                            <input type="password" id="login-vendedor-senha" required placeholder="123" value="123" class="w-full pl-9 pr-3 py-2.5 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
-                            <i class="fa-solid fa-lock absolute left-3 top-3.5 text-gray-400 text-xs"></i>
-                        </div>
-                    </div>
-
-                    <div class="flex items-center justify-between text-xs">
-                        <label class="flex items-center text-gray-600 font-medium cursor-pointer">
-                            <input type="checkbox" id="remember-me" class="w-4 h-4 text-blue-600 rounded mr-2">
-                            Lembrar de mim neste dispositivo
-                        </label>
-                    </div>
-
-                    <button type="submit" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg transition flex items-center justify-center">
-                        Entrar no SGP <i class="fa-solid fa-arrow-right-to-bracket ml-2"></i>
-                    </button>
-
-                    <div class="text-center pt-2">
-                        <button type="button" onclick="showRegisterScreen()" class="text-xs text-blue-600 font-bold hover:underline">
-                            Ainda não tem conta? Criar conta
-                        </button>
-                    </div>
-                </form>
-
-                <!-- LOGIN ADMIN -->
-                <form id="form-login-admin" onsubmit="handleAdminLogin(event)" class="space-y-4 hidden">
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Senha do Administrador</label>
-                        <div class="relative">
-                            <input type="password" id="login-admin-senha" required placeholder="Digite a senha de administrador..." class="w-full pl-9 pr-3 py-2.5 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
-                            <i class="fa-solid fa-shield-halved absolute left-3 top-3.5 text-gray-400 text-xs"></i>
-                        </div>
-                    </div>
-
-                    <button type="submit" class="w-full py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl shadow-lg transition flex items-center justify-center">
-                        Acessar Painel Adm <i class="fa-solid fa-user-shield ml-2"></i>
-                    </button>
-                </form>
-
-                <!-- REGISTRO VENDEDOR -->
-                <form id="form-register-vendedor" onsubmit="handleVendedorRegister(event)" class="space-y-3 hidden">
-                    <h3 class="text-xs font-bold text-gray-700 uppercase border-b pb-1">Criar Conta de Vendedor</h3>
-
-                    <div>
-                        <label class="block text-[11px] font-semibold text-gray-600 uppercase">Nome Completo</label>
-                        <input type="text" id="reg-nome" required placeholder="Seu nome" class="w-full p-2 border rounded-lg text-sm">
-                    </div>
-
-                    <div>
-                        <label class="block text-[11px] font-semibold text-gray-600 uppercase">E-mail Corporativo (@lifeapps.com.br)</label>
-                        <input type="email" id="reg-email" required placeholder="nome@lifeapps.com.br" class="w-full p-2 border rounded-lg text-sm">
-                    </div>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                        <div>
-                            <label class="block text-[11px] font-semibold text-gray-600 uppercase">Senha</label>
-                            <input type="password" id="reg-senha" required placeholder="••••••••" class="w-full p-2 border rounded-lg text-sm">
-                        </div>
-                        <div>
-                            <label class="block text-[11px] font-semibold text-gray-600 uppercase">Confirmar Senha</label>
-                            <input type="password" id="reg-senha-confirm" required placeholder="••••••••" class="w-full p-2 border rounded-lg text-sm">
-                        </div>
-                    </div>
-
-                    <button type="submit" class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow transition">
-                        Cadastrar Minha Conta
-                    </button>
-
-                    <div class="text-center pt-1">
-                        <button type="button" onclick="hideRegisterScreen()" class="text-xs text-gray-500 font-bold hover:underline">
-                            Voltar para o Login
-                        </button>
-                    </div>
-                </form>
-
-            </div>
-        </div>
-
-        <div class="text-center text-xs text-white/80 py-2">
-            Sistema de Geração de Proposta (SGP) | Desenvolvido por 
-            <a href="https://www.linkedin.com/in/rafaelrobertonascimento" target="_blank" rel="noopener noreferrer" class="text-white font-bold underline">
-                Rafael Nascimento <i class="fa-brands fa-linkedin text-xs ml-0.5"></i>
-            </a>
-        </div>
-    </section>
-
-    <!-- Header Navigation -->
-    <header class="bg-white border-b border-gray-200 sticky top-0 z-40">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:h-16 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-0">
-            <div class="flex items-center justify-between w-full sm:w-auto">
-                <div class="flex items-center space-x-3">
-                    <svg class="h-7 sm:h-8 w-auto" viewBox="0 0 320 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <rect x="0" y="55" width="14" height="15" rx="1.5" fill="#3eb049"/>
-                        <rect x="22" y="30" width="14" height="40" rx="1.5" fill="#3eb049"/>
-                        <rect x="44" y="42" width="14" height="28" rx="1.5" fill="#3eb049"/>
-                        <rect x="70" y="5" width="14" height="65" rx="3" fill="#005691"/>
-                        <rect x="94" y="28" width="14" height="42" rx="3" fill="#005691"/>
-                        <path d="M 125 18 C 125 10 132 5 142 5 L 148 5 L 148 18 L 140 18 C 138 18 137 19 137 21 L 137 28 L 148 28 L 148 40 L 137 40 L 137 70 L 125 70 Z" fill="#005691"/>
-                        <path d="M 185 48 C 185 36 175 27 163 27 C 151 27 141 36 141 49 C 141 62 151 71 163 71 C 172 71 180 66 183 58 L 172 54 C 170 58 167 60 163 60 C 157 60 153 56 153 51 L 185 51 Z M 153 43 C 154 39 158 36 163 36 C 168 36 172 39 173 43 Z" fill="#005691"/>
-                        <text x="188" y="68" font-family="'Segoe UI', Roboto, Arial, sans-serif" font-size="34" font-weight="500" fill="#3eb049">apps</text>
-                    </svg>
-                    <span class="text-[10px] sm:text-xs bg-blue-100 text-blue-800 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full font-bold">SGP Mobile</span>
-                </div>
-            </div>
-
-            <nav class="flex items-center justify-center space-x-2 w-full sm:w-auto">
-                <button onclick="switchTab('vendedor')" id="tab-vendedor" class="flex-1 sm:flex-initial px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg font-medium text-xs sm:text-sm transition-all bg-blue-600 text-white shadow-sm">
-                    <i class="fa-solid fa-calculator mr-1 sm:mr-2"></i>Vendedor
-                </button>
-                <button onclick="switchTab('admin')" id="tab-admin" class="flex-1 sm:flex-initial px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg font-medium text-xs sm:text-sm transition-all text-gray-600 hover:bg-gray-100">
-                    <i class="fa-solid fa-lock mr-1 sm:mr-2"></i>Admin
-                </button>
-            </nav>
+    <main class="my-auto flex justify-center w-full">
+        <div class="bg-white/95 backdrop-blur-md rounded-3xl w-full max-w-md p-6 sm:p-8 shadow-2xl space-y-6 border border-white/20">
             
-            <div class="flex items-center justify-between w-full sm:w-auto space-x-3">
-                <span id="header-user-display" class="text-xs font-bold text-gray-700 bg-gray-100 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg border">
-                    <i class="fa-solid fa-user text-blue-600 mr-1"></i> Vendedor
-                </span>
-                <button onclick="logoutSystem()" class="px-2.5 py-1 sm:px-3 sm:py-1.5 bg-red-100 hover:bg-red-200 text-red-700 text-xs font-bold rounded-lg transition flex items-center">
-                    <i class="fa-solid fa-power-off mr-1"></i> Sair
+            <div class="text-center flex flex-col items-center">
+                <svg class="h-10 w-auto mb-2" viewBox="0 0 320 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="0" y="55" width="14" height="15" rx="1.5" fill="#3eb049"/>
+                    <rect x="22" y="30" width="14" height="40" rx="1.5" fill="#3eb049"/>
+                    <rect x="44" y="42" width="14" height="28" rx="1.5" fill="#3eb049"/>
+                    <rect x="70" y="5" width="14" height="65" rx="3" fill="#005691"/>
+                    <rect x="94" y="28" width="14" height="42" rx="3" fill="#005691"/>
+                    <path d="M 125 18 C 125 10 132 5 142 5 L 148 5 L 148 18 L 140 18 C 138 18 137 19 137 21 L 137 28 L 148 28 L 148 40 L 137 40 L 137 70 L 125 70 Z" fill="#005691"/>
+                    <path d="M 185 48 C 185 36 175 27 163 27 C 151 27 141 36 141 49 C 141 62 151 71 163 71 C 172 71 180 66 183 58 L 172 54 C 170 58 167 60 163 60 C 157 60 153 56 153 51 L 185 51 Z M 153 43 C 154 39 158 36 163 36 C 168 36 172 39 173 43 Z" fill="#005691"/>
+                    <text x="188" y="68" font-family="'Segoe UI', Roboto, Arial, sans-serif" font-size="34" font-weight="500" fill="#3eb049">apps</text>
+                </svg>
+                <h2 class="text-xs font-bold text-gray-500 tracking-wider uppercase">Portal & Mini Rede Social Comercial</h2>
+            </div>
+
+            <div class="flex rounded-xl bg-gray-100 p-1 text-xs font-bold">
+                <button onclick="switchAuthTab('vendedor')" id="auth-tab-vendedor" class="flex-1 py-2 rounded-lg bg-white shadow text-blue-900 transition">Vendedor</button>
+                <button onclick="switchAuthTab('admin')" id="auth-tab-admin" class="flex-1 py-2 rounded-lg text-gray-500 hover:text-gray-900 transition">Administrador</button>
+            </div>
+
+            <!-- LOGIN VENDEDOR -->
+            <form id="form-login-vendedor" onsubmit="handleVendedorLogin(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">E-mail Corporativo</label>
+                    <div class="relative">
+                        <input type="email" id="login-vendedor-email" required placeholder="vendedor@lifeapps.com.br" value="vendedor@lifeapps.com.br" class="w-full pl-9 pr-3 py-2.5 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                        <i class="fa-solid fa-envelope absolute left-3 top-3.5 text-gray-400 text-xs"></i>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Senha</label>
+                    <div class="relative">
+                        <input type="password" id="login-vendedor-senha" required placeholder="123" value="123" class="w-full pl-9 pr-3 py-2.5 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                        <i class="fa-solid fa-lock absolute left-3 top-3.5 text-gray-400 text-xs"></i>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between text-xs">
+                    <label class="flex items-center text-gray-600 font-medium cursor-pointer">
+                        <input type="checkbox" id="remember-me" class="w-4 h-4 text-blue-600 rounded mr-2">
+                        Lembrar de mim neste dispositivo
+                    </label>
+                </div>
+
+                <button type="submit" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg transition flex items-center justify-center">
+                    Entrar na Rede Social <i class="fa-solid fa-arrow-right-to-bracket ml-2"></i>
                 </button>
-            </div>
-        </div>
-    </header>
 
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 flex-grow w-full">
-        
-        <!-- TELA DO VENDEDOR -->
-        <section id="screen-vendedor" class="space-y-6 sm:space-y-8">
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
-                
-                <!-- Formulário Vendedor -->
-                <div class="lg:col-span-5 bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-gray-200 space-y-5 sm:space-y-6">
-                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b pb-3 gap-2">
-                        <h2 class="text-lg sm:text-xl font-bold text-gray-900">
-                            <i class="fa-solid fa-file-signature text-blue-600 mr-2"></i> Montar Proposta
-                        </h2>
-                        <!-- BOTOES NOVO ORÇAMENTO E MEUS ORÇAMENTOS -->
-                        <div class="flex space-x-2 w-full sm:w-auto">
-                            <button onclick="createNewProposal()" class="flex-1 sm:flex-none px-2.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold transition flex items-center justify-center">
-                                <i class="fa-solid fa-plus mr-1"></i> Novo
-                            </button>
-                            <button onclick="openVendedorPropostasModal()" class="flex-1 sm:flex-none px-2.5 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg text-xs font-bold border border-blue-200 transition flex items-center justify-center">
-                                <i class="fa-solid fa-folder-open mr-1"></i> Salvos
-                            </button>
-                        </div>
-                    </div>
+                <div class="text-center pt-2">
+                    <button type="button" onclick="showRegisterScreen()" class="text-xs text-blue-600 font-bold hover:underline">
+                        Ainda não tem conta? Criar conta
+                    </button>
+                </div>
+            </form>
 
-                    <!-- Módulo de Adicionar Produtos -->
-                    <div class="border rounded-xl p-3.5 sm:p-4 bg-gray-50 space-y-3">
-                        <label class="block text-xs font-bold text-gray-700 uppercase">Adicionar Produto</label>
-                        <div class="space-y-3">
-                            <div class="relative">
-                                <input type="text" id="vendedor-search-input" placeholder="🔍 Pesquisar produto..." onfocus="openProductDropdown()" oninput="filterProductsList()" class="w-full p-2.5 pr-10 border rounded-lg text-sm bg-white font-medium focus:ring-2 focus:ring-blue-500 focus:outline-none">
-                                <i class="fa-solid fa-chevron-down absolute right-3 top-3.5 text-gray-400 text-xs pointer-events-none"></i>
-                                <div id="custom-product-dropdown" class="absolute left-0 right-0 top-full mt-1 bg-white border border-gray-200 rounded-lg shadow-xl max-h-56 overflow-y-auto z-50 hidden divide-y divide-gray-100"></div>
-                                <input type="hidden" id="selected-product-id">
-                            </div>
-
-                            <div class="grid grid-cols-2 gap-3">
-                                <div>
-                                    <label class="text-[11px] font-semibold text-gray-600 uppercase">Qtd. Setup</label>
-                                    <input type="number" id="vendedor-qtd-setup" value="1" min="1" class="w-full p-2 border rounded-lg text-sm bg-white">
-                                </div>
-                                <div>
-                                    <label class="text-[11px] font-semibold text-gray-600 uppercase">Qtd. Mensal/Usuários</label>
-                                    <input type="number" id="vendedor-qtd-mensal" value="1" min="0" class="w-full p-2 border rounded-lg text-sm bg-white">
-                                </div>
-                            </div>
-
-                            <div class="space-y-2 bg-white p-3 rounded-lg border text-xs">
-                                <label class="flex items-center text-gray-700 font-medium cursor-pointer">
-                                    <input type="checkbox" id="vendedor-sem-setup" class="w-4 h-4 text-blue-600 rounded mr-2" onchange="toggleSetupInputs()">
-                                    Produto Sem Valor de Setup
-                                </label>
-
-                                <div class="border-t pt-2 space-y-1">
-                                    <span class="text-[10px] uppercase font-bold text-gray-500">Bonificações:</span>
-                                    <div class="flex flex-col sm:flex-row gap-2 sm:gap-4">
-                                        <label class="flex items-center text-gray-700 cursor-pointer">
-                                            <input type="checkbox" id="vendedor-bonificar-setup" class="w-3.5 h-3.5 text-green-600 rounded mr-1.5">
-                                            Bonificar Setup
-                                        </label>
-                                        <label class="flex items-center text-gray-700 cursor-pointer">
-                                            <input type="checkbox" id="vendedor-bonificar-mensal" class="w-3.5 h-3.5 text-green-600 rounded mr-1.5">
-                                            Bonificar Mensalidade
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <button onclick="addProductToProposal()" class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold transition flex items-center justify-center">
-                                <i class="fa-solid fa-plus mr-1"></i> Adicionar à Proposta
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="p-3 bg-blue-50 border border-blue-200 rounded-xl space-y-2">
-                        <label class="flex items-center text-xs font-bold text-blue-900 cursor-pointer">
-                            <input type="checkbox" id="vendedor-ocultar-setup" onchange="calculateProposal()" class="w-4 h-4 text-blue-600 rounded mr-2">
-                            Ocultar Tabela/Linha de Setup
-                        </label>
-                    </div>
-
-                    <!-- Lista de Produtos Adicionados -->
-                    <div class="space-y-2">
-                        <label class="block text-xs font-semibold text-gray-600 uppercase">Produtos Selecionados</label>
-                        <div id="proposal-items-list" class="space-y-2">
-                            <p class="text-xs text-gray-400 italic">Nenhum produto adicionado ainda.</p>
-                        </div>
-                    </div>
-
-                    <!-- Serviços Extras -->
-                    <div class="space-y-3 border-t pt-4">
-                        <label class="block text-xs font-semibold text-gray-600 uppercase">Serviço Adicional</label>
-                        <div>
-                            <label class="text-xs text-gray-500">Instalação Extrator</label>
-                            <select id="vendedor-extrator" onchange="calculateProposal()" class="w-full p-2 border rounded-lg text-sm bg-white">
-                                <option value="nao">Não</option>
-                                <option value="sim">Sim (R$ 250,00)</option>
-                                <option value="bonificado">Bonificado (R$ 0,00)</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <!-- Descontos -->
-                    <div class="space-y-3 border-t pt-4">
-                        <label class="block text-xs font-semibold text-gray-600 uppercase">Descontos Comerciais (%)</label>
-                        <div class="grid grid-cols-2 gap-3">
-                            <div>
-                                <label class="text-xs text-gray-500">Desconto Setup (%)</label>
-                                <input type="number" id="desc-setup" value="0" min="0" max="100" onchange="calculateProposal()" placeholder="0%" class="w-full p-2 border rounded-lg text-sm">
-                            </div>
-                            <div>
-                                <label class="text-xs text-gray-500">Desconto Mensalidade (%)</label>
-                                <input type="number" id="desc-mensal" value="0" min="0" max="100" onchange="calculateProposal()" placeholder="0%" class="w-full p-2 border rounded-lg text-sm">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Parcelamento e Datas -->
-                    <div class="space-y-3 border-t pt-4">
-                        <label class="block text-xs font-semibold text-gray-600 uppercase">Condições & Parcelamento</label>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            <div>
-                                <label class="text-xs text-gray-500">Parc. Setup</label>
-                                <select id="vendedor-parc-setup" onchange="calculateProposal()" class="w-full p-2 border rounded-lg text-sm">
-                                    <option value="1">À vista (1x)</option>
-                                    <option value="2">2x Sem juros</option>
-                                    <option value="3" selected>3x Sem juros</option>
-                                    <option value="4">4x Sem juros</option>
-                                    <option value="5">5x Sem juros</option>
-                                    <option value="6">6x Sem juros</option>
-                                    <option value="7">7x Sem juros</option>
-                                    <option value="8">8x Sem juros</option>
-                                    <option value="9">9x Sem juros</option>
-                                    <option value="10">10x Sem juros</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="text-xs font-bold text-blue-900">Data 1ª Parcela Setup</label>
-                                <input type="date" id="vendedor-data-setup" onchange="calculateProposal()" class="w-full p-2 border rounded-lg text-sm bg-blue-50">
-                            </div>
-                        </div>
-                        <div>
-                            <label class="text-xs font-bold text-blue-900">Data 1ª Mensalidade</label>
-                            <input type="date" id="vendedor-data-mensal" onchange="calculateProposal()" class="w-full p-2 border rounded-lg text-sm bg-blue-50">
-                        </div>
-                    </div>
-
-                    <!-- BOTÕES DE SALVAR E PRINT -->
-                    <div class="space-y-2 border-t pt-4">
-                        <button onclick="saveProposalToDatabase()" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow transition flex items-center justify-center text-sm">
-                            <i class="fa-solid fa-floppy-disk mr-2 text-base"></i> Salvar Orçamento
-                        </button>
-
-                        <button onclick="openPrintZoomModal()" class="w-full py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl shadow transition flex items-center justify-center text-sm">
-                            <i class="fa-solid fa-expand mr-2 text-base"></i> Tela Cheia / Baixar Imagem (Print)
-                        </button>
+            <!-- LOGIN ADMIN -->
+            <form id="form-login-admin" onsubmit="handleAdminLogin(event)" class="space-y-4 hidden">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Senha do Administrador</label>
+                    <div class="relative">
+                        <input type="password" id="login-admin-senha" required placeholder="Digite a senha de administrador..." class="w-full pl-9 pr-3 py-2.5 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                        <i class="fa-solid fa-shield-halved absolute left-3 top-3.5 text-gray-400 text-xs"></i>
                     </div>
                 </div>
 
-                <!-- Preview do Slide -->
-                <div class="lg:col-span-7 space-y-4">
-                    <div class="flex items-center justify-between">
-                        <h3 class="text-sm sm:text-base font-bold text-gray-700 uppercase tracking-wide">Pré-visualização da Tabela</h3>
-                        <span class="text-[10px] sm:text-xs bg-green-100 text-green-800 font-medium px-2.5 py-1 rounded-full">Layout Oficial</span>
-                    </div>
+                <button type="submit" class="w-full py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl shadow-lg transition flex items-center justify-center">
+                    Acessar como Admin <i class="fa-solid fa-user-shield ml-2"></i>
+                </button>
+            </form>
 
-                    <div id="slide-container-target" class="slide-preview rounded-xl p-4 sm:p-6 border border-gray-200 flex flex-col justify-between text-gray-800 overflow-hidden">
-                        <div>
-                            <div class="flex justify-between items-start mb-4 gap-2">
-                                <div>
-                                    <h1 class="text-xl sm:text-2xl font-black tracking-tight text-blue-900">
-                                        Investimento <span class="text-blue-600 font-normal">LifeApps</span>
-                                    </h1>
-                                </div>
-                                
-                                <div class="text-right flex flex-col items-end">
-                                    <svg class="h-6 sm:h-7 w-auto" viewBox="0 0 320 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <rect x="0" y="55" width="14" height="15" rx="1.5" fill="#3eb049"/>
-                                        <rect x="22" y="30" width="14" height="40" rx="1.5" fill="#3eb049"/>
-                                        <rect x="44" y="42" width="14" height="28" rx="1.5" fill="#3eb049"/>
-                                        <rect x="70" y="5" width="14" height="65" rx="3" fill="#005691"/>
-                                        <rect x="94" y="28" width="14" height="42" rx="3" fill="#005691"/>
-                                        <path d="M 125 18 C 125 10 132 5 142 5 L 148 5 L 148 18 L 140 18 C 138 18 137 19 137 21 L 137 28 L 148 28 L 148 40 L 137 40 L 137 70 L 125 70 Z" fill="#005691"/>
-                                        <path d="M 185 48 C 185 36 175 27 163 27 C 151 27 141 36 141 49 C 141 62 151 71 163 71 C 172 71 180 66 183 58 L 172 54 C 170 58 167 60 163 60 C 157 60 153 56 153 51 L 185 51 Z M 153 43 C 154 39 158 36 163 36 C 168 36 172 39 173 43 Z" fill="#005691"/>
-                                        <text x="188" y="68" font-family="'Segoe UI', Roboto, Arial, sans-serif" font-size="34" font-weight="500" fill="#3eb049">apps</text>
-                                    </svg>
-                                    <p class="text-[8px] sm:text-[9px] text-blue-500 font-medium mt-0.5">A plataforma escolhida pelo Atacado Distribuidor</p>
-                                </div>
-                            </div>
+            <!-- REGISTRO VENDEDOR -->
+            <form id="form-register-vendedor" onsubmit="handleVendedorRegister(event)" class="space-y-3 hidden">
+                <h3 class="text-xs font-bold text-gray-700 uppercase border-b pb-1">Criar Conta de Vendedor</h3>
 
-                            <div id="slide-section-setup" class="mb-5">
-                                <h4 class="text-xs font-bold text-blue-800 mb-1">Setup (Investimento Inicial)</h4>
-                                <div class="overflow-x-auto rounded border border-gray-300 shadow-sm">
-                                    <table class="w-full text-left border-collapse text-[10px] sm:text-[11px] min-w-[500px]" id="slide-table-setup"></table>
-                                </div>
-                                <div class="mt-1.5 flex justify-end">
-                                    <div class="bg-gray-200 text-gray-800 text-xs font-bold px-3 py-1 sm:px-4 sm:py-1.5 rounded flex items-center space-x-3 sm:space-x-6">
-                                        <span class="bg-green-600 text-white px-2 py-0.5 sm:px-3 rounded text-[10px] sm:text-[11px]">Total Setup</span>
-                                        <span id="slide-total-setup" class="text-xs sm:text-sm font-extrabold text-gray-900">R$ 0,00</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div id="slide-section-mensal">
-                                <h4 class="text-xs font-bold text-blue-800 mb-1">Mensalidade</h4>
-                                <div class="overflow-x-auto rounded border border-gray-300 shadow-sm">
-                                    <table class="w-full text-left border-collapse text-[10px] sm:text-[11px] min-w-[500px]" id="slide-table-mensal"></table>
-                                </div>
-                                <div class="mt-1.5 flex justify-end">
-                                    <div class="bg-gray-200 text-gray-800 text-xs font-bold px-3 py-1 sm:px-4 sm:py-1.5 rounded flex items-center space-x-3 sm:space-x-6">
-                                        <span class="bg-blue-600 text-white px-2 py-0.5 sm:px-3 rounded text-[10px] sm:text-[11px]">Total Mensal</span>
-                                        <span id="slide-total-mensal" class="text-xs sm:text-sm font-extrabold text-gray-900">R$ 0,00</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="h-3 bg-green-500 -mx-4 -mb-4 sm:-mx-6 sm:-mb-6 rounded-b-xl mt-4"></div>
-                    </div>
+                <div>
+                    <label class="block text-[11px] font-semibold text-gray-600 uppercase">Nome Completo</label>
+                    <input type="text" id="reg-nome" required placeholder="Seu nome" class="w-full p-2 border rounded-lg text-sm">
                 </div>
 
-            </div>
-        </section>
+                <div>
+                    <label class="block text-[11px] font-semibold text-gray-600 uppercase">E-mail Corporativo (@lifeapps.com.br)</label>
+                    <input type="email" id="reg-email" required placeholder="nome@lifeapps.com.br" class="w-full p-2 border rounded-lg text-sm">
+                </div>
 
-        <!-- PAINEL ADM -->
-        <section id="screen-admin" class="hidden space-y-6">
-            <div class="bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-gray-200 space-y-6">
-                
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b pb-4 gap-2">
+                <div class="grid grid-cols-2 gap-2">
                     <div>
-                        <h2 class="text-lg sm:text-xl font-bold text-gray-900">Painel Administrativo - Gestão Geral</h2>
-                        <p class="text-xs text-gray-500">Gerencie usuários, produtos, orçamentos e segurança do SGP.</p>
+                        <label class="block text-[11px] font-semibold text-gray-600 uppercase">Senha</label>
+                        <input type="password" id="reg-senha" required placeholder="••••••••" class="w-full p-2 border rounded-lg text-sm">
                     </div>
-                    <span class="bg-green-100 text-green-800 text-xs px-3 py-1 rounded-full font-medium">Admin Autenticado</span>
+                    <div>
+                        <label class="block text-[11px] font-semibold text-gray-600 uppercase">Confirmar Senha</label>
+                        <input type="password" id="reg-senha-confirm" required placeholder="••••••••" class="w-full p-2 border rounded-lg text-sm">
+                    </div>
                 </div>
 
-                <div class="flex space-x-2 border-b overflow-x-auto pb-1 text-xs">
-                    <button onclick="switchAdminSubTab('produtos')" id="adm-subtab-produtos" class="px-3 sm:px-4 py-2 font-bold whitespace-nowrap border-b-2 border-blue-600 text-blue-600">
-                        <i class="fa-solid fa-box mr-1"></i> Produtos
-                    </button>
-                    <button onclick="switchAdminSubTab('orcamentos')" id="adm-subtab-orcamentos" class="px-3 sm:px-4 py-2 font-bold whitespace-nowrap text-gray-500 hover:text-gray-800">
-                        <i class="fa-solid fa-folder-tree mr-1"></i> Orçamentos
-                    </button>
-                    <button onclick="switchAdminSubTab('usuarios')" id="adm-subtab-usuarios" class="px-3 sm:px-4 py-2 font-bold whitespace-nowrap text-gray-500 hover:text-gray-800">
-                        <i class="fa-solid fa-users mr-1"></i> Vendedores
-                    </button>
-                    <button onclick="switchAdminSubTab('seguranca')" id="adm-subtab-seguranca" class="px-3 sm:px-4 py-2 font-bold whitespace-nowrap text-gray-500 hover:text-gray-800">
-                        <i class="fa-solid fa-key mr-1"></i> Senha Admin
+                <button type="submit" class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow transition">
+                    Cadastrar Minha Conta
+                </button>
+
+                <div class="text-center pt-1">
+                    <button type="button" onclick="hideRegisterScreen()" class="text-xs text-gray-500 font-bold hover:underline">
+                        Voltar para o Login
                     </button>
                 </div>
+            </form>
 
-                <!-- SUB-ABA 1: GESTÃO DE PRODUTOS -->
-                <div id="adm-sec-produtos" class="space-y-4">
-                    <h3 class="text-md font-bold text-gray-800">Cadastrar Novo Produto na Nuvem</h3>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 bg-gray-50 p-4 rounded-xl border">
-                        <div>
-                            <label class="text-xs text-gray-600 font-medium">Nome do Produto</label>
-                            <input type="text" id="new-prod-name" placeholder="Ex: LifeSales" class="w-full p-2 border rounded text-sm mt-1">
-                        </div>
-                        <div>
-                            <label class="text-xs text-gray-600 font-medium">Valor Setup (R$)</label>
-                            <input type="number" id="new-prod-setup" placeholder="0.00" class="w-full p-2 border rounded text-sm mt-1">
-                        </div>
-                        <div>
-                            <label class="text-xs text-gray-600 font-medium">Valor Mensal (R$)</label>
-                            <input type="number" id="new-prod-mensal" placeholder="0.00" class="w-full p-2 border rounded text-sm mt-1">
-                        </div>
-                        <div class="flex items-end">
-                            <button onclick="addNewProductFirebase()" class="w-full p-2 bg-blue-600 text-white font-bold rounded text-sm hover:bg-blue-700">
-                                <i class="fa-solid fa-cloud-arrow-up mr-1"></i> Salvar no Firebase
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="mt-6 space-y-3">
-                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
-                            <h4 class="text-xs font-bold text-gray-500 uppercase">Produtos Cadastrados (Arraste para mover)</h4>
-                            <div class="flex space-x-2">
-                                <button onclick="deleteSelectedProducts()" class="px-3 py-1 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 text-xs font-semibold rounded-lg transition">
-                                    Excluir Selecionados
-                                </button>
-                                <button onclick="deleteAllProducts()" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white text-xs font-semibold rounded-lg transition">
-                                    Excluir Todos
-                                </button>
-                            </div>
-                        </div>
-
-                        <div id="admin-products-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
-                    </div>
-                </div>
-
-                <!-- SUB-ABA 2: GESTÃO DE TODOS OS ORÇAMENTOS (ADMIN) -->
-                <div id="adm-sec-orcamentos" class="space-y-4 hidden">
-                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
-                        <h3 class="text-md font-bold text-gray-800">Orçamentos Criados pelos Vendedores</h3>
-                        <div class="flex space-x-2">
-                            <button onclick="deleteSelectedPropostasAdmin()" class="px-3 py-1 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 text-xs font-semibold rounded-lg transition">
-                                Excluir Selecionados
-                            </button>
-                            <button onclick="deleteAllPropostasAdmin()" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white text-xs font-semibold rounded-lg transition">
-                                Excluir Todos
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-gray-50 p-3 rounded-xl border">
-                        <div>
-                            <label class="text-[11px] font-bold text-gray-600 uppercase">Filtrar por Cliente</label>
-                            <input type="text" id="admin-filter-cliente" oninput="renderAdminPropostasTable()" placeholder="Nome do cliente..." class="w-full p-2 border rounded-lg text-xs bg-white">
-                        </div>
-                        <div>
-                            <label class="text-[11px] font-bold text-gray-600 uppercase">Filtrar por Vendedor</label>
-                            <input type="text" id="admin-filter-vendedor" oninput="renderAdminPropostasTable()" placeholder="Nome do vendedor..." class="w-full p-2 border rounded-lg text-xs bg-white">
-                        </div>
-                        <div>
-                            <label class="text-[11px] font-bold text-gray-600 uppercase">Filtrar por Data</label>
-                            <input type="date" id="admin-filter-data" onchange="renderAdminPropostasTable()" class="w-full p-2 border rounded-lg text-xs bg-white">
-                        </div>
-                    </div>
-
-                    <div class="bg-gray-50 p-3 rounded-xl border overflow-x-auto">
-                        <table class="w-full text-left text-xs border-collapse min-w-[600px]">
-                            <thead>
-                                <tr class="bg-gray-200 text-gray-700 uppercase font-bold">
-                                    <th class="p-2.5 w-8 text-center"><input type="checkbox" id="admin-select-all-prop" onchange="toggleSelectAllPropostas(this)"></th>
-                                    <th class="p-2.5">Cliente</th>
-                                    <th class="p-2.5">Vendedor</th>
-                                    <th class="p-2.5">Data Criação</th>
-                                    <th class="p-2.5 text-right">Total Setup</th>
-                                    <th class="p-2.5 text-right">Total Mensal</th>
-                                    <th class="p-2.5 text-center">Ação</th>
-                                </tr>
-                            </thead>
-                            <tbody id="admin-propostas-table-body" class="divide-y divide-gray-200 bg-white"></tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- SUB-ABA 3: GESTÃO DE VENDEDORES -->
-                <div id="adm-sec-usuarios" class="space-y-4 hidden">
-                    <h3 class="text-md font-bold text-gray-800">Aprovação e Controle de Vendedores</h3>
-                    <div class="bg-gray-50 p-3 rounded-xl border overflow-x-auto">
-                        <table class="w-full text-left text-xs border-collapse min-w-[500px]">
-                            <thead>
-                                <tr class="bg-gray-200 text-gray-700 uppercase font-bold">
-                                    <th class="p-2.5">Nome</th>
-                                    <th class="p-2.5">E-mail Corporativo</th>
-                                    <th class="p-2.5 text-center">Status</th>
-                                    <th class="p-2.5 text-center">Ações</th>
-                                </tr>
-                            </thead>
-                            <tbody id="admin-users-table-body" class="divide-y divide-gray-200 bg-white"></tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- SUB-ABA 4: ALTERAR SENHA ADMIN -->
-                <div id="adm-sec-seguranca" class="space-y-4 hidden max-w-md">
-                    <h3 class="text-md font-bold text-gray-800">Alterar Senha do Administrador</h3>
-                    <div class="bg-gray-50 p-4 rounded-xl border space-y-3">
-                        <div>
-                            <label class="text-xs text-gray-600 font-medium">Nova Senha</label>
-                            <input type="password" id="admin-new-pass" placeholder="Digite a nova senha..." class="w-full p-2 border rounded text-sm mt-1">
-                        </div>
-                        <div>
-                            <label class="text-xs text-gray-600 font-medium">Confirmar Nova Senha</label>
-                            <input type="password" id="admin-confirm-pass" placeholder="Confirme a nova senha..." class="w-full p-2 border rounded text-sm mt-1">
-                        </div>
-                        <button onclick="saveAdminPassword()" class="w-full py-2 bg-blue-600 text-white rounded-lg text-xs font-bold hover:bg-blue-700">
-                            Atualizar Senha do Admin
-                        </button>
-                    </div>
-                </div>
-
-            </div>
-        </section>
-
+        </div>
     </main>
 
-    <!-- FOOTER INSTITUCIONAL FIXO -->
-    <footer class="bg-white border-t border-gray-200 py-4 text-center text-xs text-gray-500 mt-auto">
-        <div class="max-w-7xl mx-auto px-4">
-            Sistema de Geração de Proposta (SGP) - Nº v3.2 | Desenvolvido por 
-            <a href="https://www.linkedin.com/in/rafaelrobertonascimento" target="_blank" rel="noopener noreferrer" class="text-blue-600 font-bold hover:underline">
-                Rafael Nascimento <i class="fa-brands fa-linkedin text-xs ml-0.5"></i>
-            </a>
-        </div>
+    <footer class="text-center text-xs text-white/80 py-2">
+        Sistema de Geração de Proposta (SGP) - Nº v4.0 | Desenvolvido por 
+        <a href="https://www.linkedin.com/in/rafaelrobertonascimento" target="_blank" rel="noopener noreferrer" class="text-white font-bold underline">
+            Rafael Nascimento
+        </a>
     </footer>
 
-    <!-- MODAL MEUS ORÇAMENTOS SALVOS (VENDEDOR) -->
-    <div id="vendedor-propostas-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3 sm:p-4">
-        <div class="bg-white rounded-2xl w-full max-w-4xl p-4 sm:p-6 relative shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
-            <div class="flex justify-between items-center border-b pb-3">
-                <div>
-                    <h3 class="text-base sm:text-lg font-bold text-gray-800">Meus Orçamentos Salvos</h3>
-                    <p class="text-[11px] sm:text-xs text-gray-500">Gerencie ou recarregue propostas salvas no seu perfil.</p>
-                </div>
-                <button onclick="closeVendedorPropostasModal()" class="w-8 h-8 rounded-full bg-gray-100 hover:bg-red-100 hover:text-red-600 flex items-center justify-center font-bold text-gray-600 transition">
-                    <i class="fa-solid fa-xmark text-lg"></i>
-                </button>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-gray-50 p-3 rounded-xl border">
-                <div>
-                    <label class="text-[11px] font-bold text-gray-600 uppercase">Pesquisar por Cliente</label>
-                    <input type="text" id="vendedor-filter-cliente" oninput="renderVendedorPropostasList()" placeholder="Nome do cliente..." class="w-full p-2 border rounded-lg text-xs bg-white">
-                </div>
-                <div>
-                    <label class="text-[11px] font-bold text-gray-600 uppercase">Pesquisar por Data</label>
-                    <input type="date" id="vendedor-filter-data" onchange="renderVendedorPropostasList()" class="w-full p-2 border rounded-lg text-xs bg-white">
-                </div>
-            </div>
-
-            <div id="vendedor-propostas-list-container" class="space-y-3 pt-2"></div>
-        </div>
-    </div>
-
-    <!-- MODAL DE EDIÇÃO DE PRODUTO -->
-    <div id="edit-product-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3 sm:p-4">
-        <div class="bg-white rounded-2xl w-full max-w-md p-5 sm:p-6 relative shadow-2xl space-y-4">
-            <h3 class="text-base sm:text-lg font-bold text-gray-900 border-b pb-2">Editar Produto</h3>
-            <input type="hidden" id="edit-prod-id">
-            
-            <div>
-                <label class="text-xs text-gray-600 font-medium">Nome do Produto</label>
-                <input type="text" id="edit-prod-name" class="w-full p-2 border rounded text-sm mt-1">
-            </div>
-            <div>
-                <label class="text-xs text-gray-600 font-medium">Valor Setup (R$)</label>
-                <input type="number" id="edit-prod-setup" class="w-full p-2 border rounded text-sm mt-1">
-            </div>
-            <div>
-                <label class="text-xs text-gray-600 font-medium">Valor Mensal (R$)</label>
-                <input type="number" id="edit-prod-mensal" class="w-full p-2 border rounded text-sm mt-1">
-            </div>
-
-            <div class="flex justify-end space-x-2 pt-2">
-                <button onclick="closeEditModal()" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg text-xs font-bold">Cancelar</button>
-                <button onclick="saveProductEdit()" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-xs font-bold hover:bg-blue-700">Salvar Alterações</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL DE ZOOM PARA PRINT -->
-    <div id="print-zoom-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3 sm:p-4">
-        <div class="bg-white rounded-2xl w-full max-w-6xl p-4 sm:p-6 relative shadow-2xl flex flex-col space-y-4 max-h-[95vh] overflow-y-auto">
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b pb-3 gap-2">
-                <div class="flex items-center space-x-2">
-                    <span class="text-base sm:text-lg font-bold text-gray-800">Tabelas de Investimento</span>
-                    <span class="text-[10px] sm:text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded font-bold">Pronto para Captura</span>
-                </div>
-                <div class="flex items-center space-x-2 sm:space-x-3 w-full sm:w-auto justify-between sm:justify-end">
-                    <button onclick="downloadTablesImageHD()" id="btn-download-img" class="px-3 py-1.5 sm:px-4 sm:py-2 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg text-xs transition flex items-center">
-                        <i class="fa-solid fa-download mr-1.5"></i> Baixar PNG HD
-                    </button>
-                    <button onclick="closePrintZoomModal()" class="w-8 h-8 rounded-full bg-gray-100 hover:bg-red-100 hover:text-red-600 flex items-center justify-center font-bold text-gray-600 transition">
-                        <i class="fa-solid fa-xmark text-lg"></i>
-                    </button>
-                </div>
-            </div>
-
-            <div id="zoom-content-box" class="p-3 sm:p-6 bg-white rounded-xl shadow-sm overflow-x-auto flex flex-col justify-center"></div>
-
-            <div class="text-center text-xs text-gray-500">
-                Pressione <strong>Windows + Shift + S</strong> (ou <strong>Cmd + Shift + 4</strong> no Mac) para capturar o print.
-            </div>
-        </div>
-    </div>
-
-    <!-- Script App Logic & Firebase Integration -->
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyAokmOx3hiKFy0gLjmLWaQ21KyCmMG2tK4",
@@ -671,22 +151,13 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        let currentUser = null;
-        let adminPassHash = "lifeapps123";
-        let dbProducts = [];
         let dbUsers = [];
-        let dbPropostas = [];
-        let proposalProducts = [];
-        let draggedItemIndex = null;
-
-        const dbExtras = { extrator: 250.00 };
+        let adminPassHash = "lifeapps123";
 
         function listenSystemSettings() {
             db.collection("settings").doc("config").onSnapshot((doc) => {
                 if (doc.exists && doc.data().adminPass) {
                     adminPassHash = doc.data().adminPass;
-                } else {
-                    db.collection("settings").doc("config").set({ adminPass: "lifeapps123" });
                 }
             });
         }
@@ -707,105 +178,19 @@
                         dataCriacao: new Date().toISOString()
                     });
                 }
-
-                renderAdminUsers();
                 checkRememberedUser();
             });
         }
 
-        function listenFirebaseProducts() {
-            db.collection("produtos").onSnapshot((snapshot) => {
-                dbProducts = [];
-                snapshot.forEach((doc) => {
-                    dbProducts.push({ id: doc.id, ...doc.data() });
-                });
-                dbProducts.sort((a, b) => (a.order || 0) - (b.order || 0));
-
-                if (dbProducts.length === 0) seedDefaultProducts();
-                else {
-                    renderCustomDropdownList();
-                    renderAdminProducts();
-                }
-            });
-        }
-
-        function listenFirebasePropostas() {
-            db.collection("propostas").onSnapshot((snapshot) => {
-                dbPropostas = [];
-                snapshot.forEach((doc) => {
-                    dbPropostas.push({ id: doc.id, ...doc.data() });
-                });
-                renderAdminPropostasTable();
-                renderVendedorPropostasList();
-            });
-        }
-
-        function seedDefaultProducts() {
-            const defaults = [
-                { name: 'E-Commerce + App (iOS e Android)', setup: 18742.50, mensal: 2490.00, active: true, order: 1 },
-                { name: 'LifeGrowth', setup: 5000.00, mensal: 1200.00, active: true, order: 2 },
-                { name: 'LifeChat', setup: 3500.00, mensal: 890.00, active: true, order: 3 }
-            ];
-            defaults.forEach(p => db.collection("produtos").add(p));
-        }
-
-        function clearProposalState() {
-            proposalProducts = [];
-            const searchInput = document.getElementById('vendedor-search-input');
-            const selectedProdId = document.getElementById('selected-product-id');
-            const qtdSetup = document.getElementById('vendedor-qtd-setup');
-            const qtdMensal = document.getElementById('vendedor-qtd-mensal');
-            const semSetup = document.getElementById('vendedor-sem-setup');
-            const bonifSetup = document.getElementById('vendedor-bonificar-setup');
-            const bonifMensal = document.getElementById('vendedor-bonificar-mensal');
-            const ocultarSetup = document.getElementById('vendedor-ocultar-setup');
-            const descSetup = document.getElementById('desc-setup');
-            const descMensal = document.getElementById('desc-mensal');
-            const extrator = document.getElementById('vendedor-extrator');
-            const parcSetup = document.getElementById('vendedor-parc-setup');
-            const dataSetup = document.getElementById('vendedor-data-setup');
-            const dataMensal = document.getElementById('vendedor-data-mensal');
-
-            if (searchInput) searchInput.value = '';
-            if (selectedProdId) selectedProdId.value = '';
-            if (qtdSetup) qtdSetup.value = 1;
-            if (qtdMensal) qtdMensal.value = 1;
-            if (semSetup) semSetup.checked = false;
-            if (bonifSetup) bonifSetup.checked = false;
-            if (bonifMensal) bonifMensal.checked = false;
-            if (ocultarSetup) ocultarSetup.checked = false;
-            if (descSetup) descSetup.value = 0;
-            if (descMensal) descMensal.value = 0;
-            if (extrator) extrator.value = 'nao';
-            if (parcSetup) parcSetup.value = '3';
-            if (dataSetup) dataSetup.value = '';
-            if (dataMensal) dataMensal.value = '';
-            
-            renderProposalItemsList();
-            calculateProposal();
-        }
-
-        function createNewProposal() {
-            if (proposalProducts.length > 0 && confirm("Deseja descartar a proposta atual e iniciar um Novo Orçamento em branco?")) {
-                clearProposalState();
-            } else if (proposalProducts.length === 0) {
-                clearProposalState();
-            }
-        }
-
         function checkRememberedUser() {
-            if (currentUser) return;
-
             const savedUserEmail = localStorage.getItem('sgp_user_email');
             const savedUserPass = localStorage.getItem('sgp_user_pass');
 
             if (savedUserEmail && savedUserPass) {
                 const user = dbUsers.find(u => u.email === savedUserEmail && u.senha === savedUserPass);
                 if (user && user.status === 'aprovado') {
-                    currentUser = user;
-                    document.getElementById('header-user-display').innerHTML = `<i class="fa-solid fa-user text-blue-600 mr-1.5"></i> ${user.nome}`;
-                    document.getElementById('screen-auth').classList.add('hidden');
-                    switchTab('vendedor');
+                    sessionStorage.setItem('sgp_session_user', JSON.stringify(user));
+                    window.location.href = 'feed.html';
                 }
             }
         }
@@ -846,7 +231,7 @@
             let user = dbUsers.find(u => u.email === email && u.senha === pass);
 
             if (!user && email === 'vendedor@lifeapps.com.br' && pass === '123') {
-                user = { nome: "Vendedor Padrão", email: "vendedor@lifeapps.com.br", status: "aprovado" };
+                user = { id: 'vendedor_padrao', nome: "Vendedor Padrão", email: "vendedor@lifeapps.com.br", status: "aprovado", role: "vendedor" };
             }
 
             if (!user) {
@@ -859,8 +244,6 @@
                 return;
             }
 
-            currentUser = user;
-
             if (rememberMe) {
                 localStorage.setItem('sgp_user_email', email);
                 localStorage.setItem('sgp_user_pass', pass);
@@ -869,10 +252,9 @@
                 localStorage.removeItem('sgp_user_pass');
             }
 
-            clearProposalState();
-            document.getElementById('header-user-display').innerHTML = `<i class="fa-solid fa-user text-blue-600 mr-1.5"></i> ${user.nome}`;
-            document.getElementById('screen-auth').classList.add('hidden');
-            switchTab('vendedor');
+            user.role = 'vendedor';
+            sessionStorage.setItem('sgp_session_user', JSON.stringify(user));
+            window.location.href = 'feed.html';
         }
 
         function handleAdminLogin(e) {
@@ -880,11 +262,9 @@
             const pass = document.getElementById('login-admin-senha').value;
 
             if (pass === adminPassHash) {
-                currentUser = { nome: "Administrador", role: "admin" };
-                clearProposalState();
-                document.getElementById('header-user-display').innerHTML = `<i class="fa-solid fa-shield-halved text-green-600 mr-1.5"></i> Admin SGP`;
-                document.getElementById('screen-auth').classList.add('hidden');
-                switchTab('admin');
+                const adminUser = { id: 'admin_root', nome: "Administrador", email: "admin@lifeapps.com.br", role: "admin" };
+                sessionStorage.setItem('sgp_session_user', JSON.stringify(adminUser));
+                window.location.href = 'feed.html';
             } else {
                 alert('Senha de administrador incorreta!');
             }
@@ -925,864 +305,8 @@
             });
         }
 
-        function logoutSystem() {
-            currentUser = null;
-            localStorage.removeItem('sgp_user_email');
-            localStorage.removeItem('sgp_user_pass');
-
-            clearProposalState();
-            document.getElementById('login-vendedor-email').value = '';
-            document.getElementById('login-vendedor-senha').value = '';
-            document.getElementById('login-admin-senha').value = '';
-            document.getElementById('screen-auth').classList.remove('hidden');
-        }
-
-        function switchTab(tab) {
-            document.getElementById('screen-vendedor').classList.add('hidden');
-            document.getElementById('screen-admin').classList.add('hidden');
-
-            document.getElementById('tab-vendedor').className = "px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg font-medium text-xs sm:text-sm transition-all text-gray-600 hover:bg-gray-100";
-            document.getElementById('tab-admin').className = "px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg font-medium text-xs sm:text-sm transition-all text-gray-600 hover:bg-gray-100";
-
-            if(tab === 'vendedor') {
-                document.getElementById('screen-vendedor').classList.remove('hidden');
-                document.getElementById('tab-vendedor').className = "px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg font-medium text-xs sm:text-sm transition-all bg-blue-600 text-white shadow-sm";
-            } else {
-                if (!currentUser || currentUser.role !== 'admin') {
-                    const pass = prompt('Digite a senha do Painel Administrativo:');
-                    if (pass === adminPassHash) {
-                        currentUser = { nome: "Administrador", role: "admin" };
-                        document.getElementById('header-user-display').innerHTML = `<i class="fa-solid fa-shield-halved text-green-600 mr-1.5"></i> Admin SGP`;
-                    } else {
-                        alert('Senha incorreta!');
-                        document.getElementById('screen-vendedor').classList.remove('hidden');
-                        document.getElementById('tab-vendedor').className = "px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg font-medium text-xs sm:text-sm transition-all bg-blue-600 text-white shadow-sm";
-                        return;
-                    }
-                }
-                document.getElementById('screen-admin').classList.remove('hidden');
-                document.getElementById('tab-admin').className = "px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg font-medium text-xs sm:text-sm transition-all bg-blue-600 text-white shadow-sm";
-            }
-        }
-
-        function switchAdminSubTab(sec) {
-            document.getElementById('adm-sec-produtos').classList.add('hidden');
-            document.getElementById('adm-sec-orcamentos').classList.add('hidden');
-            document.getElementById('adm-sec-usuarios').classList.add('hidden');
-            document.getElementById('adm-sec-seguranca').classList.add('hidden');
-
-            document.getElementById('adm-subtab-produtos').className = "px-3 sm:px-4 py-2 font-bold whitespace-nowrap text-gray-500 hover:text-gray-800";
-            document.getElementById('adm-subtab-orcamentos').className = "px-3 sm:px-4 py-2 font-bold whitespace-nowrap text-gray-500 hover:text-gray-800";
-            document.getElementById('adm-subtab-usuarios').className = "px-3 sm:px-4 py-2 font-bold whitespace-nowrap text-gray-500 hover:text-gray-800";
-            document.getElementById('adm-subtab-seguranca').className = "px-3 sm:px-4 py-2 font-bold whitespace-nowrap text-gray-500 hover:text-gray-800";
-
-            if (sec === 'produtos') {
-                document.getElementById('adm-sec-produtos').classList.remove('hidden');
-                document.getElementById('adm-subtab-produtos').className = "px-3 sm:px-4 py-2 font-bold whitespace-nowrap border-b-2 border-blue-600 text-blue-600";
-            } else if (sec === 'orcamentos') {
-                document.getElementById('adm-sec-orcamentos').classList.remove('hidden');
-                document.getElementById('adm-subtab-orcamentos').className = "px-3 sm:px-4 py-2 font-bold whitespace-nowrap border-b-2 border-blue-600 text-blue-600";
-            } else if (sec === 'usuarios') {
-                document.getElementById('adm-sec-usuarios').classList.remove('hidden');
-                document.getElementById('adm-subtab-usuarios').className = "px-3 sm:px-4 py-2 font-bold whitespace-nowrap border-b-2 border-blue-600 text-blue-600";
-            } else {
-                document.getElementById('adm-sec-seguranca').classList.remove('hidden');
-                document.getElementById('adm-subtab-seguranca').className = "px-3 sm:px-4 py-2 font-bold whitespace-nowrap border-b-2 border-blue-600 text-blue-600";
-            }
-        }
-
-        function saveAdminPassword() {
-            const newPass = document.getElementById('admin-new-pass').value;
-            const confirmPass = document.getElementById('admin-confirm-pass').value;
-
-            if (!newPass || newPass !== confirmPass) {
-                alert('Senhas inválidas ou divergentes!');
-                return;
-            }
-
-            db.collection("settings").doc("config").update({ adminPass: newPass }).then(() => {
-                alert('Senha do Administrador atualizada com sucesso!');
-                document.getElementById('admin-new-pass').value = '';
-                document.getElementById('admin-confirm-pass').value = '';
-            });
-        }
-
-        function setUserStatus(userId, status) {
-            db.collection("usuarios").doc(userId).update({ status }).then(() => {
-                alert(`Status do usuário atualizado para: ${status.toUpperCase()}`);
-            });
-        }
-
-        function deleteUser(userId) {
-            if (confirm('Deseja excluir este vendedor do sistema?')) {
-                db.collection("usuarios").doc(userId).delete();
-            }
-        }
-
-        function renderAdminUsers() {
-            const tbody = document.getElementById('admin-users-table-body');
-            tbody.innerHTML = '';
-
-            if (dbUsers.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-gray-400 italic">Nenhum vendedor cadastrado ainda.</td></tr>`;
-                return;
-            }
-
-            dbUsers.forEach(u => {
-                let badge = `<span class="px-2 py-0.5 bg-yellow-100 text-yellow-800 rounded font-bold">Pendente</span>`;
-                if (u.status === 'aprovado') badge = `<span class="px-2 py-0.5 bg-green-100 text-green-800 rounded font-bold">Aprovado</span>`;
-                if (u.status === 'bloqueado') badge = `<span class="px-2 py-0.5 bg-red-100 text-red-800 rounded font-bold">Bloqueado</span>`;
-
-                tbody.innerHTML += `
-                    <tr class="hover:bg-gray-50">
-                        <td class="p-2.5 font-bold text-gray-800">${u.nome}</td>
-                        <td class="p-2.5 text-gray-600">${u.email}</td>
-                        <td class="p-2.5 text-center">${badge}</td>
-                        <td class="p-2.5 text-center space-x-1">
-                            <button onclick="setUserStatus('${u.id}', 'aprovado')" class="px-2 py-1 bg-green-600 hover:bg-green-700 text-white rounded text-[10px] font-bold">Autorizar</button>
-                            <button onclick="setUserStatus('${u.id}', 'bloqueado')" class="px-2 py-1 bg-yellow-500 hover:bg-yellow-600 text-white rounded text-[10px] font-bold">Bloquear</button>
-                            <button onclick="deleteUser('${u.id}')" class="px-2 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-[10px] font-bold">Excluir</button>
-                        </td>
-                    </tr>
-                `;
-            });
-        }
-
-        function saveProposalToDatabase() {
-            if (proposalProducts.length === 0) {
-                alert('Adicione ao menos um produto antes de salvar o orçamento!');
-                return;
-            }
-
-            const clienteNome = prompt('Digite o Nome do Cliente / Empresa para salvar este orçamento:');
-            if (!clienteNome || clienteNome.trim() === '') {
-                alert('Nome do cliente é obrigatório para salvar o orçamento!');
-                return;
-            }
-
-            const totalSetupText = document.getElementById('slide-total-setup').innerText;
-            const totalMensalText = document.getElementById('slide-total-mensal').innerText;
-
-            const proposalData = {
-                vendedorId: currentUser ? (currentUser.id || 'padrao') : 'padrao',
-                vendedorNome: currentUser ? currentUser.nome : 'Vendedor Padrão',
-                clienteNome: clienteNome.trim(),
-                dataCriacao: new Date().toISOString(),
-                totalSetup: totalSetupText,
-                totalMensal: totalMensalText,
-                proposalProducts: proposalProducts,
-                descSetup: parseFloat(document.getElementById('desc-setup').value || 0),
-                descMensal: parseFloat(document.getElementById('desc-mensal').value || 0),
-                extrator: document.getElementById('vendedor-extrator').value,
-                parcSetup: document.getElementById('vendedor-parc-setup').value,
-                dataSetup: document.getElementById('vendedor-data-setup').value,
-                dataMensal: document.getElementById('vendedor-data-mensal').value,
-                ocultarSetup: document.getElementById('vendedor-ocultar-setup').checked
-            };
-
-            db.collection("propostas").add(proposalData).then(() => {
-                alert(`Orçamento para "${clienteNome}" salvo com sucesso no seu perfil!`);
-            }).catch(err => alert("Erro ao salvar orçamento: " + err.message));
-        }
-
-        function loadProposalToState(propObj) {
-            proposalProducts = propObj.proposalProducts || [];
-            document.getElementById('desc-setup').value = propObj.descSetup || 0;
-            document.getElementById('desc-mensal').value = propObj.descMensal || 0;
-            document.getElementById('vendedor-extrator').value = propObj.extrator || 'nao';
-            document.getElementById('vendedor-parc-setup').value = propObj.parcSetup || '3';
-            document.getElementById('vendedor-data-setup').value = propObj.dataSetup || '';
-            document.getElementById('vendedor-data-mensal').value = propObj.dataMensal || '';
-            document.getElementById('vendedor-ocultar-setup').checked = !!propObj.ocultarSetup;
-
-            renderProposalItemsList();
-            calculateProposal();
-            closeVendedorPropostasModal();
-            alert(`Orçamento de "${propObj.clienteNome}" carregado para edição!`);
-        }
-
-        function deleteProposalFirebase(id) {
-            if (confirm('Deseja excluir este orçamento salvo?')) {
-                db.collection("propostas").doc(id).delete();
-            }
-        }
-
-        function openVendedorPropostasModal() {
-            document.getElementById('vendedor-propostas-modal').classList.remove('hidden');
-            renderVendedorPropostasList();
-        }
-
-        function closeVendedorPropostasModal() {
-            document.getElementById('vendedor-propostas-modal').classList.add('hidden');
-        }
-
-        function renderVendedorPropostasList() {
-            const container = document.getElementById('vendedor-propostas-list-container');
-            const filterCliente = (document.getElementById('vendedor-filter-cliente')?.value || '').toLowerCase();
-            const filterData = document.getElementById('vendedor-filter-data')?.value || '';
-
-            const userVendedorId = currentUser ? currentUser.id : 'padrao';
-            
-            let userProps = dbPropostas.filter(p => p.vendedorId === userVendedorId || p.vendedorNome === (currentUser ? currentUser.nome : 'Vendedor Padrão'));
-
-            if (filterCliente) {
-                userProps = userProps.filter(p => p.clienteNome.toLowerCase().includes(filterCliente));
-            }
-
-            if (filterData) {
-                userProps = userProps.filter(p => p.dataCriacao && p.dataCriacao.startsWith(filterData));
-            }
-
-            if (userProps.length === 0) {
-                container.innerHTML = `<p class="text-xs text-gray-400 text-center italic py-4">Nenhum orçamento encontrado.</p>`;
-                return;
-            }
-
-            let html = '';
-            userProps.forEach(p => {
-                const dataFormatada = new Date(p.dataCriacao).toLocaleDateString('pt-BR');
-
-                html += `
-                    <div class="p-3 sm:p-4 bg-gray-50 border rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-sm hover:shadow transition">
-                        <div>
-                            <h4 class="font-bold text-sm text-blue-900">${p.clienteNome}</h4>
-                            <div class="text-xs text-gray-500 mt-1 flex flex-wrap gap-2 sm:gap-4">
-                                <span><i class="fa-solid fa-calendar text-gray-400 mr-1"></i> ${dataFormatada}</span>
-                                <span>Setup: <strong class="text-gray-800">${p.totalSetup}</strong></span>
-                                <span>Mensal: <strong class="text-gray-800">${p.totalMensal}</strong></span>
-                            </div>
-                        </div>
-                        <div class="flex space-x-2 w-full sm:w-auto justify-end">
-                            <button onclick='loadProposalToState(${JSON.stringify(p).replace(/'/g, "&apos;")})' class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold transition">
-                                <i class="fa-solid fa-pen-to-square mr-1"></i> Editar
-                            </button>
-                            <button onclick="deleteProposalFirebase('${p.id}')" class="px-3 py-1.5 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg text-xs font-bold transition">
-                                <i class="fa-solid fa-trash"></i>
-                            </button>
-                        </div>
-                    </div>
-                `;
-            });
-            container.innerHTML = html;
-        }
-
-        function renderAdminPropostasTable() {
-            const tbody = document.getElementById('admin-propostas-table-body');
-            const filterCliente = (document.getElementById('admin-filter-cliente')?.value || '').toLowerCase();
-            const filterVendedor = (document.getElementById('admin-filter-vendedor')?.value || '').toLowerCase();
-            const filterData = document.getElementById('admin-filter-data')?.value || '';
-
-            let filtered = dbPropostas;
-
-            if (filterCliente) {
-                filtered = filtered.filter(p => p.clienteNome && p.clienteNome.toLowerCase().includes(filterCliente));
-            }
-
-            if (filterVendedor) {
-                filtered = filtered.filter(p => p.vendedorNome && p.vendedorNome.toLowerCase().includes(filterVendedor));
-            }
-
-            if (filterData) {
-                filtered = filtered.filter(p => p.dataCriacao && p.dataCriacao.startsWith(filterData));
-            }
-
-            tbody.innerHTML = '';
-
-            if (filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-gray-400 italic">Nenhum orçamento encontrado.</td></tr>`;
-                return;
-            }
-
-            filtered.forEach(p => {
-                const dataFormatada = new Date(p.dataCriacao).toLocaleDateString('pt-BR');
-
-                tbody.innerHTML += `
-                    <tr class="hover:bg-gray-50">
-                        <td class="p-2.5 text-center"><input type="checkbox" value="${p.id}" class="admin-prop-checkbox w-4 h-4 text-blue-600 rounded cursor-pointer"></td>
-                        <td class="p-2.5 font-bold text-gray-800">${p.clienteNome}</td>
-                        <td class="p-2.5 text-gray-600">${p.vendedorNome}</td>
-                        <td class="p-2.5 text-gray-500">${dataFormatada}</td>
-                        <td class="p-2.5 text-right font-medium text-gray-800">${p.totalSetup}</td>
-                        <td class="p-2.5 text-right font-bold text-blue-900">${p.totalMensal}</td>
-                        <td class="p-2.5 text-center">
-                            <button onclick="deleteProposalFirebase('${p.id}')" class="px-2 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-[10px] font-bold">Excluir</button>
-                        </td>
-                    </tr>
-                `;
-            });
-        }
-
-        function toggleSelectAllPropostas(source) {
-            const checkboxes = document.querySelectorAll('.admin-prop-checkbox');
-            checkboxes.forEach(cb => cb.checked = source.checked);
-        }
-
-        function deleteSelectedPropostasAdmin() {
-            const checkboxes = document.querySelectorAll('.admin-prop-checkbox:checked');
-            if (checkboxes.length === 0) {
-                alert('Selecione ao menos um orçamento para excluir!');
-                return;
-            }
-
-            if (confirm(`Deseja excluir os ${checkboxes.length} orçamentos selecionados?`)) {
-                checkboxes.forEach(cb => {
-                    db.collection("propostas").doc(cb.value).delete();
-                });
-            }
-        }
-
-        function deleteAllPropostasAdmin() {
-            if (confirm('ATENÇÃO: Deseja realmente excluir TODOS os orçamentos do banco de dados?')) {
-                dbPropostas.forEach(p => {
-                    db.collection("propostas").doc(p.id).delete();
-                });
-            }
-        }
-
-        function renderCustomDropdownList(filterTerm = '') {
-            const container = document.getElementById('custom-product-dropdown');
-            const activeProducts = dbProducts.filter(p => p.active !== false);
-
-            let filtered = activeProducts;
-            if (filterTerm.trim() !== '') {
-                filtered = activeProducts.filter(p => p.name.toLowerCase().includes(filterTerm.toLowerCase()));
-            }
-
-            if (filtered.length === 0) {
-                container.innerHTML = `<div class="p-3 text-xs text-gray-400 text-center italic">Nenhum produto encontrado</div>`;
-                return;
-            }
-
-            let html = '';
-            filtered.forEach(prod => {
-                html += `
-                    <div onclick="selectProductFromDropdown('${prod.id}', '${prod.name}')" 
-                         class="p-2.5 text-xs text-gray-700 hover:bg-blue-50 hover:text-blue-700 font-medium cursor-pointer transition flex items-center justify-between">
-                        <span><i class="fa-solid fa-box text-blue-500 mr-2"></i> ${prod.name}</span>
-                        <span class="text-[10px] text-gray-400">Setup: ${formatBRL(prod.setup)}</span>
-                    </div>
-                `;
-            });
-            container.innerHTML = html;
-        }
-
-        function openProductDropdown() {
-            document.getElementById('custom-product-dropdown').classList.remove('hidden');
-            renderCustomDropdownList(document.getElementById('vendedor-search-input').value);
-        }
-
-        function filterProductsList() {
-            const term = document.getElementById('vendedor-search-input').value;
-            document.getElementById('custom-product-dropdown').classList.remove('hidden');
-            renderCustomDropdownList(term);
-        }
-
-        function selectProductFromDropdown(id, name) {
-            document.getElementById('selected-product-id').value = id;
-            document.getElementById('vendedor-search-input').value = name;
-            document.getElementById('custom-product-dropdown').classList.add('hidden');
-
-            const nameLower = name.toLowerCase();
-            if (nameLower.includes('lifechat') || nameLower.includes('lifegrowth')) {
-                document.getElementById('vendedor-qtd-mensal').value = 5;
-            } else {
-                document.getElementById('vendedor-qtd-mensal').value = 1;
-            }
-        }
-
-        document.addEventListener('click', function(e) {
-            const searchBox = document.getElementById('vendedor-search-input');
-            const dropdown = document.getElementById('custom-product-dropdown');
-            if (searchBox && dropdown && !searchBox.contains(e.target) && !dropdown.contains(e.target)) {
-                dropdown.classList.add('hidden');
-            }
-        });
-
-        function toggleSetupInputs() {
-            const isSemSetup = document.getElementById('vendedor-sem-setup').checked;
-            document.getElementById('vendedor-qtd-setup').disabled = isSemSetup;
-            if (isSemSetup) document.getElementById('vendedor-qtd-setup').value = 0;
-            else document.getElementById('vendedor-qtd-setup').value = 1;
-        }
-
-        function addProductToProposal() {
-            const prodId = document.getElementById('selected-product-id').value;
-            const isSemSetup = document.getElementById('vendedor-sem-setup').checked;
-            const bonificarSetup = document.getElementById('vendedor-bonificar-setup').checked;
-            const bonificarMensal = document.getElementById('vendedor-bonificar-mensal').checked;
-
-            const qtdSetup = isSemSetup ? 0 : parseInt(document.getElementById('vendedor-qtd-setup').value || 1);
-            const qtdMensal = parseInt(document.getElementById('vendedor-qtd-mensal').value || 1);
-
-            if (!prodId) {
-                alert('Pesquise e selecione um produto da lista primeiro!');
-                return;
-            }
-
-            const prodObj = dbProducts.find(p => p.id === prodId);
-            if (prodObj) {
-                proposalProducts.push({
-                    uid: Date.now(),
-                    id: prodObj.id,
-                    name: prodObj.name,
-                    unitSetup: (isSemSetup || bonificarSetup) ? 0 : prodObj.setup,
-                    unitMensal: bonificarMensal ? 0 : prodObj.mensal,
-                    qtdSetup: qtdSetup,
-                    qtdMensal: qtdMensal,
-                    isBonificadoSetup: bonificarSetup,
-                    isBonificadoMensal: bonificarMensal,
-                    hasSetup: !isSemSetup && qtdSetup > 0,
-                    hasMensal: qtdMensal > 0
-                });
-                
-                document.getElementById('selected-product-id').value = '';
-                document.getElementById('vendedor-search-input').value = '';
-                
-                renderProposalItemsList();
-                calculateProposal();
-            }
-        }
-
-        function removeProductFromProposal(uid) {
-            proposalProducts = proposalProducts.filter(p => p.uid !== uid);
-            renderProposalItemsList();
-            calculateProposal();
-        }
-
-        function renderProposalItemsList() {
-            const list = document.getElementById('proposal-items-list');
-            if (proposalProducts.length === 0) {
-                list.innerHTML = `<p class="text-xs text-gray-400 italic">Nenhum produto adicionado ainda.</p>`;
-                return;
-            }
-
-            let html = '';
-            proposalProducts.forEach(p => {
-                html += `
-                    <div class="flex items-center justify-between p-2.5 bg-white border rounded-lg text-xs">
-                        <div>
-                            <strong class="text-gray-800">${p.name}</strong>
-                            <div class="text-[11px] text-gray-500 mt-0.5">
-                                Setup: <strong>${p.hasSetup ? (p.isBonificadoSetup ? 'BONIFICADO' : p.qtdSetup + 'x (' + formatBRL(p.unitSetup * p.qtdSetup) + ')') : 'Sem Setup'}</strong> | 
-                                Mensal: <strong>${p.hasMensal ? (p.isBonificadoMensal ? 'BONIFICADO' : p.qtdMensal + 'x (' + formatBRL(p.unitMensal * p.qtdMensal) + ')') : 'Sem Mensalidade'}</strong>
-                            </div>
-                        </div>
-                        <button onclick="removeProductFromProposal(${p.uid})" class="text-red-500 hover:text-red-700 font-bold p-1 ml-2">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>
-                    </div>
-                `;
-            });
-            list.innerHTML = html;
-        }
-
-        function formatBRL(val, isBonificado = false) {
-            if (isBonificado || val === 0) return "BONIFICADO";
-            return val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-        }
-
-        function formatDateStr(dateStr) {
-            if (!dateStr) return 'A definir';
-            const [y, m, d] = dateStr.split('-');
-            return `${d}/${m}/${y}`;
-        }
-
-        function calculateProposal() {
-            const extratorOp = document.getElementById('vendedor-extrator').value;
-            const ocultarSetup = document.getElementById('vendedor-ocultar-setup').checked;
-            
-            const descSetupPercent = (parseFloat(document.getElementById('desc-setup').value) || 0) / 100;
-            const descMensalPercent = (parseFloat(document.getElementById('desc-mensal').value) || 0) / 100;
-
-            const parcSetup = parseInt(document.getElementById('vendedor-parc-setup').value || 1);
-            const dataSetupInput = document.getElementById('vendedor-data-setup').value;
-            const dataMensalInput = document.getElementById('vendedor-data-mensal').value;
-
-            const setupSection = document.getElementById('slide-section-setup');
-            if (ocultarSetup) setupSection.style.display = 'none';
-            else setupSection.style.display = 'block';
-
-            let setupItems = [];
-            if (!ocultarSetup) {
-                proposalProducts.forEach(p => {
-                    if (p.hasSetup) {
-                        setupItems.push({
-                            nome: `Setup: ${p.name}`,
-                            qtd: p.qtdSetup,
-                            valorIndividual: p.unitSetup,
-                            valorTotal: p.unitSetup * p.qtdSetup,
-                            desc: descSetupPercent,
-                            isBonificado: p.isBonificadoSetup
-                        });
-                    }
-                });
-            }
-
-            let mensalItems = [];
-            proposalProducts.forEach(p => {
-                if (p.hasMensal) {
-                    mensalItems.push({
-                        nome: `Mensalidade: ${p.name}`,
-                        qtd: p.qtdMensal,
-                        valorIndividual: p.unitMensal,
-                        valorTotal: p.unitMensal * p.qtdMensal,
-                        desc: descMensalPercent,
-                        isBonificado: p.isBonificadoMensal
-                    });
-                }
-            });
-
-            if (extratorOp === 'sim') {
-                mensalItems.push({
-                    nome: "Instalação de Extrator LifeApps",
-                    qtd: 1,
-                    valorIndividual: dbExtras.extrator,
-                    valorTotal: dbExtras.extrator,
-                    desc: descMensalPercent,
-                    isBonificado: false
-                });
-            } else if (extratorOp === 'bonificado') {
-                mensalItems.push({
-                    nome: "Instalação de Extrator LifeApps",
-                    qtd: 1,
-                    valorIndividual: 0,
-                    valorTotal: 0,
-                    desc: 0,
-                    isBonificado: true
-                });
-            }
-
-            const hasChargeableSetup = !ocultarSetup && setupItems.some(i => !i.isBonificado && i.valorTotal > 0);
-            const hasChargeableMensal = mensalItems.some(i => !i.isBonificado && i.valorTotal > 0);
-
-            document.getElementById('vendedor-parc-setup').disabled = !hasChargeableSetup;
-            document.getElementById('vendedor-data-setup').disabled = !hasChargeableSetup;
-            document.getElementById('vendedor-data-mensal').disabled = !hasChargeableMensal;
-
-            const dataSetupFormatted = hasChargeableSetup ? formatDateStr(dataSetupInput) : '-';
-            const dataMensalFormatted = hasChargeableMensal ? formatDateStr(dataMensalInput) : '-';
-
-            renderSetupTable('slide-table-setup', setupItems, descSetupPercent > 0, parcSetup, dataSetupFormatted);
-            renderMensalTable('slide-table-mensal', mensalItems, descMensalPercent > 0, dataMensalFormatted);
-
-            const totalSetup = setupItems.reduce((acc, i) => acc + (i.isBonificado ? 0 : i.valorTotal * (1 - i.desc)), 0);
-            const totalMensal = mensalItems.reduce((acc, i) => acc + (i.isBonificado ? 0 : i.valorTotal * (1 - i.desc)), 0);
-
-            document.getElementById('slide-total-setup').innerText = formatBRL(totalSetup);
-            document.getElementById('slide-total-mensal').innerText = formatBRL(totalMensal);
-        }
-
-        function renderSetupTable(tableId, items, showDiscount, parcNum, dataText) {
-            const table = document.getElementById(tableId);
-            const showMultipleUnitDiscount = items.some(i => i.qtd > 1);
-            const showInstallmentValue = parcNum > 1;
-
-            let html = `
-                <thead>
-                    <tr class="bg-green-600 text-white font-bold text-[10px]">
-                        <th class="p-2">Produto/Serviço</th>
-                        <th class="p-2 text-center">QTD</th>
-                        <th class="p-2 text-right">Valor Individual</th>
-                        ${showDiscount ? `<th class="p-2 text-right bg-green-700/30">Desconto</th>` : ''}
-                        ${showDiscount && showMultipleUnitDiscount ? `<th class="p-2 text-right bg-green-700/30">Valor Indiv. c/ desc</th>` : ''}
-                        ${showDiscount ? `<th class="p-2 text-right bg-green-700/30">Valor c/ desconto</th>` : ''}
-                        <th class="p-2 text-center">Parcelamento</th>
-                        ${showInstallmentValue ? `<th class="p-2 text-right bg-green-700/30">Valor da Parcela</th>` : ''}
-                        <th class="p-2 text-center">Data 1ª Parcela</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-200">
-            `;
-
-            if (items.length === 0) {
-                let cols = 5;
-                if (showDiscount) cols += 2;
-                if (showDiscount && showMultipleUnitDiscount) cols += 1;
-                if (showInstallmentValue) cols += 1;
-                html += `<tr><td colspan="${cols}" class="p-3 text-center text-gray-400 italic">Nenhum item de setup inserido</td></tr>`;
-            } else {
-                items.forEach(item => {
-                    const unitComDesc = item.valorIndividual * (1 - item.desc);
-                    const totalComDesc = item.valorTotal * (1 - item.desc);
-                    const descFormatted = (item.desc * 100) + '%';
-                    const parcelValue = item.isBonificado ? 0 : (totalComDesc / parcNum);
-
-                    html += `
-                        <tr class="hover:bg-gray-50">
-                            <td class="p-2 font-medium text-gray-800">${item.nome}</td>
-                            <td class="p-2 text-center">${String(item.qtd).padStart(2, '0')}</td>
-                            <td class="p-2 text-right font-medium">${formatBRL(item.valorIndividual, item.isBonificado)}</td>
-                            ${showDiscount ? `<td class="p-2 text-right text-green-700 font-semibold">${item.isBonificado ? '-' : descFormatted}</td>` : ''}
-                            ${showDiscount && showMultipleUnitDiscount ? `<td class="p-2 text-right font-bold text-gray-800">${item.qtd > 1 ? formatBRL(unitComDesc, item.isBonificado) : '-'}</td>` : ''}
-                            ${showDiscount ? `<td class="p-2 text-right font-bold text-gray-900">${formatBRL(totalComDesc, item.isBonificado)}</td>` : ''}
-                            <td class="p-2 text-center text-gray-600">${item.isBonificado ? '-' : parcNum + 'x'}</td>
-                            ${showInstallmentValue ? `<td class="p-2 text-right text-green-700 font-bold">${item.isBonificado ? 'BONIFICADO' : formatBRL(parcelValue)}</td>` : ''}
-                            <td class="p-2 text-center text-gray-600 font-semibold">${item.isBonificado ? '-' : dataText}</td>
-                        </tr>
-                    `;
-                });
-            }
-
-            html += `</tbody>`;
-            table.innerHTML = html;
-        }
-
-        function renderMensalTable(tableId, items, showDiscount, dataText) {
-            const table = document.getElementById(tableId);
-            const showMultipleUnitDiscount = items.some(i => i.qtd > 1);
-
-            let html = `
-                <thead>
-                    <tr class="bg-blue-600 text-white font-bold text-[10px]">
-                        <th class="p-2">Produto / Serviço</th>
-                        <th class="p-2 text-center">Qtd</th>
-                        <th class="p-2 text-right">Valor Individual</th>
-                        ${showDiscount ? `<th class="p-2 text-right bg-blue-700/30">Desconto (%)</th>` : ''}
-                        ${showDiscount && showMultipleUnitDiscount ? `<th class="p-2 text-right bg-blue-700/30">Valor Indiv. c/ desc</th>` : ''}
-                        <th class="p-2 text-right">Total</th>
-                        <th class="p-2 text-center">1ª Parcela</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-200">
-            `;
-
-            if (items.length === 0) {
-                let cols = 5;
-                if (showDiscount) cols += 1;
-                if (showDiscount && showMultipleUnitDiscount) cols += 1;
-                html += `<tr><td colspan="${cols}" class="p-3 text-center text-gray-400 italic">Nenhum item de mensalidade inserido</td></tr>`;
-            } else {
-                items.forEach(item => {
-                    const unitComDesc = item.valorIndividual * (1 - item.desc);
-                    const totalComDesc = item.valorTotal * (1 - item.desc);
-                    const descFormatted = (item.desc * 100) + '%';
-
-                    html += `
-                        <tr class="hover:bg-gray-50">
-                            <td class="p-2 font-medium text-gray-800">${item.nome}</td>
-                            <td class="p-2 text-center">${String(item.qtd).padStart(2, '0')}</td>
-                            <td class="p-2 text-right font-medium">${formatBRL(item.valorIndividual, item.isBonificado)}</td>
-                            ${showDiscount ? `<td class="p-2 text-right text-blue-700 font-semibold">${item.isBonificado ? '-' : descFormatted}</td>` : ''}
-                            ${showDiscount && showMultipleUnitDiscount ? `<td class="p-2 text-right font-bold text-gray-800">${item.qtd > 1 ? formatBRL(unitComDesc, item.isBonificado) : '-'}</td>` : ''}
-                            <td class="p-2 text-right font-bold text-gray-900">${formatBRL(showDiscount ? totalComDesc : item.valorTotal, item.isBonificado)}</td>
-                            <td class="p-2 text-center text-gray-600 font-semibold">${item.isBonificado ? '-' : dataText}</td>
-                        </tr>
-                    `;
-                });
-            }
-
-            html += `</tbody>`;
-            table.innerHTML = html;
-        }
-
-        function openPrintZoomModal() {
-            const container = document.getElementById('slide-container-target');
-            const clone = container.cloneNode(true);
-            
-            const headerElement = clone.querySelector('.flex.justify-between.items-start.mb-4');
-            if (headerElement) {
-                headerElement.remove();
-            }
-
-            clone.classList.remove('aspect-ratio');
-            clone.style.width = '1000px';
-
-            const zoomBox = document.getElementById('zoom-content-box');
-            zoomBox.innerHTML = '';
-            zoomBox.appendChild(clone);
-
-            document.getElementById('print-zoom-modal').classList.remove('hidden');
-        }
-
-        function closePrintZoomModal() {
-            document.getElementById('print-zoom-modal').classList.add('hidden');
-        }
-
-        function downloadTablesImageHD() {
-            const zoomBox = document.getElementById('zoom-content-box');
-            const targetElement = zoomBox.firstElementChild || zoomBox;
-
-            const btnDownload = document.getElementById('btn-download-img');
-            const origText = btnDownload.innerHTML;
-            btnDownload.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1.5"></i> Gerando PNG HD...`;
-            btnDownload.disabled = true;
-
-            html2canvas(targetElement, {
-                scale: 3,
-                useCORS: true,
-                backgroundColor: '#ffffff',
-                logging: false
-            }).then(canvas => {
-                const link = document.createElement('a');
-                link.download = `Proposta_Tabelas_Investimento.png`;
-                link.href = canvas.toDataURL('image/png', 1.0);
-                link.click();
-
-                btnDownload.innerHTML = origText;
-                btnDownload.disabled = false;
-            }).catch(err => {
-                console.error("Erro ao gerar imagem HD:", err);
-                alert("Ocorreu um erro ao gerar a imagem HD.");
-                btnDownload.innerHTML = origText;
-                btnDownload.disabled = false;
-            });
-        }
-
-        function openEditModal(id, name, setup, mensal) {
-            document.getElementById('edit-prod-id').value = id;
-            document.getElementById('edit-prod-name').value = name;
-            document.getElementById('edit-prod-setup').value = setup;
-            document.getElementById('edit-prod-mensal').value = mensal;
-            document.getElementById('edit-product-modal').classList.remove('hidden');
-        }
-
-        function closeEditModal() {
-            document.getElementById('edit-product-modal').classList.add('hidden');
-        }
-
-        function saveProductEdit() {
-            const id = document.getElementById('edit-prod-id').value;
-            const name = document.getElementById('edit-prod-name').value;
-            const setup = parseFloat(document.getElementById('edit-prod-setup').value || 0);
-            const mensal = parseFloat(document.getElementById('edit-prod-mensal').value || 0);
-
-            if (!name) { alert('Nome do produto é obrigatório!'); return; }
-
-            db.collection("produtos").doc(id).update({ name, setup, mensal }).then(() => {
-                alert('Produto atualizado com sucesso!');
-                closeEditModal();
-            }).catch(err => alert("Erro ao atualizar: " + err.message));
-        }
-
-        function toggleProductActive(id, currentStatus) {
-            const newStatus = !currentStatus;
-            db.collection("produtos").doc(id).update({ active: newStatus }).then(() => {
-                alert(`Produto ${newStatus ? 'Ativado' : 'Desativado'} com sucesso!`);
-            });
-        }
-
-        function deleteProductFirebase(id) {
-            if (confirm('Deseja excluir este produto?')) {
-                db.collection("produtos").doc(id).delete().then(() => {
-                    alert('Produto excluído com sucesso!');
-                }).catch(err => alert("Erro ao excluir: " + err.message));
-            }
-        }
-
-        function deleteSelectedProducts() {
-            const checkboxes = document.querySelectorAll('.prod-checkbox:checked');
-            if (checkboxes.length === 0) {
-                alert('Selecione ao menos um produto para excluir!');
-                return;
-            }
-
-            if (confirm(`Deseja excluir os ${checkboxes.length} produtos selecionados?`)) {
-                checkboxes.forEach(cb => {
-                    db.collection("produtos").doc(cb.value).delete();
-                });
-            }
-        }
-
-        function deleteAllProducts() {
-            if (confirm('ATENÇÃO: Deseja realmente excluir TODOS os produtos cadastrados?')) {
-                dbProducts.forEach(prod => {
-                    db.collection("produtos").doc(prod.id).delete();
-                });
-            }
-        }
-
-        function addNewProductFirebase() {
-            const name = document.getElementById('new-prod-name').value;
-            const setup = parseFloat(document.getElementById('new-prod-setup').value || 0);
-            const mensal = parseFloat(document.getElementById('new-prod-mensal').value || 0);
-
-            if (!name) { alert('Digite o nome do produto!'); return; }
-
-            const newOrder = dbProducts.length + 1;
-
-            db.collection("produtos").add({ name, setup, mensal, active: true, order: newOrder }).then(() => {
-                alert('Produto cadastrado com sucesso!');
-                document.getElementById('new-prod-name').value = '';
-                document.getElementById('new-prod-setup').value = '';
-                document.getElementById('new-prod-mensal').value = '';
-            });
-        }
-
-        function handleDragStart(e, index) {
-            draggedItemIndex = index;
-            e.target.classList.add('dragging');
-        }
-
-        function handleDragOver(e) {
-            e.preventDefault();
-        }
-
-        function handleDrop(e, targetIndex) {
-            e.preventDefault();
-            if (draggedItemIndex === null || draggedItemIndex === targetIndex) return;
-
-            const draggedItem = dbProducts.splice(draggedItemIndex, 1)[0];
-            dbProducts.splice(targetIndex, 0, draggedItem);
-
-            dbProducts.forEach((prod, newIdx) => {
-                db.collection("produtos").doc(prod.id).update({ order: newIdx + 1 });
-            });
-
-            draggedItemIndex = null;
-        }
-
-        function handleDragEnd(e) {
-            e.target.classList.remove('dragging');
-        }
-
-        function renderAdminProducts() {
-            const list = document.getElementById('admin-products-list');
-            list.innerHTML = '';
-            dbProducts.forEach((prod, index) => {
-                const isActive = prod.active !== false;
-
-                list.innerHTML += `
-                    <div class="p-4 bg-gray-50 border rounded-xl space-y-2 relative draggable-card shadow-sm hover:shadow-md transition-all"
-                         draggable="true" 
-                         ondragstart="handleDragStart(event, ${index})" 
-                         ondragover="handleDragOver(event)" 
-                         ondrop="handleDrop(event, ${index})"
-                         ondragend="handleDragEnd(event)">
-                        
-                        <div class="flex items-center justify-between border-b pb-2">
-                            <input type="checkbox" value="${prod.id}" class="prod-checkbox w-4 h-4 text-blue-600 rounded cursor-pointer">
-                            <span class="text-[10px] text-gray-400 font-bold">
-                                <i class="fa-solid fa-grip-vertical mr-1"></i> Arraste para mover
-                            </span>
-                        </div>
-
-                        <div class="flex justify-between items-start pt-1">
-                            <h4 class="font-bold text-sm text-gray-900">${prod.name}</h4>
-                            <button onclick="toggleProductActive('${prod.id}', ${isActive})" class="px-2 py-0.5 text-[10px] font-bold rounded-full ${isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
-                                ${isActive ? 'Visível' : 'Oculto'}
-                            </button>
-                        </div>
-
-                        <div class="text-xs text-gray-600">Setup: <strong>${formatBRL(prod.setup)}</strong></div>
-                        <div class="text-xs text-gray-600">Mensal: <strong>${formatBRL(prod.mensal)}</strong></div>
-
-                        <div class="flex justify-end space-x-2 pt-2 border-t text-xs">
-                            <button onclick="openEditModal('${prod.id}', '${prod.name}', ${prod.setup}, ${prod.mensal})" class="text-blue-600 hover:text-blue-800 font-bold">
-                                <i class="fa-solid fa-pen-to-square"></i> Editar
-                            </button>
-                            <button onclick="deleteProductFirebase('${prod.id}')" class="text-red-600 hover:text-red-800 font-bold">
-                                <i class="fa-solid fa-trash"></i> Excluir
-                            </button>
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
         listenSystemSettings();
         listenFirebaseUsers();
-        listenFirebaseProducts();
-        listenFirebasePropostas();
     </script>
 </body>
 </html>
