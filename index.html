@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SGP - Portal Corporativo & Propostas LifeApps v5.3</title>
+    <title>SGP - Portal Corporativo & Propostas LifeApps v5.3.1</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -74,7 +74,7 @@
 
                 <div class="flex rounded-2xl bg-black/40 p-1 text-xs font-bold border border-white/10">
                     <button onclick="switchAuthTab('usuario')" id="auth-tab-usuario" class="flex-1 py-2.5 rounded-xl bg-blue-600 text-white shadow-lg transition">Usuário</button>
-                    <button onclick="switchAuthTab('admin')" id="auth-tab-admin" class="flex-1 py-2.5 rounded-lg text-gray-400 hover:text-white transition">Administrador</button>
+                    <button onclick="switchAuthTab('admin')" id="auth-tab-admin" class="flex-1 py-2.5 rounded-xl text-gray-400 hover:text-white transition">Administrador</button>
                 </div>
 
                 <!-- LOGIN USUÁRIO -->
@@ -168,7 +168,7 @@
         </div>
 
         <footer class="text-center text-xs text-white/90 py-2 z-10">
-            Sistema de Geração de Proposta (SGP) - Nº v5.3 | Desenvolvido por 
+            Sistema de Geração de Proposta (SGP) - Nº v5.3.1 | Desenvolvido por 
             <a href="https://www.linkedin.com/in/rafaelrobertonascimento" target="_blank" rel="noopener noreferrer" class="text-white font-bold underline hover:text-green-300">
                 Rafael Nascimento <i class="fa-brands fa-linkedin text-xs ml-0.5"></i>
             </a>
@@ -199,7 +199,6 @@
                     </div>
 
                     <nav class="p-3 space-y-1.5" id="sidebar-nav-container">
-                        <!-- PAINEL ADMIN NO TOPO DA SIDEBAR (VISÍVEL APENAS PARA ADMIN) -->
                         <button onclick="switchMainTab('admin')" id="nav-item-admin" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-white font-extrabold text-xs sm:text-sm shadow-md transition hidden mb-2">
                             <i class="fa-solid fa-user-shield text-lg min-w-[24px]"></i>
                             <span class="sidebar-text whitespace-nowrap">Painel Administrativo</span>
@@ -210,7 +209,6 @@
                             <span class="sidebar-text whitespace-nowrap">Rede Social / Feed</span>
                         </button>
 
-                        <!-- GERADOR DE PROPOSTAS (VISÍVEL APENAS PARA USUÁRIOS/VENDEDORES) -->
                         <button onclick="switchMainTab('propostas')" id="nav-item-propostas" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white font-medium text-xs sm:text-sm transition">
                             <i class="fa-solid fa-calculator text-lg min-w-[24px]"></i>
                             <span class="sidebar-text whitespace-nowrap">Gerador de Proposta</span>
@@ -857,7 +855,7 @@
 
         <footer class="bg-white border-t border-gray-200 py-4 text-center text-xs text-gray-500 mt-auto z-30">
             <div class="max-w-7xl mx-auto px-4">
-                Sistema de Geração de Proposta (SGP) - Nº v5.1.1 | Desenvolvido por 
+                Sistema de Geração de Proposta (SGP) - Nº v5.3.1 | Desenvolvido por 
                 <a href="https://www.linkedin.com/in/rafaelrobertonascimento" target="_blank" rel="noopener noreferrer" class="text-blue-600 font-bold hover:underline">
                     Rafael Nascimento <i class="fa-brands fa-linkedin text-xs ml-0.5"></i>
                 </a>
@@ -1021,7 +1019,7 @@
 
         const dbExtras = { extrator: 250.00 };
 
-        // SESSÃO E DESTAQUE ADMIN NO TOPO DO MENU
+        // INITIALIZATION
         function checkUserSession() {
             const savedSession = sessionStorage.getItem('sgp_session_user');
             if (savedSession) {
@@ -1054,7 +1052,7 @@
 
             if (currentUser.role === 'admin') {
                 adminBtn.classList.remove('hidden');
-                propostasBtn.classList.add('hidden'); // OCULTA GERADOR DE PROPOSTAS DO ADMIN
+                propostasBtn.classList.add('hidden'); // ADMIN NÃO VÊ O GERADOR DE PROPOSTAS
                 document.getElementById('admin-pin-notice-option').classList.remove('hidden');
             } else {
                 adminBtn.classList.add('hidden');
@@ -1100,7 +1098,7 @@
             }
         }
 
-        // LOGIN / REGISTRO USUÁRIO
+        // LOGIN / REGISTRO
         function switchAuthTab(type) {
             document.getElementById('form-login-usuario').classList.add('hidden');
             document.getElementById('form-login-admin').classList.add('hidden');
@@ -1237,7 +1235,7 @@
 
             if (lastAt !== -1) {
                 const query = textBeforeCursor.substring(lastAt + 1).toLowerCase();
-                const matches = dbUsers.filter(u => u.nome.toLowerCase().includes(query) || (u.email && u.email.toLowerCase().includes(query)));
+                const matches = dbUsers.filter(u => (u.nome && u.nome.toLowerCase().includes(query)) || (u.email && u.email.toLowerCase().includes(query)));
 
                 if (matches.length > 0 && !query.includes(' ')) {
                     let html = '';
@@ -1245,7 +1243,7 @@
                         html += `
                             <div onclick="selectMentionUser('${u.nome}')" class="p-2 text-xs text-gray-700 hover:bg-blue-50 hover:text-blue-700 font-medium cursor-pointer transition flex items-center space-x-2">
                                 <div class="w-6 h-6 rounded-full bg-blue-600 text-white text-[10px] font-bold flex items-center justify-center">
-                                    ${u.nome.slice(0,2).toUpperCase()}
+                                    ${(u.nome || 'U').slice(0,2).toUpperCase()}
                                 </div>
                                 <span>${u.nome}</span>
                             </div>
@@ -1271,7 +1269,7 @@
             textarea.focus();
         }
 
-        // GERENCIADOR DE NOTIFICAÇÕES & PUSH
+        // NOTIFICAÇÕES REALTIME
         function requestNotificationPermission() {
             if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") {
                 Notification.requestPermission();
@@ -1290,17 +1288,18 @@
         function listenFirebaseNotifications() {
             if (!currentUser) return;
 
-            db.collection("notificacoes")
-              .where("destinatarioNome", "==", currentUser.nome)
-              .onSnapshot((snapshot) => {
-                  dbNotifications = [];
-                  snapshot.forEach((doc) => {
-                      dbNotifications.push({ id: doc.id, ...doc.data() });
-                  });
+            db.collection("notificacoes").onSnapshot((snapshot) => {
+                dbNotifications = [];
+                snapshot.forEach((doc) => {
+                    const data = doc.data();
+                    if (data.destinatarioNome && currentUser.nome && data.destinatarioNome.toLowerCase() === currentUser.nome.toLowerCase()) {
+                        dbNotifications.push({ id: doc.id, ...data });
+                    }
+                });
 
-                  dbNotifications.sort((a, b) => new Date(b.data) - new Date(a.data));
-                  renderNotificationsUI();
-              });
+                dbNotifications.sort((a, b) => new Date(b.data || 0) - new Date(a.data || 0));
+                renderNotificationsUI();
+            });
         }
 
         function renderNotificationsUI() {
@@ -1329,11 +1328,14 @@
 
             let html = '';
             dbNotifications.forEach(n => {
+                let horaStr = 'Recente';
+                try { if (n.data) horaStr = new Date(n.data).toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'}); } catch(e){}
+
                 html += `
                     <div class="p-3 hover:bg-gray-50 transition ${!n.lida ? 'bg-blue-50/50' : ''}">
                         <div class="flex justify-between items-start">
                             <strong class="text-blue-900">${n.remetenteNome}</strong>
-                            <span class="text-[10px] text-gray-400">${new Date(n.data).toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'})}</span>
+                            <span class="text-[10px] text-gray-400">${horaStr}</span>
                         </div>
                         <p class="text-xs text-gray-700 mt-1">${n.mensagem}</p>
                     </div>
@@ -1386,10 +1388,9 @@
                 inputImage.value = '';
                 document.getElementById('post-is-pinned').checked = false;
 
-                // SALVA NOTIFICAÇÃO NO FIREBASE DE FORMA SEGURA COM TIMESTAMP
                 mentions.forEach(mention => {
                     const cleanName = mention.replace('@', '').trim();
-                    const targetUser = dbUsers.find(u => u.nome.toLowerCase() === cleanName.toLowerCase());
+                    const targetUser = dbUsers.find(u => u.nome && u.nome.toLowerCase() === cleanName.toLowerCase());
 
                     if (targetUser) {
                         db.collection("notificacoes").add({
@@ -1460,7 +1461,6 @@
             db.collection("posts").doc(postId).update({ comentarios });
         }
 
-        // RENDER DO FEED SOCIAL COM TRATAMENTO DE ERROS DE DATA
         function renderSocialFeed() {
             const container = document.getElementById('social-feed-container');
             if (!container) return;
@@ -2052,7 +2052,7 @@
             });
         }
 
-        // PROPOSTAS E CALCULADOR
+        // PROPOSTAS E CALCULADOR (ESTABILIZADO)
         function clearProposalState() {
             proposalProducts = [];
             const searchInput = document.getElementById('vendedor-search-input');
@@ -2829,7 +2829,7 @@
             });
         }
 
-        // INICIALIZAÇÃO DO PORTAL
+        // INICIALIZAÇÃO
         checkUserSession();
         listenSystemSettings();
         listenNewsletterSettings();
