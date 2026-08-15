@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LifeSocial - A rede que conecta os Lifers v7.3</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>LifeSocial - A rede que conecta os Lifers v7.4</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -182,7 +185,7 @@
         </div>
 
         <footer class="text-center text-xs text-white/90 py-2 z-10">
-            LifeSocial v7.3 | Plataforma criada e desenvolvida por 
+            LifeSocial v7.4 | Plataforma criada e desenvolvida por 
             <a href="https://www.linkedin.com/in/rafaelrobertonascimento" target="_blank" rel="noopener noreferrer" class="text-white font-bold underline hover:text-green-300">
                 Rafael Roberto Nascimento <i class="fa-brands fa-linkedin text-xs ml-0.5"></i>
             </a>
@@ -216,31 +219,26 @@
                     </div>
 
                     <nav class="p-3 space-y-2" id="sidebar-nav-container">
-                        <!-- PAINEL ADM (EXCLUSIVO ADMIN) -->
                         <button onclick="switchMainTab('admin')" id="nav-item-admin" class="w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-white font-extrabold text-xs sm:text-sm shadow-md transition hidden mb-1">
                             <i class="fa-solid fa-user-shield text-lg min-w-[24px]"></i>
                             <span class="sidebar-text whitespace-nowrap">Painel Administrativo</span>
                         </button>
 
-                        <!-- LIFESOCIAL FEED -->
                         <button onclick="switchMainTab('social')" id="nav-item-social" class="w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl bg-blue-600 text-white font-bold text-xs sm:text-sm transition shadow-sm">
                             <i class="fa-solid fa-newspaper text-lg min-w-[24px]"></i>
                             <span class="sidebar-text whitespace-nowrap">LifeSocial Feed</span>
                         </button>
 
-                        <!-- METAS & OBJETIVOS -->
                         <button onclick="switchMainTab('metas')" id="nav-item-metas" class="w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-slate-300 hover:bg-slate-800 hover:text-white font-medium text-xs sm:text-sm transition">
                             <i class="fa-solid fa-chart-line text-lg min-w-[24px]"></i>
                             <span class="sidebar-text whitespace-nowrap">Metas & Objetivos</span>
                         </button>
 
-                        <!-- GERADOR DE PROPOSTA -->
                         <button onclick="switchMainTab('propostas')" id="nav-item-propostas" class="w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-slate-300 hover:bg-slate-800 hover:text-white font-medium text-xs sm:text-sm transition">
                             <i class="fa-solid fa-calculator text-lg min-w-[24px]"></i>
                             <span class="sidebar-text whitespace-nowrap">Gerador de Proposta</span>
                         </button>
 
-                        <!-- MINHA CONTA / PERFIL -->
                         <button onclick="switchMainTab('perfil')" id="nav-item-perfil" class="w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-slate-300 hover:bg-slate-800 hover:text-white font-medium text-xs sm:text-sm transition">
                             <i class="fa-solid fa-user-gear text-lg min-w-[24px]"></i>
                             <span class="sidebar-text whitespace-nowrap">Minha Conta / Perfil</span>
@@ -1123,7 +1121,7 @@
 
         <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-500 mt-auto z-30">
             <div class="max-w-7xl mx-auto px-4">
-                LifeSocial v7.1 | Plataforma desenvolvida por 
+                LifeSocial v7.3 | Plataforma desenvolvida por 
                 <a href="https://www.linkedin.com/in/rafaelrobertonascimento" target="_blank" rel="noopener noreferrer" class="text-blue-600 font-bold hover:underline">
                     Rafael Roberto Nascimento <i class="fa-brands fa-linkedin text-xs ml-0.5"></i>
                 </a>
@@ -1330,7 +1328,8 @@
             const metasBtn = document.getElementById('nav-item-metas');
             const propostasBtn = document.getElementById('nav-item-propostas');
 
-            // REGRA V7.1: MENU COMPLETO PERMANENTE PARA USUÁRIOS COMUNS
+            // REGRA V7.3: SE O USUÁRIO É ADMIN, EXIBE APENAS PAINEL ADM, FEED E PERFIL. 
+            // SE FOR COLABORADOR, EXIBE MENU COMPLETO (FEED, METAS, PROPOSTA, PERFIL).
             if (currentUser.role === 'admin') {
                 adminBtn.classList.remove('hidden');
                 metasBtn.classList.add('hidden');
@@ -1338,12 +1337,12 @@
                 document.getElementById('admin-pin-notice-option').classList.remove('hidden');
             } else {
                 adminBtn.classList.add('hidden');
-                metasBtn.classList.remove('hidden'); // METAS VISÍVEL PERMANENTEMENTE
+                metasBtn.classList.remove('hidden');
                 propostasBtn.classList.remove('hidden');
                 document.getElementById('admin-pin-notice-option').classList.add('hidden');
             }
 
-            // PRIORIZA A ABERTURA DA ABA LIFESOCIAL FEED NO LOGIN E NO REFRESH
+            // ABERTURA PRIORITÁRIA NA TELA LIFESOCIAL FEED NO LOGIN E NO REFRESH (F5)
             switchMainTab('social');
             renderUserKpiDashboard();
         }
@@ -1570,19 +1569,43 @@
             });
         }
 
+        // NOVO LOGOUT V7.4 COM LIMPEZA PROFUNDA DE CACHE E RESET DO NAVEGADOR
         function logoutSystem(e) {
-            if(e && e.preventDefault) e.preventDefault();
+            if (e && e.preventDefault) e.preventDefault();
+            
             currentUser = null;
-            sessionStorage.removeItem('sgp_session_user');
+            sessionStorage.clear();
             localStorage.removeItem('sgp_user_email');
             localStorage.removeItem('sgp_user_pass');
+
+            // LIMPA CACHE DE ARMAZENAMENTO INTERNO DO NAVEGADOR (CACHE STORAGE)
+            if ('caches' in window) {
+                caches.keys().then((names) => {
+                    names.forEach(name => caches.delete(name));
+                });
+            }
+
+            // CANCELA QUALQUER WORKER/REGISTRO EM SEGUNDO PLANO
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.getRegistrations().then((registrations) => {
+                    for (let registration of registrations) {
+                        registration.unregister();
+                    }
+                });
+            }
+
+            const adminBtn = document.getElementById('nav-item-admin');
+            const metasBtn = document.getElementById('nav-item-metas');
+            const adminOption = document.getElementById('admin-pin-notice-option');
             
-            document.getElementById('nav-item-admin').classList.add('hidden');
-            document.getElementById('nav-item-metas').classList.add('hidden');
-            document.getElementById('admin-pin-notice-option').classList.add('hidden');
+            if (adminBtn) adminBtn.classList.add('hidden');
+            if (metasBtn) metasBtn.classList.add('hidden');
+            if (adminOption) adminOption.classList.add('hidden');
             
             clearProposalState();
-            showAuthScreen();
+
+            // RECARREGA A PÁGINA SEM CACHE (HARD RELOAD)
+            window.location.reload(true);
         }
 
         // FEED SOCIAL
