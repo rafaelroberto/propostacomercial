@@ -193,7 +193,7 @@
     <div id="screen-main-app" class="hidden flex-1 relative text-slate-800">
 
         <div class="flex flex-1 relative">
-            <!-- SIDEBAR RETRÁTIL (COM CABEÇALHO CORRIGIDO E ALINHADO) -->
+            <!-- SIDEBAR RETRÁTIL -->
             <aside id="main-sidebar" class="sidebar-expanded bg-slate-900 text-white min-h-screen transition-all duration-300 flex flex-col justify-between sticky top-0 h-screen z-40 overflow-y-auto">
                 <div>
                     <div class="p-4 border-b border-slate-800 flex items-center justify-between gap-2">
@@ -216,11 +216,13 @@
                     </div>
 
                     <nav class="p-3 space-y-2" id="sidebar-nav-container">
+                        <!-- PAINEL ADM (EXCLUSIVO ADMIN) -->
                         <button onclick="switchMainTab('admin')" id="nav-item-admin" class="w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-white font-extrabold text-xs sm:text-sm shadow-md transition hidden mb-1">
                             <i class="fa-solid fa-user-shield text-lg min-w-[24px]"></i>
                             <span class="sidebar-text whitespace-nowrap">Painel Administrativo</span>
                         </button>
 
+                        <!-- LIFESOCIAL FEED -->
                         <button onclick="switchMainTab('social')" id="nav-item-social" class="w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl bg-blue-600 text-white font-bold text-xs sm:text-sm transition shadow-sm">
                             <i class="fa-solid fa-newspaper text-lg min-w-[24px]"></i>
                             <span class="sidebar-text whitespace-nowrap">LifeSocial Feed</span>
@@ -232,11 +234,13 @@
                             <span class="sidebar-text whitespace-nowrap">Metas & Objetivos</span>
                         </button>
 
+                        <!-- GERADOR DE PROPOSTA -->
                         <button onclick="switchMainTab('propostas')" id="nav-item-propostas" class="w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-slate-300 hover:bg-slate-800 hover:text-white font-medium text-xs sm:text-sm transition">
                             <i class="fa-solid fa-calculator text-lg min-w-[24px]"></i>
                             <span class="sidebar-text whitespace-nowrap">Gerador de Proposta</span>
                         </button>
 
+                        <!-- MINHA CONTA / PERFIL -->
                         <button onclick="switchMainTab('perfil')" id="nav-item-perfil" class="w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-slate-300 hover:bg-slate-800 hover:text-white font-medium text-xs sm:text-sm transition">
                             <i class="fa-solid fa-user-gear text-lg min-w-[24px]"></i>
                             <span class="sidebar-text whitespace-nowrap">Minha Conta / Perfil</span>
@@ -1033,7 +1037,7 @@
                                     <input type="number" id="new-prod-mensal" placeholder="0.00" class="w-full p-2 border rounded-xl text-sm mt-1">
                                 </div>
                                 <div class="flex items-end">
-                                    <button onclick="addNewProductFirebase()" class="w-full p-2 bg-blue-600 text-white font-bold rounded-xl text-sm hover:bg-blue-700">
+                                    <button onclick="addNewProductFirebase()" class="w-full p-2 bg-blue-600 text-white font-bold rounded text-sm hover:bg-blue-700">
                                         <i class="fa-solid fa-cloud-arrow-up mr-1"></i> Salvar no Firebase
                                     </button>
                                 </div>
@@ -2300,7 +2304,7 @@
                 rankEl.innerText = userPosIndex !== -1 ? `#${userPosIndex + 1}º Lugar` : '# - Colocação';
             }
 
-            // TABELA MÊS A MÊS
+            // TABELA MÊS A MÊS DO VENDEDOR/PRÉ-VENDA
             const tbody = document.getElementById('user-kpi-months-tbody');
             if (tbody) {
                 tbody.innerHTML = '';
