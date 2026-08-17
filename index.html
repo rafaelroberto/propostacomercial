@@ -6,7 +6,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>LifeSocial - A rede que conecta os Lifers v7.4</title>
+    <title>LifeSocial - A rede que conecta os Lifers v7.5</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -185,7 +185,7 @@
         </div>
 
         <footer class="text-center text-xs text-white/90 py-2 z-10">
-            LifeSocial v7.4 | Plataforma criada e desenvolvida por 
+            LifeSocial v7.5 | Plataforma criada e desenvolvida por 
             <a href="https://www.linkedin.com/in/rafaelrobertonascimento" target="_blank" rel="noopener noreferrer" class="text-white font-bold underline hover:text-green-300">
                 Rafael Roberto Nascimento <i class="fa-brands fa-linkedin text-xs ml-0.5"></i>
             </a>
@@ -285,9 +285,15 @@
                                     <textarea id="post-input-text" rows="3" placeholder="Compartilhe uma novidade com a comunidade de Lifers..." class="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs sm:text-sm text-slate-800 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none transition resize-none"></textarea>
                                 </div>
 
-                                <div class="relative">
-                                    <input type="text" id="post-input-image" placeholder="📷 Cole o link de uma imagem/foto para anexar (opcional)..." class="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:ring-1 focus:ring-blue-500 focus:outline-none transition">
-                                    <i class="fa-solid fa-image absolute left-3 top-3 text-slate-400 text-xs"></i>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                    <div class="relative">
+                                        <input type="text" id="post-input-image" placeholder="📷 Link de Imagem (opcional)..." class="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:ring-1 focus:ring-blue-500 focus:outline-none transition">
+                                        <i class="fa-solid fa-image absolute left-3 top-3 text-slate-400 text-xs"></i>
+                                    </div>
+                                    <div class="relative">
+                                        <input type="text" id="post-input-video" placeholder="🎥 Link de Vídeo/YouTube (opcional)..." class="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:ring-1 focus:ring-blue-500 focus:outline-none transition">
+                                        <i class="fa-solid fa-video absolute left-3 top-3 text-slate-400 text-xs"></i>
+                                    </div>
                                 </div>
 
                                 <div id="emoji-picker-popover" class="hidden bg-white border border-slate-200 rounded-2xl p-3 shadow-xl flex flex-wrap gap-2 text-lg z-30 max-w-xs">
@@ -1121,7 +1127,7 @@
 
         <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-500 mt-auto z-30">
             <div class="max-w-7xl mx-auto px-4">
-                LifeSocial v7.3 | Plataforma desenvolvida por 
+                LifeSocial v7.5 | Plataforma desenvolvida por 
                 <a href="https://www.linkedin.com/in/rafaelrobertonascimento" target="_blank" rel="noopener noreferrer" class="text-blue-600 font-bold hover:underline">
                     Rafael Roberto Nascimento <i class="fa-brands fa-linkedin text-xs ml-0.5"></i>
                 </a>
@@ -1271,6 +1277,7 @@
 
         let currentUser = null;
         let adminPassHash = "lifeapps123";
+        let adminEmailAccount = "admin@lifeapps.com.br";
         let dbProducts = [];
         let dbUsers = [];
         let dbPropostas = [];
@@ -1328,8 +1335,6 @@
             const metasBtn = document.getElementById('nav-item-metas');
             const propostasBtn = document.getElementById('nav-item-propostas');
 
-            // REGRA V7.3: SE O USUÁRIO É ADMIN, EXIBE APENAS PAINEL ADM, FEED E PERFIL. 
-            // SE FOR COLABORADOR, EXIBE MENU COMPLETO (FEED, METAS, PROPOSTA, PERFIL).
             if (currentUser.role === 'admin') {
                 adminBtn.classList.remove('hidden');
                 metasBtn.classList.add('hidden');
@@ -1342,7 +1347,6 @@
                 document.getElementById('admin-pin-notice-option').classList.add('hidden');
             }
 
-            // ABERTURA PRIORITÁRIA NA TELA LIFESOCIAL FEED NO LOGIN E NO REFRESH (F5)
             switchMainTab('social');
             renderUserKpiDashboard();
         }
@@ -1395,7 +1399,7 @@
             }
         }
 
-        // SALVAR PERFIL DO USUÁRIO
+        // SALVAR PERFIL DO USUÁRIO OU DO ADMIN (NOVA FUNCIONALIDADE V7.5)
         function saveUserProfileSelf(e) {
             e.preventDefault();
             const newNome = document.getElementById('user-profile-nome').value.trim();
@@ -1420,6 +1424,31 @@
                 }
             }
 
+            // SE FOR O ADMINISTRADOR LOGADO
+            if (currentUser && currentUser.role === 'admin') {
+                const adminPayload = {
+                    adminEmail: newEmail
+                };
+                if (newPass && newPass.trim() !== '') {
+                    adminPayload.adminPass = newPass.trim();
+                }
+
+                db.collection("settings").doc("config").set(adminPayload, { merge: true }).then(() => {
+                    currentUser.nome = newNome;
+                    currentUser.email = newEmail;
+                    adminEmailAccount = newEmail;
+                    if (newPass) adminPassHash = newPass.trim();
+
+                    sessionStorage.setItem('sgp_session_user', JSON.stringify(currentUser));
+                    showMainApp();
+                    alert('E-mail e/ou Senha de Administrador atualizados com sucesso!');
+                    document.getElementById('user-profile-new-pass').value = '';
+                    document.getElementById('user-profile-confirm-pass').value = '';
+                }).catch(err => alert("Erro ao atualizar dados do administrador: " + err.message));
+                return;
+            }
+
+            // SE FOR USUÁRIO VENDEDOR/PRÉ-VENDA
             const userDocId = currentUser.id;
             const updatePayload = {
                 nome: newNome,
@@ -1523,7 +1552,7 @@
             const pass = document.getElementById('login-admin-senha').value;
 
             if (pass === adminPassHash) {
-                const adminUser = { id: 'admin_root', nome: "Administrador", email: "admin@lifeapps.com.br", role: "admin" };
+                const adminUser = { id: 'admin_root', nome: "Administrador", email: adminEmailAccount, role: "admin" };
                 sessionStorage.setItem('sgp_session_user', JSON.stringify(adminUser));
                 currentUser = adminUser;
                 showMainApp();
@@ -1569,7 +1598,6 @@
             });
         }
 
-        // NOVO LOGOUT V7.4 COM LIMPEZA PROFUNDA DE CACHE E RESET DO NAVEGADOR
         function logoutSystem(e) {
             if (e && e.preventDefault) e.preventDefault();
             
@@ -1578,14 +1606,12 @@
             localStorage.removeItem('sgp_user_email');
             localStorage.removeItem('sgp_user_pass');
 
-            // LIMPA CACHE DE ARMAZENAMENTO INTERNO DO NAVEGADOR (CACHE STORAGE)
             if ('caches' in window) {
                 caches.keys().then((names) => {
                     names.forEach(name => caches.delete(name));
                 });
             }
 
-            // CANCELA QUALQUER WORKER/REGISTRO EM SEGUNDO PLANO
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.getRegistrations().then((registrations) => {
                     for (let registration of registrations) {
@@ -1603,8 +1629,6 @@
             if (adminOption) adminOption.classList.add('hidden');
             
             clearProposalState();
-
-            // RECARREGA A PÁGINA SEM CACHE (HARD RELOAD)
             window.location.reload(true);
         }
 
@@ -1646,13 +1670,15 @@
         function createNewPost() {
             const input = document.getElementById('post-input-text');
             const inputImage = document.getElementById('post-input-image');
+            const inputVideo = document.getElementById('post-input-video');
             const isPinned = document.getElementById('post-is-pinned').checked;
 
             const text = input.value.trim();
             const imageUrl = inputImage.value.trim();
+            const videoUrl = inputVideo ? inputVideo.value.trim() : '';
 
-            if (!text && !imageUrl) {
-                alert('Digite uma mensagem ou adicione uma imagem para publicar!');
+            if (!text && !imageUrl && !videoUrl) {
+                alert('Digite uma mensagem, cole o link de uma imagem ou de um vídeo para publicar!');
                 return;
             }
 
@@ -1662,6 +1688,7 @@
                 autorRole: currentUser.role || 'usuario',
                 texto: text,
                 imageUrl: imageUrl,
+                videoUrl: videoUrl,
                 dataCriacao: new Date().toISOString(),
                 isPinned: currentUser.role === 'admin' ? isPinned : false,
                 curtidas: [],
@@ -1671,6 +1698,7 @@
             db.collection("posts").add(newPost).then(() => {
                 input.value = '';
                 inputImage.value = '';
+                if (inputVideo) inputVideo.value = '';
                 document.getElementById('post-is-pinned').checked = false;
             });
         }
@@ -1767,6 +1795,35 @@
                     </div>
                 ` : '';
 
+                // EMBED DE VÍDEO (NOVO NA V7.5)
+                let videoHtml = '';
+                if (post.videoUrl && post.videoUrl.trim() !== '') {
+                    let vUrl = post.videoUrl.trim();
+                    let embedUrl = '';
+
+                    if (vUrl.includes('youtube.com/watch?v=')) {
+                        embedUrl = vUrl.replace('watch?v=', 'embed/');
+                    } else if (vUrl.includes('youtu.be/')) {
+                        embedUrl = vUrl.replace('youtu.be/', 'youtube.com/embed/');
+                    } else if (vUrl.includes('youtube.com/embed/')) {
+                        embedUrl = vUrl;
+                    }
+
+                    if (embedUrl) {
+                        videoHtml = `
+                            <div class="mt-3 rounded-2xl overflow-hidden border border-slate-200 aspect-video bg-black shadow-inner">
+                                <iframe src="${embedUrl}" class="w-full h-full" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                            </div>
+                        `;
+                    } else {
+                        videoHtml = `
+                            <div class="mt-3 rounded-2xl overflow-hidden border border-slate-200 bg-black">
+                                <video src="${vUrl}" controls class="w-full max-h-96 object-contain"></video>
+                            </div>
+                        `;
+                    }
+                }
+
                 let commentsHtml = '';
                 comentarios.forEach(c => {
                     const canDeleteComment = currentUser && (currentUser.role === 'admin' || c.autorId === currentUser.id || c.autorNome === currentUser.nome);
@@ -1810,6 +1867,7 @@
 
                         ${post.texto ? `<p class="text-xs sm:text-sm text-slate-800 leading-relaxed whitespace-pre-line font-normal">${post.texto}</p>` : ''}
                         ${imageHtml}
+                        ${videoHtml}
 
                         <div class="flex items-center justify-between border-t border-b border-slate-100 py-2.5 text-xs text-slate-500 font-semibold">
                             <button onclick="toggleLikePost('${post.id}')" class="flex items-center space-x-1.5 ${isLiked ? 'text-red-500 font-bold' : 'hover:text-red-500'} transition">
@@ -1889,7 +1947,7 @@
             closeShareModal();
         }
 
-        // MÓDULO METAS & KPIS
+        // MÓDULO METAS & KPIS V7.0
         function listenFirebaseKpis() {
             db.collection("kpis_metas").onSnapshot((snapshot) => {
                 dbKpisMetas = [];
@@ -2638,6 +2696,7 @@
             db.collection("settings").doc("config").onSnapshot((doc) => {
                 if (doc.exists) {
                     if (doc.data().adminPass) adminPassHash = doc.data().adminPass;
+                    if (doc.data().adminEmail) adminEmailAccount = doc.data().adminEmail;
                     
                     const bannerUrl = doc.data().bannerUrl;
                     const img = document.getElementById('feed-banner-image');
