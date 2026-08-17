@@ -6,7 +6,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>LifeSocial - A rede que conecta os Lifers v7.5</title>
+    <title>LifeSocial - A rede que conecta os Lifers v7.6</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -185,7 +185,7 @@
         </div>
 
         <footer class="text-center text-xs text-white/90 py-2 z-10">
-            LifeSocial v7.5 | Plataforma criada e desenvolvida por 
+            LifeSocial v7.6 | Plataforma criada e desenvolvida por 
             <a href="https://www.linkedin.com/in/rafaelrobertonascimento" target="_blank" rel="noopener noreferrer" class="text-white font-bold underline hover:text-green-300">
                 Rafael Roberto Nascimento <i class="fa-brands fa-linkedin text-xs ml-0.5"></i>
             </a>
@@ -522,7 +522,7 @@
                                         </div>
                                     </div>
 
-                                    <button onclick="addProductToProposal()" class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition shadow-sm flex items-center justify-center">
+                                    <button onclick="addProductToProposal()" class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-extrabold rounded-xl text-xs shadow-sm flex items-center justify-center">
                                         <i class="fa-solid fa-plus mr-1.5"></i> Adicionar à Proposta
                                     </button>
                                 </div>
@@ -1127,7 +1127,7 @@
 
         <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-500 mt-auto z-30">
             <div class="max-w-7xl mx-auto px-4">
-                LifeSocial v7.5 | Plataforma desenvolvida por 
+                LifeSocial v7.6 | Plataforma desenvolvida por 
                 <a href="https://www.linkedin.com/in/rafaelrobertonascimento" target="_blank" rel="noopener noreferrer" class="text-blue-600 font-bold hover:underline">
                     Rafael Roberto Nascimento <i class="fa-brands fa-linkedin text-xs ml-0.5"></i>
                 </a>
@@ -1313,8 +1313,11 @@
             document.getElementById('screen-auth').classList.add('hidden');
             document.getElementById('screen-main-app').classList.remove('hidden');
 
-            document.getElementById('user-display-name').innerText = currentUser.nome || 'Usuário';
-            document.getElementById('user-display-email').innerText = currentUser.email || 'Corporativo';
+            const dispName = document.getElementById('user-display-name');
+            if (dispName) dispName.innerText = currentUser.nome || 'Usuário';
+
+            const dispEmail = document.getElementById('user-display-email');
+            if (dispEmail) dispEmail.innerText = currentUser.email || 'Corporativo';
 
             if (document.getElementById('user-profile-nome')) {
                 document.getElementById('user-profile-nome').value = currentUser.nome || '';
@@ -1328,23 +1331,29 @@
             }
 
             const initials = (currentUser.nome || 'US').split(' ').map(n => n[0]).slice(0,2).join('').toUpperCase();
-            document.getElementById('user-avatar-initials').innerText = initials;
-            document.getElementById('post-avatar-initials').innerText = initials;
+            
+            const userAvatar = document.getElementById('user-avatar-initials');
+            if (userAvatar) userAvatar.innerText = initials;
+
+            const postAvatar = document.getElementById('post-avatar-initials');
+            if (postAvatar) postAvatar.innerText = initials;
 
             const adminBtn = document.getElementById('nav-item-admin');
             const metasBtn = document.getElementById('nav-item-metas');
             const propostasBtn = document.getElementById('nav-item-propostas');
 
             if (currentUser.role === 'admin') {
-                adminBtn.classList.remove('hidden');
-                metasBtn.classList.add('hidden');
-                propostasBtn.classList.add('hidden');
-                document.getElementById('admin-pin-notice-option').classList.remove('hidden');
+                if (adminBtn) adminBtn.classList.remove('hidden');
+                if (metasBtn) metasBtn.classList.add('hidden');
+                if (propostasBtn) propostasBtn.classList.add('hidden');
+                const noticeOpt = document.getElementById('admin-pin-notice-option');
+                if (noticeOpt) noticeOpt.classList.remove('hidden');
             } else {
-                adminBtn.classList.add('hidden');
-                metasBtn.classList.remove('hidden');
-                propostasBtn.classList.remove('hidden');
-                document.getElementById('admin-pin-notice-option').classList.add('hidden');
+                if (adminBtn) adminBtn.classList.add('hidden');
+                if (metasBtn) metasBtn.classList.remove('hidden');
+                if (propostasBtn) propostasBtn.classList.remove('hidden');
+                const noticeOpt = document.getElementById('admin-pin-notice-option');
+                if (noticeOpt) noticeOpt.classList.add('hidden');
             }
 
             switchMainTab('social');
@@ -1399,7 +1408,7 @@
             }
         }
 
-        // SALVAR PERFIL DO USUÁRIO OU DO ADMIN (NOVA FUNCIONALIDADE V7.5)
+        // SALVAR PERFIL DO USUÁRIO OU DO ADMIN
         function saveUserProfileSelf(e) {
             e.preventDefault();
             const newNome = document.getElementById('user-profile-nome').value.trim();
@@ -1795,7 +1804,6 @@
                     </div>
                 ` : '';
 
-                // EMBED DE VÍDEO (NOVO NA V7.5)
                 let videoHtml = '';
                 if (post.videoUrl && post.videoUrl.trim() !== '') {
                     let vUrl = post.videoUrl.trim();
